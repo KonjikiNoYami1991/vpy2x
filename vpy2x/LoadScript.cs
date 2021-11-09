@@ -23,7 +23,9 @@ namespace vpy2x
         Process p;
         ProcessStartInfo psi;
 
-        public LoadScript(String PresetFolder, String VSpipeEXE)
+        public Dictionary<String, String> ScriptInfo = new Dictionary<String, String>();
+
+        public LoadScript(String PresetFolder)
         {
             InitializeComponent();
 
@@ -46,6 +48,7 @@ namespace vpy2x
                 }
             }
         }
+
         void ReadPreset(String File)
         {
             Preset p = JsonConvert.DeserializeObject<Preset>(System.IO.File.ReadAllText(File));
@@ -116,7 +119,124 @@ namespace vpy2x
 
         private void b_grab_num_frames_Click(object sender, EventArgs e)
         {
+            p = new Process();
+            psi = new ProcessStartInfo();
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            psi.Arguments = " --info \"" + tb_vpy.Text + "\" -";
+            psi.ErrorDialog = true;
+            psi.FileName = Path.GetFileNameWithoutExtension(vpy2x.VSpipeEXE);
+            psi.WindowStyle = ProcessWindowStyle.Hidden;
+            p.StartInfo = psi;
+            p.Start();
+            p.WaitForExit();
+            switch (p.ExitCode)
+            {
+                case 0:
+                    //MessageBox.Show(p.StandardOutput.ReadToEnd(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    String[] temp = p.StandardOutput.ReadToEnd().Trim().Split(new String[] { "\r", "\n" }, StringSplitOptions.None);
 
+                    ScriptInfo = new Dictionary<string, string>();
+                    foreach (String s in temp)
+                    {
+                        ScriptInfo.Add(s.Split(':')[0].Trim(), s.Split(':')[1].Trim());
+                    }
+                    num_end_frame.Maximum = Convert.ToInt32(ScriptInfo["Frames"]) - 1;
+                    num_end_frame.Value = num_end_frame.Maximum;
+                    num_start_frame.Maximum = num_end_frame.Maximum - 1;
+
+                    break;
+                default:
+                    MessageBox.Show(p.StandardError.ReadToEnd(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+            }
+        }
+
+        private void b_load_script_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog o = new OpenFileDialog();
+            o.Filter = "VPY files|*.vpy;*.VPY";
+            o.Title = "Set the VPY file.";
+            o.InitialDirectory = Application.StartupPath;
+            o.DefaultExt = "exe";
+            o.Multiselect = false;
+            o.RestoreDirectory = true;
+            if (o.ShowDialog() == DialogResult.OK)
+            {
+                tb_vpy.Text = o.FileName;
+            }
+        }
+
+        private void b_framerate_num_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{fpsn}");
+        }
+
+        private void b_framerate_denom_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{fpsd}");
+        }
+
+        private void b_bitdepth_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{bits}");
+        }
+
+        private void b_framerate_fraction_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{fps}");
+        }
+
+        private void b_dir_script_path_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{sd}");
+        }
+
+        private void b_script_name_no_ext_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{sn}");
+        }
+
+        private void b_subsampling_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{ss}");
+        }
+
+        private void b_width_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{w}");
+        }
+
+        private void b_height_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{h}");
+        }
+
+        private void b_num_frames_load_script_Click(object sender, EventArgs e)
+        {
+            tb_args_load_script.Paste("{f}");
+        }
+
+        private void b_done_Click(object sender, EventArgs e)
+        {
+            vpy2x.Job = new Dictionary<String, String>();
+            vpy2x.Job.Add("VPY", tb_vpy.Text);
+            vpy2x.Job.Add("Subject", tb_args_load_script.Text);
+            vpy2x.Job.Add("Encoder", tb_exe_load_script.Text);
+            if (cmb_header_load_script.SelectedText.StartsWith("No") == false)
+                vpy2x.Job.Add("Header", "--" + cmb_header_load_script.Text.Trim().ToLower());
+            else
+                vpy2x.Job.Add("Header", String.Empty);
+            if (num_end_frame.Value > 0)
+            {
+                vpy2x.Job.Add("End", "--end " + num_end_frame.Value.ToString());
+            }
+            if (num_start_frame.Value > 0)
+            {
+                vpy2x.Job.Add("Start", "--start " + num_start_frame.Value.ToString());
+            }
         }
     }
 }

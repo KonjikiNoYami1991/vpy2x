@@ -71,6 +71,7 @@ namespace vpy2x
             this.b_load_script.TabIndex = 0;
             this.b_load_script.Text = "Browse VPY";
             this.b_load_script.UseVisualStyleBackColor = true;
+            this.b_load_script.Click += new System.EventHandler(this.b_load_script_Click);
             // 
             // tb_vpy
             // 
@@ -172,6 +173,7 @@ namespace vpy2x
             this.b_framerate_num_load_script.TabIndex = 12;
             this.b_framerate_num_load_script.Text = "Framerate numerator";
             this.b_framerate_num_load_script.UseVisualStyleBackColor = true;
+            this.b_framerate_num_load_script.Click += new System.EventHandler(this.b_framerate_num_load_script_Click);
             // 
             // b_framerate_denom_load_script
             // 
@@ -181,6 +183,7 @@ namespace vpy2x
             this.b_framerate_denom_load_script.TabIndex = 13;
             this.b_framerate_denom_load_script.Text = "Framerate denominator";
             this.b_framerate_denom_load_script.UseVisualStyleBackColor = true;
+            this.b_framerate_denom_load_script.Click += new System.EventHandler(this.b_framerate_denom_load_script_Click);
             // 
             // b_bitdepth_load_script
             // 
@@ -190,6 +193,7 @@ namespace vpy2x
             this.b_bitdepth_load_script.TabIndex = 14;
             this.b_bitdepth_load_script.Text = "Color bitdepth";
             this.b_bitdepth_load_script.UseVisualStyleBackColor = true;
+            this.b_bitdepth_load_script.Click += new System.EventHandler(this.b_bitdepth_load_script_Click);
             // 
             // b_framerate_fraction_load_script
             // 
@@ -199,6 +203,7 @@ namespace vpy2x
             this.b_framerate_fraction_load_script.TabIndex = 15;
             this.b_framerate_fraction_load_script.Text = "Framerate as fraction";
             this.b_framerate_fraction_load_script.UseVisualStyleBackColor = true;
+            this.b_framerate_fraction_load_script.Click += new System.EventHandler(this.b_framerate_fraction_load_script_Click);
             // 
             // b_dir_script_path_load_script
             // 
@@ -208,6 +213,7 @@ namespace vpy2x
             this.b_dir_script_path_load_script.TabIndex = 16;
             this.b_dir_script_path_load_script.Text = "Directory from script\'s path";
             this.b_dir_script_path_load_script.UseVisualStyleBackColor = true;
+            this.b_dir_script_path_load_script.Click += new System.EventHandler(this.b_dir_script_path_load_script_Click);
             // 
             // b_script_name_no_ext_load_script
             // 
@@ -217,6 +223,7 @@ namespace vpy2x
             this.b_script_name_no_ext_load_script.TabIndex = 17;
             this.b_script_name_no_ext_load_script.Text = "Script\'s name without extension";
             this.b_script_name_no_ext_load_script.UseVisualStyleBackColor = true;
+            this.b_script_name_no_ext_load_script.Click += new System.EventHandler(this.b_script_name_no_ext_load_script_Click);
             // 
             // b_subsampling_load_script
             // 
@@ -226,6 +233,7 @@ namespace vpy2x
             this.b_subsampling_load_script.TabIndex = 18;
             this.b_subsampling_load_script.Text = "Subsampling string";
             this.b_subsampling_load_script.UseVisualStyleBackColor = true;
+            this.b_subsampling_load_script.Click += new System.EventHandler(this.b_subsampling_load_script_Click);
             // 
             // b_width_load_script
             // 
@@ -235,6 +243,7 @@ namespace vpy2x
             this.b_width_load_script.TabIndex = 19;
             this.b_width_load_script.Text = "Width";
             this.b_width_load_script.UseVisualStyleBackColor = true;
+            this.b_width_load_script.Click += new System.EventHandler(this.b_width_load_script_Click);
             // 
             // b_height_load_script
             // 
@@ -244,6 +253,7 @@ namespace vpy2x
             this.b_height_load_script.TabIndex = 20;
             this.b_height_load_script.Text = "Height";
             this.b_height_load_script.UseVisualStyleBackColor = true;
+            this.b_height_load_script.Click += new System.EventHandler(this.b_height_load_script_Click);
             // 
             // b_num_frames_load_script
             // 
@@ -253,6 +263,7 @@ namespace vpy2x
             this.b_num_frames_load_script.TabIndex = 21;
             this.b_num_frames_load_script.Text = "Total number of frames";
             this.b_num_frames_load_script.UseVisualStyleBackColor = true;
+            this.b_num_frames_load_script.Click += new System.EventHandler(this.b_num_frames_load_script_Click);
             // 
             // label4
             // 
@@ -282,6 +293,7 @@ namespace vpy2x
             this.b_done.TabIndex = 23;
             this.b_done.Text = "Done";
             this.b_done.UseVisualStyleBackColor = true;
+            this.b_done.Click += new System.EventHandler(this.b_done_Click);
             // 
             // num_start_frame
             // 

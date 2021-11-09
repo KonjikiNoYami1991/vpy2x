@@ -19,7 +19,8 @@ namespace vpy2x
 
         readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
         readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
-        String VSpipeEXE = String.Empty;
+        public static String VSpipeEXE = String.Empty;
+        public static Dictionary<String,String> Job = null;
 
         public vpy2x()
         {
@@ -78,17 +79,18 @@ namespace vpy2x
             edit.StartPosition = FormStartPosition.CenterParent;
             edit.ShowDialog();
         }
+
+        private void b_new_Click(object sender, EventArgs e)
+        {
+            LoadScript load = new LoadScript(PresetsFolder);
+            if (load.ShowDialog() == DialogResult.OK)
+            {
+                
+            }
+        }
     }
 
-    public struct Job
-    {
-        String EXE { get; set; }
-        String Header { get; set; }
-        String Args { get; set; }
-        String VPY { get; set; }
-    }
-
-    public class IniFile
+    class IniFile
     {
         string Path;
         string EXE = Assembly.GetExecutingAssembly().GetName().Name;

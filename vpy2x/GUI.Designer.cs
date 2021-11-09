@@ -29,17 +29,13 @@ namespace vpy2x
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setVSpipeexePathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editPresetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.subject = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.state = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.fps = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_stop = new System.Windows.Forms.Button();
             this.b_pause_resume = new System.Windows.Forms.Button();
@@ -52,8 +48,12 @@ namespace vpy2x
             this.b_new = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.editPresetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1.SuspendLayout();
+            this.DGV_jobs = new System.Windows.Forms.DataGridView();
+            this.job_number = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -64,18 +64,19 @@ namespace vpy2x
             this.splitContainer2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).BeginInit();
             this.SuspendLayout();
             // 
-            // menuStrip1
+            // menu
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(932, 24);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            this.menu.Location = new System.Drawing.Point(0, 0);
+            this.menu.Name = "menu";
+            this.menu.Size = new System.Drawing.Size(932, 24);
+            this.menu.TabIndex = 0;
+            this.menu.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
@@ -95,9 +96,16 @@ namespace vpy2x
             // setVSpipeexePathToolStripMenuItem
             // 
             this.setVSpipeexePathToolStripMenuItem.Name = "setVSpipeexePathToolStripMenuItem";
-            this.setVSpipeexePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setVSpipeexePathToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.setVSpipeexePathToolStripMenuItem.Text = "Set VSpipe.exe path";
             this.setVSpipeexePathToolStripMenuItem.Click += new System.EventHandler(this.setVSpipeexePathToolStripMenuItem_Click);
+            // 
+            // editPresetsToolStripMenuItem
+            // 
+            this.editPresetsToolStripMenuItem.Name = "editPresetsToolStripMenuItem";
+            this.editPresetsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.editPresetsToolStripMenuItem.Text = "Edit presets";
+            this.editPresetsToolStripMenuItem.Click += new System.EventHandler(this.editPresetsToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -129,7 +137,7 @@ namespace vpy2x
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.listView1);
+            this.splitContainer2.Panel1.Controls.Add(this.DGV_jobs);
             // 
             // splitContainer2.Panel2
             // 
@@ -137,41 +145,6 @@ namespace vpy2x
             this.splitContainer2.Size = new System.Drawing.Size(932, 425);
             this.splitContainer2.SplitterDistance = 756;
             this.splitContainer2.TabIndex = 0;
-            // 
-            // listView1
-            // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.name,
-            this.subject,
-            this.state,
-            this.fps});
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.FullRowSelect = true;
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(756, 425);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            // 
-            // name
-            // 
-            this.name.Text = "Name";
-            // 
-            // subject
-            // 
-            this.subject.Text = "Subject";
-            this.subject.Width = 530;
-            // 
-            // state
-            // 
-            this.state.Text = "State";
-            this.state.Width = 101;
-            // 
-            // fps
-            // 
-            this.fps.Text = "FPS";
             // 
             // groupBox1
             // 
@@ -272,6 +245,7 @@ namespace vpy2x
             this.b_new.TabIndex = 0;
             this.b_new.Text = "New";
             this.b_new.UseVisualStyleBackColor = true;
+            this.b_new.Click += new System.EventHandler(this.b_new_Click);
             // 
             // tabControl1
             // 
@@ -293,12 +267,61 @@ namespace vpy2x
             this.tabPage1.Text = "LOG";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // editPresetsToolStripMenuItem
+            // DGV_jobs
             // 
-            this.editPresetsToolStripMenuItem.Name = "editPresetsToolStripMenuItem";
-            this.editPresetsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.editPresetsToolStripMenuItem.Text = "Edit presets";
-            this.editPresetsToolStripMenuItem.Click += new System.EventHandler(this.editPresetsToolStripMenuItem_Click);
+            this.DGV_jobs.AllowUserToAddRows = false;
+            this.DGV_jobs.AllowUserToResizeColumns = false;
+            this.DGV_jobs.AllowUserToResizeRows = false;
+            this.DGV_jobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DGV_jobs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.job_number,
+            this.subject,
+            this.state,
+            this.fps});
+            this.DGV_jobs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DGV_jobs.Location = new System.Drawing.Point(0, 0);
+            this.DGV_jobs.Name = "DGV_jobs";
+            this.DGV_jobs.RowHeadersVisible = false;
+            this.DGV_jobs.RowHeadersWidth = 24;
+            this.DGV_jobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.DGV_jobs.Size = new System.Drawing.Size(756, 425);
+            this.DGV_jobs.TabIndex = 0;
+            // 
+            // job_number
+            // 
+            this.job_number.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.job_number.HeaderText = "Job #";
+            this.job_number.Name = "job_number";
+            this.job_number.ReadOnly = true;
+            this.job_number.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.job_number.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.job_number.Width = 40;
+            // 
+            // subject
+            // 
+            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.subject.HeaderText = "Subject";
+            this.subject.Name = "subject";
+            this.subject.ReadOnly = true;
+            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // state
+            // 
+            this.state.HeaderText = "State";
+            this.state.Name = "state";
+            this.state.ReadOnly = true;
+            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // fps
+            // 
+            this.fps.HeaderText = "FPS";
+            this.fps.Name = "fps";
+            this.fps.ReadOnly = true;
+            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // vpy2x
             // 
@@ -306,13 +329,13 @@ namespace vpy2x
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(932, 595);
             this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
+            this.Controls.Add(this.menu);
+            this.MainMenuStrip = this.menu;
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "vpy2x";
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.menu.ResumeLayout(false);
+            this.menu.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -323,6 +346,7 @@ namespace vpy2x
             this.splitContainer2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -330,7 +354,7 @@ namespace vpy2x
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip menu;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
@@ -341,11 +365,6 @@ namespace vpy2x
         private System.Windows.Forms.Button b_edit;
         private System.Windows.Forms.Button b_new;
         private System.Windows.Forms.Button b_reset;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ColumnHeader name;
-        private System.Windows.Forms.ColumnHeader subject;
-        private System.Windows.Forms.ColumnHeader state;
-        private System.Windows.Forms.ColumnHeader fps;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Button b_pause_resume;
@@ -354,6 +373,11 @@ namespace vpy2x
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setVSpipeexePathToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editPresetsToolStripMenuItem;
+        private System.Windows.Forms.DataGridView DGV_jobs;
+        private System.Windows.Forms.DataGridViewTextBoxColumn job_number;
+        private System.Windows.Forms.DataGridViewTextBoxColumn subject;
+        private System.Windows.Forms.DataGridViewTextBoxColumn state;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fps;
     }
 }
 
