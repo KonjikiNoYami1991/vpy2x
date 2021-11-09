@@ -29,48 +29,48 @@ namespace vpy2x
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.b_load_script = new System.Windows.Forms.Button();
             this.tb_vpy = new System.Windows.Forms.TextBox();
-            this.cmb_presets = new System.Windows.Forms.ComboBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.cmb_presets_load_script = new System.Windows.Forms.ComboBox();
+            this.b_save_load_script = new System.Windows.Forms.Button();
+            this.b_del_load_script = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button4 = new System.Windows.Forms.Button();
+            this.tb_exe_load_script = new System.Windows.Forms.TextBox();
+            this.b_exe_load_script = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.cmb_load_presets = new System.Windows.Forms.ComboBox();
-            this.rtb_args = new System.Windows.Forms.RichTextBox();
+            this.cmb_header_load_script = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
-            this.button14 = new System.Windows.Forms.Button();
+            this.b_framerate_num_load_script = new System.Windows.Forms.Button();
+            this.b_framerate_denom_load_script = new System.Windows.Forms.Button();
+            this.b_bitdepth_load_script = new System.Windows.Forms.Button();
+            this.b_framerate_fraction_load_script = new System.Windows.Forms.Button();
+            this.b_dir_script_path_load_script = new System.Windows.Forms.Button();
+            this.b_script_name_no_ext_load_script = new System.Windows.Forms.Button();
+            this.b_subsampling_load_script = new System.Windows.Forms.Button();
+            this.b_width_load_script = new System.Windows.Forms.Button();
+            this.b_height_load_script = new System.Windows.Forms.Button();
+            this.b_num_frames_load_script = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.button15 = new System.Windows.Forms.Button();
-            this.button16 = new System.Windows.Forms.Button();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.button17 = new System.Windows.Forms.Button();
+            this.b_cancel = new System.Windows.Forms.Button();
+            this.b_done = new System.Windows.Forms.Button();
+            this.num_start_frame = new System.Windows.Forms.NumericUpDown();
+            this.num_end_frame = new System.Windows.Forms.NumericUpDown();
+            this.b_grab_num_frames = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            this.tb_args_load_script = new System.Windows.Forms.TextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.num_start_frame)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_end_frame)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // b_load_script
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Browse VPY";
-            this.button1.UseVisualStyleBackColor = true;
+            this.b_load_script.Location = new System.Drawing.Point(12, 12);
+            this.b_load_script.Name = "b_load_script";
+            this.b_load_script.Size = new System.Drawing.Size(75, 23);
+            this.b_load_script.TabIndex = 0;
+            this.b_load_script.Text = "Browse VPY";
+            this.b_load_script.UseVisualStyleBackColor = true;
             // 
             // tb_vpy
             // 
@@ -79,31 +79,34 @@ namespace vpy2x
             this.tb_vpy.Size = new System.Drawing.Size(713, 20);
             this.tb_vpy.TabIndex = 1;
             // 
-            // cmb_presets
+            // cmb_presets_load_script
             // 
-            this.cmb_presets.FormattingEnabled = true;
-            this.cmb_presets.Location = new System.Drawing.Point(93, 57);
-            this.cmb_presets.Name = "cmb_presets";
-            this.cmb_presets.Size = new System.Drawing.Size(551, 21);
-            this.cmb_presets.TabIndex = 2;
+            this.cmb_presets_load_script.FormattingEnabled = true;
+            this.cmb_presets_load_script.Location = new System.Drawing.Point(93, 57);
+            this.cmb_presets_load_script.Name = "cmb_presets_load_script";
+            this.cmb_presets_load_script.Size = new System.Drawing.Size(551, 21);
+            this.cmb_presets_load_script.TabIndex = 2;
+            this.cmb_presets_load_script.SelectedIndexChanged += new System.EventHandler(this.cmb_presets_load_script_SelectedIndexChanged);
             // 
-            // button2
+            // b_save_load_script
             // 
-            this.button2.Location = new System.Drawing.Point(650, 55);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Save";
-            this.button2.UseVisualStyleBackColor = true;
+            this.b_save_load_script.Location = new System.Drawing.Point(650, 55);
+            this.b_save_load_script.Name = "b_save_load_script";
+            this.b_save_load_script.Size = new System.Drawing.Size(75, 23);
+            this.b_save_load_script.TabIndex = 3;
+            this.b_save_load_script.Text = "Save";
+            this.b_save_load_script.UseVisualStyleBackColor = true;
+            this.b_save_load_script.Click += new System.EventHandler(this.b_save_load_script_Click);
             // 
-            // button3
+            // b_del_load_script
             // 
-            this.button3.Location = new System.Drawing.Point(731, 55);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "Delete";
-            this.button3.UseVisualStyleBackColor = true;
+            this.b_del_load_script.Location = new System.Drawing.Point(731, 55);
+            this.b_del_load_script.Name = "b_del_load_script";
+            this.b_del_load_script.Size = new System.Drawing.Size(75, 23);
+            this.b_del_load_script.TabIndex = 4;
+            this.b_del_load_script.Text = "Delete";
+            this.b_del_load_script.UseVisualStyleBackColor = true;
+            this.b_del_load_script.Click += new System.EventHandler(this.b_del_load_script_Click);
             // 
             // label1
             // 
@@ -114,21 +117,22 @@ namespace vpy2x
             this.label1.TabIndex = 5;
             this.label1.Text = "Preset";
             // 
-            // textBox2
+            // tb_exe_load_script
             // 
-            this.textBox2.Location = new System.Drawing.Point(93, 87);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(551, 20);
-            this.textBox2.TabIndex = 7;
+            this.tb_exe_load_script.Location = new System.Drawing.Point(93, 87);
+            this.tb_exe_load_script.Name = "tb_exe_load_script";
+            this.tb_exe_load_script.Size = new System.Drawing.Size(551, 20);
+            this.tb_exe_load_script.TabIndex = 7;
             // 
-            // button4
+            // b_exe_load_script
             // 
-            this.button4.Location = new System.Drawing.Point(12, 85);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 6;
-            this.button4.Text = "Browse EXE";
-            this.button4.UseVisualStyleBackColor = true;
+            this.b_exe_load_script.Location = new System.Drawing.Point(12, 85);
+            this.b_exe_load_script.Name = "b_exe_load_script";
+            this.b_exe_load_script.Size = new System.Drawing.Size(75, 23);
+            this.b_exe_load_script.TabIndex = 6;
+            this.b_exe_load_script.Text = "Browse EXE";
+            this.b_exe_load_script.UseVisualStyleBackColor = true;
+            this.b_exe_load_script.Click += new System.EventHandler(this.b_exe_load_script_Click);
             // 
             // label2
             // 
@@ -139,25 +143,17 @@ namespace vpy2x
             this.label2.TabIndex = 8;
             this.label2.Text = "Header";
             // 
-            // cmb_load_presets
+            // cmb_header_load_script
             // 
-            this.cmb_load_presets.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_load_presets.FormattingEnabled = true;
-            this.cmb_load_presets.Items.AddRange(new object[] {
+            this.cmb_header_load_script.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_header_load_script.FormattingEnabled = true;
+            this.cmb_header_load_script.Items.AddRange(new object[] {
             "No header",
             "Y4M"});
-            this.cmb_load_presets.Location = new System.Drawing.Point(711, 86);
-            this.cmb_load_presets.Name = "cmb_load_presets";
-            this.cmb_load_presets.Size = new System.Drawing.Size(95, 21);
-            this.cmb_load_presets.TabIndex = 9;
-            // 
-            // rtb_args
-            // 
-            this.rtb_args.Location = new System.Drawing.Point(12, 138);
-            this.rtb_args.Name = "rtb_args";
-            this.rtb_args.Size = new System.Drawing.Size(614, 299);
-            this.rtb_args.TabIndex = 10;
-            this.rtb_args.Text = "";
+            this.cmb_header_load_script.Location = new System.Drawing.Point(711, 86);
+            this.cmb_header_load_script.Name = "cmb_header_load_script";
+            this.cmb_header_load_script.Size = new System.Drawing.Size(95, 21);
+            this.cmb_header_load_script.TabIndex = 9;
             // 
             // label3
             // 
@@ -168,95 +164,95 @@ namespace vpy2x
             this.label3.TabIndex = 11;
             this.label3.Text = "Arguments";
             // 
-            // button5
+            // b_framerate_num_load_script
             // 
-            this.button5.Location = new System.Drawing.Point(632, 153);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(174, 23);
-            this.button5.TabIndex = 12;
-            this.button5.Text = "Framerate numerator";
-            this.button5.UseVisualStyleBackColor = true;
+            this.b_framerate_num_load_script.Location = new System.Drawing.Point(632, 153);
+            this.b_framerate_num_load_script.Name = "b_framerate_num_load_script";
+            this.b_framerate_num_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_framerate_num_load_script.TabIndex = 12;
+            this.b_framerate_num_load_script.Text = "Framerate numerator";
+            this.b_framerate_num_load_script.UseVisualStyleBackColor = true;
             // 
-            // button6
+            // b_framerate_denom_load_script
             // 
-            this.button6.Location = new System.Drawing.Point(632, 182);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(174, 23);
-            this.button6.TabIndex = 13;
-            this.button6.Text = "Framerate denominator";
-            this.button6.UseVisualStyleBackColor = true;
+            this.b_framerate_denom_load_script.Location = new System.Drawing.Point(632, 182);
+            this.b_framerate_denom_load_script.Name = "b_framerate_denom_load_script";
+            this.b_framerate_denom_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_framerate_denom_load_script.TabIndex = 13;
+            this.b_framerate_denom_load_script.Text = "Framerate denominator";
+            this.b_framerate_denom_load_script.UseVisualStyleBackColor = true;
             // 
-            // button7
+            // b_bitdepth_load_script
             // 
-            this.button7.Location = new System.Drawing.Point(632, 211);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(174, 23);
-            this.button7.TabIndex = 14;
-            this.button7.Text = "Color bitdepth";
-            this.button7.UseVisualStyleBackColor = true;
+            this.b_bitdepth_load_script.Location = new System.Drawing.Point(632, 211);
+            this.b_bitdepth_load_script.Name = "b_bitdepth_load_script";
+            this.b_bitdepth_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_bitdepth_load_script.TabIndex = 14;
+            this.b_bitdepth_load_script.Text = "Color bitdepth";
+            this.b_bitdepth_load_script.UseVisualStyleBackColor = true;
             // 
-            // button8
+            // b_framerate_fraction_load_script
             // 
-            this.button8.Location = new System.Drawing.Point(632, 240);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(174, 23);
-            this.button8.TabIndex = 15;
-            this.button8.Text = "Framerate as fraction";
-            this.button8.UseVisualStyleBackColor = true;
+            this.b_framerate_fraction_load_script.Location = new System.Drawing.Point(632, 240);
+            this.b_framerate_fraction_load_script.Name = "b_framerate_fraction_load_script";
+            this.b_framerate_fraction_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_framerate_fraction_load_script.TabIndex = 15;
+            this.b_framerate_fraction_load_script.Text = "Framerate as fraction";
+            this.b_framerate_fraction_load_script.UseVisualStyleBackColor = true;
             // 
-            // button9
+            // b_dir_script_path_load_script
             // 
-            this.button9.Location = new System.Drawing.Point(632, 269);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(174, 23);
-            this.button9.TabIndex = 16;
-            this.button9.Text = "Directory from script\'s path";
-            this.button9.UseVisualStyleBackColor = true;
+            this.b_dir_script_path_load_script.Location = new System.Drawing.Point(632, 269);
+            this.b_dir_script_path_load_script.Name = "b_dir_script_path_load_script";
+            this.b_dir_script_path_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_dir_script_path_load_script.TabIndex = 16;
+            this.b_dir_script_path_load_script.Text = "Directory from script\'s path";
+            this.b_dir_script_path_load_script.UseVisualStyleBackColor = true;
             // 
-            // button10
+            // b_script_name_no_ext_load_script
             // 
-            this.button10.Location = new System.Drawing.Point(632, 298);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(174, 23);
-            this.button10.TabIndex = 17;
-            this.button10.Text = "Script\'s name without extension";
-            this.button10.UseVisualStyleBackColor = true;
+            this.b_script_name_no_ext_load_script.Location = new System.Drawing.Point(632, 298);
+            this.b_script_name_no_ext_load_script.Name = "b_script_name_no_ext_load_script";
+            this.b_script_name_no_ext_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_script_name_no_ext_load_script.TabIndex = 17;
+            this.b_script_name_no_ext_load_script.Text = "Script\'s name without extension";
+            this.b_script_name_no_ext_load_script.UseVisualStyleBackColor = true;
             // 
-            // button11
+            // b_subsampling_load_script
             // 
-            this.button11.Location = new System.Drawing.Point(632, 327);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(174, 23);
-            this.button11.TabIndex = 18;
-            this.button11.Text = "Subsampling string";
-            this.button11.UseVisualStyleBackColor = true;
+            this.b_subsampling_load_script.Location = new System.Drawing.Point(632, 327);
+            this.b_subsampling_load_script.Name = "b_subsampling_load_script";
+            this.b_subsampling_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_subsampling_load_script.TabIndex = 18;
+            this.b_subsampling_load_script.Text = "Subsampling string";
+            this.b_subsampling_load_script.UseVisualStyleBackColor = true;
             // 
-            // button12
+            // b_width_load_script
             // 
-            this.button12.Location = new System.Drawing.Point(632, 356);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(174, 23);
-            this.button12.TabIndex = 19;
-            this.button12.Text = "Width";
-            this.button12.UseVisualStyleBackColor = true;
+            this.b_width_load_script.Location = new System.Drawing.Point(632, 356);
+            this.b_width_load_script.Name = "b_width_load_script";
+            this.b_width_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_width_load_script.TabIndex = 19;
+            this.b_width_load_script.Text = "Width";
+            this.b_width_load_script.UseVisualStyleBackColor = true;
             // 
-            // button13
+            // b_height_load_script
             // 
-            this.button13.Location = new System.Drawing.Point(632, 385);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(174, 23);
-            this.button13.TabIndex = 20;
-            this.button13.Text = "Height";
-            this.button13.UseVisualStyleBackColor = true;
+            this.b_height_load_script.Location = new System.Drawing.Point(632, 385);
+            this.b_height_load_script.Name = "b_height_load_script";
+            this.b_height_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_height_load_script.TabIndex = 20;
+            this.b_height_load_script.Text = "Height";
+            this.b_height_load_script.UseVisualStyleBackColor = true;
             // 
-            // button14
+            // b_num_frames_load_script
             // 
-            this.button14.Location = new System.Drawing.Point(632, 414);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(174, 23);
-            this.button14.TabIndex = 21;
-            this.button14.Text = "Total number of frames";
-            this.button14.UseVisualStyleBackColor = true;
+            this.b_num_frames_load_script.Location = new System.Drawing.Point(632, 414);
+            this.b_num_frames_load_script.Name = "b_num_frames_load_script";
+            this.b_num_frames_load_script.Size = new System.Drawing.Size(174, 23);
+            this.b_num_frames_load_script.TabIndex = 21;
+            this.b_num_frames_load_script.Text = "Total number of frames";
+            this.b_num_frames_load_script.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -267,52 +263,53 @@ namespace vpy2x
             this.label4.TabIndex = 22;
             this.label4.Text = "Placeholders";
             // 
-            // button15
+            // b_cancel
             // 
-            this.button15.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button15.Location = new System.Drawing.Point(731, 470);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(75, 23);
-            this.button15.TabIndex = 24;
-            this.button15.Text = "Cancel";
-            this.button15.UseVisualStyleBackColor = true;
+            this.b_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.b_cancel.Location = new System.Drawing.Point(731, 470);
+            this.b_cancel.Name = "b_cancel";
+            this.b_cancel.Size = new System.Drawing.Size(75, 23);
+            this.b_cancel.TabIndex = 24;
+            this.b_cancel.Text = "Cancel";
+            this.b_cancel.UseVisualStyleBackColor = true;
             // 
-            // button16
+            // b_done
             // 
-            this.button16.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button16.Location = new System.Drawing.Point(650, 470);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(75, 23);
-            this.button16.TabIndex = 23;
-            this.button16.Text = "Done";
-            this.button16.UseVisualStyleBackColor = true;
+            this.b_done.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_done.Location = new System.Drawing.Point(650, 470);
+            this.b_done.Name = "b_done";
+            this.b_done.Size = new System.Drawing.Size(75, 23);
+            this.b_done.TabIndex = 23;
+            this.b_done.Text = "Done";
+            this.b_done.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // num_start_frame
             // 
-            this.numericUpDown1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numericUpDown1.Location = new System.Drawing.Point(79, 448);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(111, 20);
-            this.numericUpDown1.TabIndex = 25;
-            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.num_start_frame.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.num_start_frame.Location = new System.Drawing.Point(79, 448);
+            this.num_start_frame.Name = "num_start_frame";
+            this.num_start_frame.Size = new System.Drawing.Size(111, 20);
+            this.num_start_frame.TabIndex = 25;
+            this.num_start_frame.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // numericUpDown2
+            // num_end_frame
             // 
-            this.numericUpDown2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numericUpDown2.Location = new System.Drawing.Point(218, 448);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(111, 20);
-            this.numericUpDown2.TabIndex = 26;
-            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.num_end_frame.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.num_end_frame.Location = new System.Drawing.Point(218, 448);
+            this.num_end_frame.Name = "num_end_frame";
+            this.num_end_frame.Size = new System.Drawing.Size(111, 20);
+            this.num_end_frame.TabIndex = 26;
+            this.num_end_frame.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // button17
+            // b_grab_num_frames
             // 
-            this.button17.Location = new System.Drawing.Point(335, 445);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(75, 23);
-            this.button17.TabIndex = 27;
-            this.button17.Text = "From video";
-            this.button17.UseVisualStyleBackColor = true;
+            this.b_grab_num_frames.Location = new System.Drawing.Point(335, 445);
+            this.b_grab_num_frames.Name = "b_grab_num_frames";
+            this.b_grab_num_frames.Size = new System.Drawing.Size(75, 23);
+            this.b_grab_num_frames.TabIndex = 27;
+            this.b_grab_num_frames.Text = "From video";
+            this.b_grab_num_frames.UseVisualStyleBackColor = true;
+            this.b_grab_num_frames.Click += new System.EventHandler(this.b_grab_num_frames_Click);
             // 
             // label6
             // 
@@ -332,48 +329,56 @@ namespace vpy2x
             this.label7.TabIndex = 30;
             this.label7.Text = "Frames from";
             // 
+            // tb_args_load_script
+            // 
+            this.tb_args_load_script.Location = new System.Drawing.Point(12, 138);
+            this.tb_args_load_script.Multiline = true;
+            this.tb_args_load_script.Name = "tb_args_load_script";
+            this.tb_args_load_script.Size = new System.Drawing.Size(614, 299);
+            this.tb_args_load_script.TabIndex = 31;
+            // 
             // LoadScript
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 505);
+            this.Controls.Add(this.tb_args_load_script);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.button17);
-            this.Controls.Add(this.numericUpDown2);
-            this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.button15);
-            this.Controls.Add(this.button16);
+            this.Controls.Add(this.b_grab_num_frames);
+            this.Controls.Add(this.num_end_frame);
+            this.Controls.Add(this.num_start_frame);
+            this.Controls.Add(this.b_cancel);
+            this.Controls.Add(this.b_done);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.button14);
-            this.Controls.Add(this.button13);
-            this.Controls.Add(this.button12);
-            this.Controls.Add(this.button11);
-            this.Controls.Add(this.button10);
-            this.Controls.Add(this.button9);
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
+            this.Controls.Add(this.b_num_frames_load_script);
+            this.Controls.Add(this.b_height_load_script);
+            this.Controls.Add(this.b_width_load_script);
+            this.Controls.Add(this.b_subsampling_load_script);
+            this.Controls.Add(this.b_script_name_no_ext_load_script);
+            this.Controls.Add(this.b_dir_script_path_load_script);
+            this.Controls.Add(this.b_framerate_fraction_load_script);
+            this.Controls.Add(this.b_bitdepth_load_script);
+            this.Controls.Add(this.b_framerate_denom_load_script);
+            this.Controls.Add(this.b_framerate_num_load_script);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.rtb_args);
-            this.Controls.Add(this.cmb_load_presets);
+            this.Controls.Add(this.cmb_header_load_script);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.tb_exe_load_script);
+            this.Controls.Add(this.b_exe_load_script);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.cmb_presets);
+            this.Controls.Add(this.b_del_load_script);
+            this.Controls.Add(this.b_save_load_script);
+            this.Controls.Add(this.cmb_presets_load_script);
             this.Controls.Add(this.tb_vpy);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.b_load_script);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "LoadScript";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Load Script";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_start_frame)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_end_frame)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -381,35 +386,35 @@ namespace vpy2x
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button b_load_script;
         private System.Windows.Forms.TextBox tb_vpy;
-        private System.Windows.Forms.ComboBox cmb_presets;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.ComboBox cmb_presets_load_script;
+        private System.Windows.Forms.Button b_save_load_script;
+        private System.Windows.Forms.Button b_del_load_script;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TextBox tb_exe_load_script;
+        private System.Windows.Forms.Button b_exe_load_script;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cmb_load_presets;
-        private System.Windows.Forms.RichTextBox rtb_args;
+        private System.Windows.Forms.ComboBox cmb_header_load_script;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.Button button13;
-        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button b_framerate_num_load_script;
+        private System.Windows.Forms.Button b_framerate_denom_load_script;
+        private System.Windows.Forms.Button b_bitdepth_load_script;
+        private System.Windows.Forms.Button b_framerate_fraction_load_script;
+        private System.Windows.Forms.Button b_dir_script_path_load_script;
+        private System.Windows.Forms.Button b_script_name_no_ext_load_script;
+        private System.Windows.Forms.Button b_subsampling_load_script;
+        private System.Windows.Forms.Button b_width_load_script;
+        private System.Windows.Forms.Button b_height_load_script;
+        private System.Windows.Forms.Button b_num_frames_load_script;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button15;
-        private System.Windows.Forms.Button button16;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.Button button17;
+        private System.Windows.Forms.Button b_cancel;
+        private System.Windows.Forms.Button b_done;
+        private System.Windows.Forms.NumericUpDown num_start_frame;
+        private System.Windows.Forms.NumericUpDown num_end_frame;
+        private System.Windows.Forms.Button b_grab_num_frames;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox tb_args_load_script;
     }
 }
