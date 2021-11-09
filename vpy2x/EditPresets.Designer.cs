@@ -145,6 +145,7 @@ namespace vpy2x
             this.b_fr_num_edit_presets.TabIndex = 12;
             this.b_fr_num_edit_presets.Text = "Framerate numerator";
             this.b_fr_num_edit_presets.UseVisualStyleBackColor = true;
+            this.b_fr_num_edit_presets.Click += new System.EventHandler(this.b_fr_num_edit_presets_Click);
             // 
             // b_fr_denom_edit_presets
             // 
@@ -154,6 +155,7 @@ namespace vpy2x
             this.b_fr_denom_edit_presets.TabIndex = 13;
             this.b_fr_denom_edit_presets.Text = "Framerate denominator";
             this.b_fr_denom_edit_presets.UseVisualStyleBackColor = true;
+            this.b_fr_denom_edit_presets.Click += new System.EventHandler(this.b_fr_denom_edit_presets_Click);
             // 
             // b_bitdepth_edit_presets
             // 
@@ -163,6 +165,7 @@ namespace vpy2x
             this.b_bitdepth_edit_presets.TabIndex = 14;
             this.b_bitdepth_edit_presets.Text = "Color bitdepth";
             this.b_bitdepth_edit_presets.UseVisualStyleBackColor = true;
+            this.b_bitdepth_edit_presets.Click += new System.EventHandler(this.b_bitdepth_edit_presets_Click);
             // 
             // b_fr_as_fraction_edit_presets
             // 
@@ -172,6 +175,7 @@ namespace vpy2x
             this.b_fr_as_fraction_edit_presets.TabIndex = 15;
             this.b_fr_as_fraction_edit_presets.Text = "Framerate as fraction";
             this.b_fr_as_fraction_edit_presets.UseVisualStyleBackColor = true;
+            this.b_fr_as_fraction_edit_presets.Click += new System.EventHandler(this.b_fr_as_fraction_edit_presets_Click);
             // 
             // b_dir_script_path_edit_presets
             // 
@@ -181,6 +185,7 @@ namespace vpy2x
             this.b_dir_script_path_edit_presets.TabIndex = 16;
             this.b_dir_script_path_edit_presets.Text = "Directory from script\'s path";
             this.b_dir_script_path_edit_presets.UseVisualStyleBackColor = true;
+            this.b_dir_script_path_edit_presets.Click += new System.EventHandler(this.b_dir_script_path_edit_presets_Click);
             // 
             // b_script_name_no_ext_edit_presets
             // 
@@ -190,6 +195,7 @@ namespace vpy2x
             this.b_script_name_no_ext_edit_presets.TabIndex = 17;
             this.b_script_name_no_ext_edit_presets.Text = "Script\'s name without extension";
             this.b_script_name_no_ext_edit_presets.UseVisualStyleBackColor = true;
+            this.b_script_name_no_ext_edit_presets.Click += new System.EventHandler(this.b_script_name_no_ext_edit_presets_Click);
             // 
             // b_subsampl_string_edit_presets
             // 
@@ -199,6 +205,7 @@ namespace vpy2x
             this.b_subsampl_string_edit_presets.TabIndex = 18;
             this.b_subsampl_string_edit_presets.Text = "Subsampling string";
             this.b_subsampl_string_edit_presets.UseVisualStyleBackColor = true;
+            this.b_subsampl_string_edit_presets.Click += new System.EventHandler(this.b_subsampl_string_edit_presets_Click);
             // 
             // b_width_edit_presets
             // 
@@ -208,6 +215,7 @@ namespace vpy2x
             this.b_width_edit_presets.TabIndex = 19;
             this.b_width_edit_presets.Text = "Width";
             this.b_width_edit_presets.UseVisualStyleBackColor = true;
+            this.b_width_edit_presets.Click += new System.EventHandler(this.b_width_edit_presets_Click);
             // 
             // b_height_edit_presets
             // 
@@ -217,6 +225,7 @@ namespace vpy2x
             this.b_height_edit_presets.TabIndex = 20;
             this.b_height_edit_presets.Text = "Height";
             this.b_height_edit_presets.UseVisualStyleBackColor = true;
+            this.b_height_edit_presets.Click += new System.EventHandler(this.b_height_edit_presets_Click);
             // 
             // b_num_frames_edit_presets
             // 
@@ -226,6 +235,7 @@ namespace vpy2x
             this.b_num_frames_edit_presets.TabIndex = 21;
             this.b_num_frames_edit_presets.Text = "Total number of frames";
             this.b_num_frames_edit_presets.UseVisualStyleBackColor = true;
+            this.b_num_frames_edit_presets.Click += new System.EventHandler(this.b_num_frames_edit_presets_Click);
             // 
             // label4
             // 

@@ -37,6 +37,7 @@ namespace vpy2x
                 }
                 if (cmb_edit_presets.Items.Count > 0)
                 {
+                    cmb_edit_presets.Sorted = true;
                     cmb_edit_presets.Text = cmb_edit_presets.Items[0].ToString();
                     ReadPreset(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json"));
                 }
@@ -97,9 +98,13 @@ namespace vpy2x
 
         private void b_del_edit_presets_Click(object sender, EventArgs e)
         {
-            cmb_edit_presets.Items.RemoveAt(cmb_edit_presets.SelectedIndex);
-            cmb_edit_presets.Update();
             File.Delete(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json"));
+            cmb_edit_presets.Items.RemoveAt(cmb_edit_presets.SelectedIndex);
+            if (cmb_edit_presets.Items.Count > 0)
+            {
+                cmb_edit_presets.Text = cmb_edit_presets.Items[0].ToString();
+                ReadPreset(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json"));
+            }
         }
 
         struct Preset
@@ -107,6 +112,56 @@ namespace vpy2x
             public String exe { get; set; }
             public String args { get; set; }
             public String header { get; set; }
+        }
+
+        private void b_fr_num_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{fpsn}");
+        }
+
+        private void b_fr_denom_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{fpsd}");
+        }
+
+        private void b_bitdepth_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{bits}");
+        }
+
+        private void b_fr_as_fraction_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{fps}");
+        }
+
+        private void b_dir_script_path_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{sd}");
+        }
+
+        private void b_script_name_no_ext_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{sn}");
+        }
+
+        private void b_subsampl_string_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{ss}");
+        }
+
+        private void b_width_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{w}");
+        }
+
+        private void b_height_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{h}");
+        }
+
+        private void b_num_frames_edit_presets_Click(object sender, EventArgs e)
+        {
+            tb_args_edit_presets.Paste("{f}");
         }
     }
 }
