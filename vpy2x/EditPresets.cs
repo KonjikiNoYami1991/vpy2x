@@ -33,12 +33,12 @@ namespace vpy2x
                 foreach (String s in Directory.GetFiles(PresetFolder))
                 {
                     if (Path.GetExtension(s).ToLower() == ".json")
-                        cmb_presets.Items.Add(Path.GetFileNameWithoutExtension(s));
+                        cmb_edit_presets.Items.Add(Path.GetFileNameWithoutExtension(s));
                 }
-                if (cmb_presets.Items.Count > 0)
+                if (cmb_edit_presets.Items.Count > 0)
                 {
-                    cmb_presets.Text = cmb_presets.Items[0].ToString();
-                    ReadPreset(Path.Combine(PresetFolder, cmb_presets.Text + ".json"));
+                    cmb_edit_presets.Text = cmb_edit_presets.Items[0].ToString();
+                    ReadPreset(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json"));
                 }
             }
         }
@@ -53,14 +53,14 @@ namespace vpy2x
 
         private void b_save_edit_presets_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(cmb_presets.Text) == false)
+            if (String.IsNullOrWhiteSpace(cmb_edit_presets.Text) == false && cmb_edit_presets.Text.IndexOfAny(Path.GetInvalidPathChars()) == -1)
             {
-                WritePreset(Path.Combine(PresetFolder, cmb_presets.Text + ".json"));
-                if (cmb_presets.Items.Contains(cmb_presets.Text))
-                    cmb_presets.Items.Add(cmb_presets.Text);
+                WritePreset(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json"));
+                if (cmb_edit_presets.Items.Contains(cmb_edit_presets.Text) == false)
+                    cmb_edit_presets.Items.Add(cmb_edit_presets.Text);
             }
             else
-                MessageBox.Show("Preset must have a name.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Preset must have a valid name.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         void WritePreset(String JsonFile)
@@ -89,17 +89,17 @@ namespace vpy2x
 
         private void cmb_presets_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (File.Exists(Path.Combine(PresetFolder, cmb_presets.Text + ".json")))
+            if (File.Exists(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json")))
             {
-                ReadPreset(Path.Combine(PresetFolder, cmb_presets.Text + ".json"));
+                ReadPreset(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json"));
             }
         }
 
         private void b_del_edit_presets_Click(object sender, EventArgs e)
         {
-            cmb_presets.Items.RemoveAt(cmb_presets.SelectedIndex);
-            cmb_presets.Update();
-            File.Delete(Path.Combine(PresetFolder, cmb_presets.Text + ".json"));
+            cmb_edit_presets.Items.RemoveAt(cmb_edit_presets.SelectedIndex);
+            cmb_edit_presets.Update();
+            File.Delete(Path.Combine(PresetFolder, cmb_edit_presets.Text + ".json"));
         }
 
         struct Preset

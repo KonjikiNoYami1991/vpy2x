@@ -29,7 +29,7 @@ namespace vpy2x
         /// </summary>
         private void InitializeComponent()
         {
-            this.cmb_presets = new System.Windows.Forms.ComboBox();
+            this.cmb_edit_presets = new System.Windows.Forms.ComboBox();
             this.b_save_edit_presets = new System.Windows.Forms.Button();
             this.b_del_edit_presets = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -38,28 +38,28 @@ namespace vpy2x
             this.label2 = new System.Windows.Forms.Label();
             this.cmb_header_edit_presets = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
-            this.button14 = new System.Windows.Forms.Button();
+            this.b_fr_num_edit_presets = new System.Windows.Forms.Button();
+            this.b_fr_denom_edit_presets = new System.Windows.Forms.Button();
+            this.b_bitdepth_edit_presets = new System.Windows.Forms.Button();
+            this.b_fr_as_fraction_edit_presets = new System.Windows.Forms.Button();
+            this.b_dir_script_path_edit_presets = new System.Windows.Forms.Button();
+            this.b_script_name_no_ext_edit_presets = new System.Windows.Forms.Button();
+            this.b_subsampl_string_edit_presets = new System.Windows.Forms.Button();
+            this.b_width_edit_presets = new System.Windows.Forms.Button();
+            this.b_height_edit_presets = new System.Windows.Forms.Button();
+            this.b_num_frames_edit_presets = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.tb_args_edit_presets = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // cmb_presets
+            // cmb_edit_presets
             // 
-            this.cmb_presets.FormattingEnabled = true;
-            this.cmb_presets.Location = new System.Drawing.Point(93, 11);
-            this.cmb_presets.Name = "cmb_presets";
-            this.cmb_presets.Size = new System.Drawing.Size(551, 21);
-            this.cmb_presets.TabIndex = 2;
-            this.cmb_presets.SelectedIndexChanged += new System.EventHandler(this.cmb_presets_SelectedIndexChanged);
+            this.cmb_edit_presets.FormattingEnabled = true;
+            this.cmb_edit_presets.Location = new System.Drawing.Point(93, 11);
+            this.cmb_edit_presets.Name = "cmb_edit_presets";
+            this.cmb_edit_presets.Size = new System.Drawing.Size(551, 21);
+            this.cmb_edit_presets.TabIndex = 2;
+            this.cmb_edit_presets.SelectedIndexChanged += new System.EventHandler(this.cmb_presets_SelectedIndexChanged);
             // 
             // b_save_edit_presets
             // 
@@ -137,95 +137,95 @@ namespace vpy2x
             this.label3.TabIndex = 11;
             this.label3.Text = "Arguments";
             // 
-            // button5
+            // b_fr_num_edit_presets
             // 
-            this.button5.Location = new System.Drawing.Point(632, 107);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(174, 23);
-            this.button5.TabIndex = 12;
-            this.button5.Text = "Framerate numerator";
-            this.button5.UseVisualStyleBackColor = true;
+            this.b_fr_num_edit_presets.Location = new System.Drawing.Point(632, 107);
+            this.b_fr_num_edit_presets.Name = "b_fr_num_edit_presets";
+            this.b_fr_num_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_fr_num_edit_presets.TabIndex = 12;
+            this.b_fr_num_edit_presets.Text = "Framerate numerator";
+            this.b_fr_num_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button6
+            // b_fr_denom_edit_presets
             // 
-            this.button6.Location = new System.Drawing.Point(632, 136);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(174, 23);
-            this.button6.TabIndex = 13;
-            this.button6.Text = "Framerate denominator";
-            this.button6.UseVisualStyleBackColor = true;
+            this.b_fr_denom_edit_presets.Location = new System.Drawing.Point(632, 136);
+            this.b_fr_denom_edit_presets.Name = "b_fr_denom_edit_presets";
+            this.b_fr_denom_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_fr_denom_edit_presets.TabIndex = 13;
+            this.b_fr_denom_edit_presets.Text = "Framerate denominator";
+            this.b_fr_denom_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button7
+            // b_bitdepth_edit_presets
             // 
-            this.button7.Location = new System.Drawing.Point(632, 165);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(174, 23);
-            this.button7.TabIndex = 14;
-            this.button7.Text = "Color bitdepth";
-            this.button7.UseVisualStyleBackColor = true;
+            this.b_bitdepth_edit_presets.Location = new System.Drawing.Point(632, 165);
+            this.b_bitdepth_edit_presets.Name = "b_bitdepth_edit_presets";
+            this.b_bitdepth_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_bitdepth_edit_presets.TabIndex = 14;
+            this.b_bitdepth_edit_presets.Text = "Color bitdepth";
+            this.b_bitdepth_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button8
+            // b_fr_as_fraction_edit_presets
             // 
-            this.button8.Location = new System.Drawing.Point(632, 194);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(174, 23);
-            this.button8.TabIndex = 15;
-            this.button8.Text = "Framerate as fraction";
-            this.button8.UseVisualStyleBackColor = true;
+            this.b_fr_as_fraction_edit_presets.Location = new System.Drawing.Point(632, 194);
+            this.b_fr_as_fraction_edit_presets.Name = "b_fr_as_fraction_edit_presets";
+            this.b_fr_as_fraction_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_fr_as_fraction_edit_presets.TabIndex = 15;
+            this.b_fr_as_fraction_edit_presets.Text = "Framerate as fraction";
+            this.b_fr_as_fraction_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button9
+            // b_dir_script_path_edit_presets
             // 
-            this.button9.Location = new System.Drawing.Point(632, 223);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(174, 23);
-            this.button9.TabIndex = 16;
-            this.button9.Text = "Directory from script\'s path";
-            this.button9.UseVisualStyleBackColor = true;
+            this.b_dir_script_path_edit_presets.Location = new System.Drawing.Point(632, 223);
+            this.b_dir_script_path_edit_presets.Name = "b_dir_script_path_edit_presets";
+            this.b_dir_script_path_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_dir_script_path_edit_presets.TabIndex = 16;
+            this.b_dir_script_path_edit_presets.Text = "Directory from script\'s path";
+            this.b_dir_script_path_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button10
+            // b_script_name_no_ext_edit_presets
             // 
-            this.button10.Location = new System.Drawing.Point(632, 252);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(174, 23);
-            this.button10.TabIndex = 17;
-            this.button10.Text = "Script\'s name without extension";
-            this.button10.UseVisualStyleBackColor = true;
+            this.b_script_name_no_ext_edit_presets.Location = new System.Drawing.Point(632, 252);
+            this.b_script_name_no_ext_edit_presets.Name = "b_script_name_no_ext_edit_presets";
+            this.b_script_name_no_ext_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_script_name_no_ext_edit_presets.TabIndex = 17;
+            this.b_script_name_no_ext_edit_presets.Text = "Script\'s name without extension";
+            this.b_script_name_no_ext_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button11
+            // b_subsampl_string_edit_presets
             // 
-            this.button11.Location = new System.Drawing.Point(632, 281);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(174, 23);
-            this.button11.TabIndex = 18;
-            this.button11.Text = "Subsampling string";
-            this.button11.UseVisualStyleBackColor = true;
+            this.b_subsampl_string_edit_presets.Location = new System.Drawing.Point(632, 281);
+            this.b_subsampl_string_edit_presets.Name = "b_subsampl_string_edit_presets";
+            this.b_subsampl_string_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_subsampl_string_edit_presets.TabIndex = 18;
+            this.b_subsampl_string_edit_presets.Text = "Subsampling string";
+            this.b_subsampl_string_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button12
+            // b_width_edit_presets
             // 
-            this.button12.Location = new System.Drawing.Point(632, 310);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(174, 23);
-            this.button12.TabIndex = 19;
-            this.button12.Text = "Width";
-            this.button12.UseVisualStyleBackColor = true;
+            this.b_width_edit_presets.Location = new System.Drawing.Point(632, 310);
+            this.b_width_edit_presets.Name = "b_width_edit_presets";
+            this.b_width_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_width_edit_presets.TabIndex = 19;
+            this.b_width_edit_presets.Text = "Width";
+            this.b_width_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button13
+            // b_height_edit_presets
             // 
-            this.button13.Location = new System.Drawing.Point(632, 339);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(174, 23);
-            this.button13.TabIndex = 20;
-            this.button13.Text = "Height";
-            this.button13.UseVisualStyleBackColor = true;
+            this.b_height_edit_presets.Location = new System.Drawing.Point(632, 339);
+            this.b_height_edit_presets.Name = "b_height_edit_presets";
+            this.b_height_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_height_edit_presets.TabIndex = 20;
+            this.b_height_edit_presets.Text = "Height";
+            this.b_height_edit_presets.UseVisualStyleBackColor = true;
             // 
-            // button14
+            // b_num_frames_edit_presets
             // 
-            this.button14.Location = new System.Drawing.Point(632, 368);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(174, 23);
-            this.button14.TabIndex = 21;
-            this.button14.Text = "Total number of frames";
-            this.button14.UseVisualStyleBackColor = true;
+            this.b_num_frames_edit_presets.Location = new System.Drawing.Point(632, 368);
+            this.b_num_frames_edit_presets.Name = "b_num_frames_edit_presets";
+            this.b_num_frames_edit_presets.Size = new System.Drawing.Size(174, 23);
+            this.b_num_frames_edit_presets.TabIndex = 21;
+            this.b_num_frames_edit_presets.Text = "Total number of frames";
+            this.b_num_frames_edit_presets.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -251,16 +251,16 @@ namespace vpy2x
             this.ClientSize = new System.Drawing.Size(818, 399);
             this.Controls.Add(this.tb_args_edit_presets);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.button14);
-            this.Controls.Add(this.button13);
-            this.Controls.Add(this.button12);
-            this.Controls.Add(this.button11);
-            this.Controls.Add(this.button10);
-            this.Controls.Add(this.button9);
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button5);
+            this.Controls.Add(this.b_num_frames_edit_presets);
+            this.Controls.Add(this.b_height_edit_presets);
+            this.Controls.Add(this.b_width_edit_presets);
+            this.Controls.Add(this.b_subsampl_string_edit_presets);
+            this.Controls.Add(this.b_script_name_no_ext_edit_presets);
+            this.Controls.Add(this.b_dir_script_path_edit_presets);
+            this.Controls.Add(this.b_fr_as_fraction_edit_presets);
+            this.Controls.Add(this.b_bitdepth_edit_presets);
+            this.Controls.Add(this.b_fr_denom_edit_presets);
+            this.Controls.Add(this.b_fr_num_edit_presets);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cmb_header_edit_presets);
             this.Controls.Add(this.label2);
@@ -269,7 +269,7 @@ namespace vpy2x
             this.Controls.Add(this.label1);
             this.Controls.Add(this.b_del_edit_presets);
             this.Controls.Add(this.b_save_edit_presets);
-            this.Controls.Add(this.cmb_presets);
+            this.Controls.Add(this.cmb_edit_presets);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "EditPresets";
@@ -281,7 +281,7 @@ namespace vpy2x
         }
 
         #endregion
-        private System.Windows.Forms.ComboBox cmb_presets;
+        private System.Windows.Forms.ComboBox cmb_edit_presets;
         private System.Windows.Forms.Button b_save_edit_presets;
         private System.Windows.Forms.Button b_del_edit_presets;
         private System.Windows.Forms.Label label1;
@@ -290,16 +290,16 @@ namespace vpy2x
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cmb_header_edit_presets;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.Button button13;
-        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button b_fr_num_edit_presets;
+        private System.Windows.Forms.Button b_fr_denom_edit_presets;
+        private System.Windows.Forms.Button b_bitdepth_edit_presets;
+        private System.Windows.Forms.Button b_fr_as_fraction_edit_presets;
+        private System.Windows.Forms.Button b_dir_script_path_edit_presets;
+        private System.Windows.Forms.Button b_script_name_no_ext_edit_presets;
+        private System.Windows.Forms.Button b_subsampl_string_edit_presets;
+        private System.Windows.Forms.Button b_width_edit_presets;
+        private System.Windows.Forms.Button b_height_edit_presets;
+        private System.Windows.Forms.Button b_num_frames_edit_presets;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tb_args_edit_presets;
     }
