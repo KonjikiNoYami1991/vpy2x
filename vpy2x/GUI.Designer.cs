@@ -36,6 +36,10 @@ namespace vpy2x
             this.editPresetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.DGV_jobs = new System.Windows.Forms.DataGridView();
+            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_stop = new System.Windows.Forms.Button();
             this.b_pause_resume = new System.Windows.Forms.Button();
@@ -48,11 +52,7 @@ namespace vpy2x
             this.b_new = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.DGV_jobs = new System.Windows.Forms.DataGridView();
-            this.job_number = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.rtb_log = new System.Windows.Forms.RichTextBox();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -62,9 +62,10 @@ namespace vpy2x
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).BeginInit();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menu
@@ -145,6 +146,51 @@ namespace vpy2x
             this.splitContainer2.Size = new System.Drawing.Size(932, 425);
             this.splitContainer2.SplitterDistance = 756;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // DGV_jobs
+            // 
+            this.DGV_jobs.AllowUserToAddRows = false;
+            this.DGV_jobs.AllowUserToResizeColumns = false;
+            this.DGV_jobs.AllowUserToResizeRows = false;
+            this.DGV_jobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DGV_jobs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.subject,
+            this.state,
+            this.fps});
+            this.DGV_jobs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DGV_jobs.Location = new System.Drawing.Point(0, 0);
+            this.DGV_jobs.Name = "DGV_jobs";
+            this.DGV_jobs.RowHeadersVisible = false;
+            this.DGV_jobs.RowHeadersWidth = 24;
+            this.DGV_jobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.DGV_jobs.Size = new System.Drawing.Size(756, 425);
+            this.DGV_jobs.TabIndex = 0;
+            // 
+            // subject
+            // 
+            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.subject.HeaderText = "Subject";
+            this.subject.Name = "subject";
+            this.subject.ReadOnly = true;
+            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // state
+            // 
+            this.state.HeaderText = "State";
+            this.state.Name = "state";
+            this.state.ReadOnly = true;
+            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // fps
+            // 
+            this.fps.HeaderText = "FPS";
+            this.fps.Name = "fps";
+            this.fps.ReadOnly = true;
+            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // groupBox1
             // 
@@ -259,6 +305,7 @@ namespace vpy2x
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.rtb_log);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -267,61 +314,15 @@ namespace vpy2x
             this.tabPage1.Text = "LOG";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // DGV_jobs
+            // rtb_log
             // 
-            this.DGV_jobs.AllowUserToAddRows = false;
-            this.DGV_jobs.AllowUserToResizeColumns = false;
-            this.DGV_jobs.AllowUserToResizeRows = false;
-            this.DGV_jobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DGV_jobs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.job_number,
-            this.subject,
-            this.state,
-            this.fps});
-            this.DGV_jobs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DGV_jobs.Location = new System.Drawing.Point(0, 0);
-            this.DGV_jobs.Name = "DGV_jobs";
-            this.DGV_jobs.RowHeadersVisible = false;
-            this.DGV_jobs.RowHeadersWidth = 24;
-            this.DGV_jobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.DGV_jobs.Size = new System.Drawing.Size(756, 425);
-            this.DGV_jobs.TabIndex = 0;
-            // 
-            // job_number
-            // 
-            this.job_number.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.job_number.HeaderText = "Job #";
-            this.job_number.Name = "job_number";
-            this.job_number.ReadOnly = true;
-            this.job_number.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.job_number.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.job_number.Width = 40;
-            // 
-            // subject
-            // 
-            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.subject.HeaderText = "Subject";
-            this.subject.Name = "subject";
-            this.subject.ReadOnly = true;
-            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // state
-            // 
-            this.state.HeaderText = "State";
-            this.state.Name = "state";
-            this.state.ReadOnly = true;
-            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // fps
-            // 
-            this.fps.HeaderText = "FPS";
-            this.fps.Name = "fps";
-            this.fps.ReadOnly = true;
-            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.rtb_log.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtb_log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtb_log.Location = new System.Drawing.Point(3, 3);
+            this.rtb_log.Name = "rtb_log";
+            this.rtb_log.Size = new System.Drawing.Size(918, 110);
+            this.rtb_log.TabIndex = 0;
+            this.rtb_log.Text = "";
             // 
             // vpy2x
             // 
@@ -344,9 +345,10 @@ namespace vpy2x
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).EndInit();
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -374,10 +376,10 @@ namespace vpy2x
         private System.Windows.Forms.ToolStripMenuItem setVSpipeexePathToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editPresetsToolStripMenuItem;
         private System.Windows.Forms.DataGridView DGV_jobs;
-        private System.Windows.Forms.DataGridViewTextBoxColumn job_number;
         private System.Windows.Forms.DataGridViewTextBoxColumn subject;
         private System.Windows.Forms.DataGridViewTextBoxColumn state;
         private System.Windows.Forms.DataGridViewTextBoxColumn fps;
+        private System.Windows.Forms.RichTextBox rtb_log;
     }
 }
 

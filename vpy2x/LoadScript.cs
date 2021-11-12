@@ -25,7 +25,7 @@ namespace vpy2x
 
         public Dictionary<String, String> ScriptInfo = new Dictionary<String, String>();
 
-        public LoadScript(String PresetFolder)
+        public LoadScript(String PresetFolder, Boolean Edit)
         {
             InitializeComponent();
 
@@ -221,21 +221,32 @@ namespace vpy2x
 
         private void b_done_Click(object sender, EventArgs e)
         {
-            vpy2x.Job = new Dictionary<String, String>();
-            vpy2x.Job.Add("VPY", tb_vpy.Text);
-            vpy2x.Job.Add("Subject", tb_args_load_script.Text);
-            vpy2x.Job.Add("Encoder", tb_exe_load_script.Text);
-            if (cmb_header_load_script.SelectedText.StartsWith("No") == false)
-                vpy2x.Job.Add("Header", "--" + cmb_header_load_script.Text.Trim().ToLower());
-            else
-                vpy2x.Job.Add("Header", String.Empty);
-            if (num_end_frame.Value > 0)
+            if (String.IsNullOrWhiteSpace(tb_vpy.Text) == false && String.IsNullOrWhiteSpace(tb_exe_load_script.Text) == false && String.IsNullOrWhiteSpace(tb_args_load_script.Text) == false)
             {
-                vpy2x.Job.Add("End", "--end " + num_end_frame.Value.ToString());
+                vpy2x.JobTemp = new Dictionary<String, String>();
+                vpy2x.JobTemp.Add("VPY", tb_vpy.Text);
+                vpy2x.JobTemp.Add("Subject", tb_args_load_script.Text);
+                vpy2x.JobTemp.Add("Encoder", tb_exe_load_script.Text);
+                if (cmb_header_load_script.SelectedItem.ToString().ToLower().StartsWith("no") == false)
+                    vpy2x.JobTemp.Add("Header", " --" + cmb_header_load_script.Text.Trim().ToLower());
+                else
+                    vpy2x.JobTemp.Add("Header", String.Empty);
+                if (num_end_frame.Value > 0)
+                {
+                    vpy2x.JobTemp.Add("End", " --end " + num_end_frame.Value.ToString());
+                }
+                else
+                    vpy2x.JobTemp.Add("End", String.Empty);
+                if (num_start_frame.Value > 0)
+                {
+                    vpy2x.JobTemp.Add("Start", " --start " + num_start_frame.Value.ToString());
+                }
+                else
+                    vpy2x.JobTemp.Add("Start", String.Empty);
             }
-            if (num_start_frame.Value > 0)
+            else
             {
-                vpy2x.Job.Add("Start", "--start " + num_start_frame.Value.ToString());
+                MessageBox.Show("Script, arguments and encoder's executable must be set.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
     }

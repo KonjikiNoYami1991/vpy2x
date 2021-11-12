@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace vpy2x
 {
@@ -20,7 +21,8 @@ namespace vpy2x
         readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
         readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
         public static String VSpipeEXE = String.Empty;
-        public static Dictionary<String,String> Job = null;
+        public static Dictionary<String,String> JobTemp = new Dictionary<String, String>();
+        public List<Job> JobList = new List<Job>();
 
         public vpy2x()
         {
@@ -82,10 +84,180 @@ namespace vpy2x
 
         private void b_new_Click(object sender, EventArgs e)
         {
-            LoadScript load = new LoadScript(PresetsFolder);
+            LoadScript load = new LoadScript(PresetsFolder, false);
+            load.StartPosition = FormStartPosition.CenterParent;
             if (load.ShowDialog() == DialogResult.OK)
             {
-                
+                Job job = new Job(JobTemp);
+                if (job.HasErrors == false)
+                {
+                    JobList.Add(job);
+                }
+            }
+        }
+
+        public class Job
+        {
+            public String VPY { get; set; } = String.Empty;
+            public String Encoder { get; set; } = String.Empty;
+            public String Subject { get; set; } = String.Empty;
+            public String Header { get; set; } = String.Empty;
+            public String Start { get; set; } = String.Empty;
+            public String End { get; set; } = String.Empty;
+            public String CommandLine { get; set; } = String.Empty;
+            public String ErrorMessage { get; set; } = String.Empty;
+            public Boolean HasErrors { get; set; } = false;
+
+            public Job(Dictionary<String,String> JobTemp)
+            {
+                VPY = JobTemp["VPY"];
+                VPYAnalize Analize = new VPYAnalize(VPY);
+                if (Analize.HasErrors == false)
+                {
+                    CommandLine = Path.GetFileName(VSpipeEXE);
+                    CommandLine += " \"" + VPY + "\"";
+                    CommandLine += JobTemp["Start"];
+                    CommandLine += JobTemp["End"];
+                    CommandLine += JobTemp["Header"];
+                    CommandLine += " - | ";
+                    CommandLine += " \"" + JobTemp["Encoder"] + "\"";
+                    CommandLine += ReplacePlaceholders(JobTemp["Subject"],Analize);
+                    MessageBox.Show(CommandLine);
+                }
+                else
+                {
+                    ErrorMessage = Analize.ErrorMessage;
+                    HasErrors = Analize.HasErrors;
+                }
+            }
+
+            String ReplacePlaceholders(String Subject, VPYAnalize Analize)
+            {
+                String Temp = Subject;
+
+                Temp = Temp.Replace("{fpsn}", Analize.FramerateNumerator);
+                Temp = Temp.Replace("{fpsd}", Analize.FramerateDenominator);
+                Temp = Temp.Replace("{fps}", Analize.FramerateAsFraction);
+                Temp = Temp.Replace("{ss}", Analize.FormatName.ToLower());
+                Temp = Temp.Replace("{bits}", Analize.Bits);
+                Temp = Temp.Replace("{f}", Analize.Frames);
+                Temp = Temp.Replace("{bits}", Analize.Bits);
+                Temp = Temp.Replace("{w}", Analize.Width);
+                Temp = Temp.Replace("{h}", Analize.Height);
+                Temp = Temp.Replace("{sd}", Path.GetDirectoryName(VPY));
+                Temp = Temp.Replace("{sn}", Path.GetFileNameWithoutExtension(VPY));
+
+                return Temp;
+            }
+
+            public class VPYAnalize
+            {
+
+                public String Width { get; set; } = String.Empty;
+                public String Height { get; set; } = String.Empty;
+                public String Frames { get; set; } = String.Empty;
+                public String FPS { get; set; } = String.Empty;
+                public String FramerateNumerator { get; set; } = String.Empty;
+                public String FramerateDenominator { get; set; } = String.Empty;
+                public String FramerateAsFraction { get; set; } = String.Empty;
+                public String FormatName { get; set; } = String.Empty;
+                public String ColorFamily { get; set; } = String.Empty;
+                public String Alpha { get; set; } = String.Empty;
+                public String SampleType { get; set; } = String.Empty;
+                public String Bits { get; set; } = String.Empty;
+                public String SubSamplingW { get; set; } = String.Empty;
+                public String SubSamplingH { get; set; } = String.Empty;
+                public String ErrorMessage { get; set; } = String.Empty;
+                public Boolean HasErrors { get; set; } = false;
+
+                public VPYAnalize(String VPY)
+                {
+                    var p = new Process();
+                    var psi = new ProcessStartInfo();
+                    psi.UseShellExecute = false;
+                    psi.CreateNoWindow = true;
+                    psi.RedirectStandardOutput = true;
+                    psi.RedirectStandardError = true;
+                    psi.Arguments = " --info \"" + VPY + "\" -";
+                    psi.ErrorDialog = true;
+                    psi.FileName = Path.GetFileNameWithoutExtension(VSpipeEXE);
+                    psi.WindowStyle = ProcessWindowStyle.Hidden;
+                    p.StartInfo = psi;
+                    p.Start();
+                    p.WaitForExit();
+                    switch (p.ExitCode)
+                    {
+                        case 0:
+                            String[] temp = p.StandardOutput.ReadToEnd().Trim().Split(new String[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+                            var ScriptInfo = new Dictionary<String, String>();
+
+                            foreach (String s in temp)
+                            {
+                                ScriptInfo.Add(s.Split(':')[0].Trim(), s.Split(':')[1].Trim());
+                            }
+
+                            if (ScriptInfo.ContainsKey("Width"))
+                            {
+                                Width = ScriptInfo["Width"];
+                            }
+                            if (ScriptInfo.ContainsKey("Height"))
+                            {
+                                Height = ScriptInfo["Height"];
+                            }
+                            if (ScriptInfo.ContainsKey("Frames"))
+                            {
+                                Frames = ScriptInfo["Frames"];
+                            }
+                            if (ScriptInfo.ContainsKey("FPS"))
+                            {
+                                if (ScriptInfo["FPS"].ToLower().StartsWith("var") == false)
+                                {
+                                    FPS = ScriptInfo["FPS"].Split(' ')[0];
+                                    FramerateAsFraction = ScriptInfo["FPS"].Substring(ScriptInfo["FPS"].IndexOf('('), ScriptInfo["FPS"].IndexOf(' ')).Trim();
+                                    FramerateNumerator = FPS.Split(' ')[0].Split('/')[0];
+                                    FramerateDenominator = FPS.Split(' ')[0].Split('/')[1];
+                                }
+                                else
+                                {
+                                    FPS = ScriptInfo["FPS"];
+                                }
+                            }
+                            if (ScriptInfo.ContainsKey("Format Name"))
+                            {
+                                FormatName = ScriptInfo["Format Name"];
+                            }
+                            if (ScriptInfo.ContainsKey("Color Family"))
+                            {
+                                ColorFamily = ScriptInfo["Color Family"];
+                            }
+                            if (ScriptInfo.ContainsKey("Alpha"))
+                            {
+                                Alpha = ScriptInfo["Alpha"];
+                            }
+                            if (ScriptInfo.ContainsKey("Sample Type"))
+                            {
+                                SampleType = ScriptInfo["Sample Type"];
+                            }
+                            if (ScriptInfo.ContainsKey("Bits"))
+                            {
+                                Bits = ScriptInfo["Bits"];
+                            }
+                            if (ScriptInfo.ContainsKey("SubSampling W"))
+                            {
+                                SubSamplingW = ScriptInfo["SubSampling W"];
+                            }
+                            if (ScriptInfo.ContainsKey("SubSampling H"))
+                            {
+                                SubSamplingH = ScriptInfo["SubSampling H"];
+                            }
+                            break;
+                        default:
+                            ErrorMessage = p.StandardError.ReadToEnd();
+                            HasErrors = true;
+                            break;
+                    }
+                }
             }
         }
     }
