@@ -29,17 +29,17 @@ namespace vpy2x
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setVSpipeexePathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPresetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.whenFinishedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripComboBoxShutdown = new System.Windows.Forms.ToolStripComboBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.DGV_jobs = new System.Windows.Forms.DataGridView();
-            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_stop = new System.Windows.Forms.Button();
             this.b_pause_resume = new System.Windows.Forms.Button();
@@ -53,6 +53,10 @@ namespace vpy2x
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.rtb_log = new System.Windows.Forms.RichTextBox();
+            this.script = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -89,7 +93,8 @@ namespace vpy2x
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.setVSpipeexePathToolStripMenuItem,
-            this.editPresetsToolStripMenuItem});
+            this.editPresetsToolStripMenuItem,
+            this.whenFinishedToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -107,6 +112,26 @@ namespace vpy2x
             this.editPresetsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.editPresetsToolStripMenuItem.Text = "Edit presets";
             this.editPresetsToolStripMenuItem.Click += new System.EventHandler(this.editPresetsToolStripMenuItem_Click);
+            // 
+            // whenFinishedToolStripMenuItem
+            // 
+            this.whenFinishedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripComboBoxShutdown});
+            this.whenFinishedToolStripMenuItem.Name = "whenFinishedToolStripMenuItem";
+            this.whenFinishedToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.whenFinishedToolStripMenuItem.Text = "When finished";
+            // 
+            // toolStripComboBoxShutdown
+            // 
+            this.toolStripComboBoxShutdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBoxShutdown.Items.AddRange(new object[] {
+            "Do nothing",
+            "Stand-by",
+            "Reboot",
+            "Shutdown"});
+            this.toolStripComboBoxShutdown.Name = "toolStripComboBoxShutdown";
+            this.toolStripComboBoxShutdown.Size = new System.Drawing.Size(121, 23);
+            this.toolStripComboBoxShutdown.Tag = "Do nothing";
             // 
             // splitContainer1
             // 
@@ -152,8 +177,10 @@ namespace vpy2x
             this.DGV_jobs.AllowUserToAddRows = false;
             this.DGV_jobs.AllowUserToResizeColumns = false;
             this.DGV_jobs.AllowUserToResizeRows = false;
+            this.DGV_jobs.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.DGV_jobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DGV_jobs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.script,
             this.subject,
             this.state,
             this.fps});
@@ -163,34 +190,9 @@ namespace vpy2x
             this.DGV_jobs.RowHeadersVisible = false;
             this.DGV_jobs.RowHeadersWidth = 24;
             this.DGV_jobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DGV_jobs.Size = new System.Drawing.Size(756, 425);
             this.DGV_jobs.TabIndex = 0;
-            // 
-            // subject
-            // 
-            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.subject.HeaderText = "Subject";
-            this.subject.Name = "subject";
-            this.subject.ReadOnly = true;
-            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // state
-            // 
-            this.state.HeaderText = "State";
-            this.state.Name = "state";
-            this.state.ReadOnly = true;
-            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // fps
-            // 
-            this.fps.HeaderText = "FPS";
-            this.fps.Name = "fps";
-            this.fps.ReadOnly = true;
-            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // groupBox1
             // 
@@ -237,6 +239,7 @@ namespace vpy2x
             this.b_start.TabIndex = 6;
             this.b_start.Text = "Start";
             this.b_start.UseVisualStyleBackColor = true;
+            this.b_start.Click += new System.EventHandler(this.b_start_Click);
             // 
             // b_reset
             // 
@@ -246,6 +249,7 @@ namespace vpy2x
             this.b_reset.TabIndex = 3;
             this.b_reset.Text = "Reset state";
             this.b_reset.UseVisualStyleBackColor = true;
+            this.b_reset.Click += new System.EventHandler(this.b_reset_Click);
             // 
             // b_del
             // 
@@ -255,6 +259,7 @@ namespace vpy2x
             this.b_del.TabIndex = 2;
             this.b_del.Text = "Delete";
             this.b_del.UseVisualStyleBackColor = true;
+            this.b_del.Click += new System.EventHandler(this.b_del_Click);
             // 
             // b_move_down
             // 
@@ -264,6 +269,7 @@ namespace vpy2x
             this.b_move_down.TabIndex = 5;
             this.b_move_down.Text = "Move down";
             this.b_move_down.UseVisualStyleBackColor = true;
+            this.b_move_down.Click += new System.EventHandler(this.b_move_down_Click);
             // 
             // b_move_up
             // 
@@ -273,6 +279,7 @@ namespace vpy2x
             this.b_move_up.TabIndex = 4;
             this.b_move_up.Text = "Move up";
             this.b_move_up.UseVisualStyleBackColor = true;
+            this.b_move_up.Click += new System.EventHandler(this.b_move_up_Click);
             // 
             // b_edit
             // 
@@ -282,6 +289,7 @@ namespace vpy2x
             this.b_edit.TabIndex = 1;
             this.b_edit.Text = "Edit";
             this.b_edit.UseVisualStyleBackColor = true;
+            this.b_edit.Click += new System.EventHandler(this.b_edit_Click);
             // 
             // b_new
             // 
@@ -324,6 +332,43 @@ namespace vpy2x
             this.rtb_log.TabIndex = 0;
             this.rtb_log.Text = "";
             // 
+            // script
+            // 
+            this.script.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.script.HeaderText = "VPY";
+            this.script.Name = "script";
+            this.script.ReadOnly = true;
+            this.script.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.script.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.script.Width = 34;
+            // 
+            // subject
+            // 
+            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.subject.DefaultCellStyle = dataGridViewCellStyle1;
+            this.subject.HeaderText = "Subject";
+            this.subject.Name = "subject";
+            this.subject.ReadOnly = true;
+            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // state
+            // 
+            this.state.HeaderText = "State";
+            this.state.Name = "state";
+            this.state.ReadOnly = true;
+            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // fps
+            // 
+            this.fps.HeaderText = "FPS";
+            this.fps.Name = "fps";
+            this.fps.ReadOnly = true;
+            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
             // vpy2x
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -358,7 +403,6 @@ namespace vpy2x
 
         private System.Windows.Forms.MenuStrip menu;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button b_del;
@@ -375,11 +419,15 @@ namespace vpy2x
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setVSpipeexePathToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editPresetsToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox rtb_log;
         private System.Windows.Forms.DataGridView DGV_jobs;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.ToolStripMenuItem whenFinishedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxShutdown;
+        private System.Windows.Forms.DataGridViewTextBoxColumn script;
         private System.Windows.Forms.DataGridViewTextBoxColumn subject;
         private System.Windows.Forms.DataGridViewTextBoxColumn state;
         private System.Windows.Forms.DataGridViewTextBoxColumn fps;
-        private System.Windows.Forms.RichTextBox rtb_log;
     }
 }
 

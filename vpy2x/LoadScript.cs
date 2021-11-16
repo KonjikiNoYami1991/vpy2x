@@ -22,17 +22,34 @@ namespace vpy2x
         List<String> PresetSections = new List<String>();
         Process p;
         ProcessStartInfo psi;
+        Preset TempPreset;
+        Boolean Edit = false;
+        String TempVPY = String.Empty;
 
         public Dictionary<String, String> ScriptInfo = new Dictionary<String, String>();
 
-        public LoadScript(String PresetFolder, Boolean Edit)
+        public LoadScript(String PresetFolder, Boolean Edit, String TempVPY, Preset TempPreset)
         {
             InitializeComponent();
 
             tb_args_load_script.MaxLength = Int32.MaxValue;
 
+            this.TempPreset = TempPreset;
+
             this.PresetFolder = PresetFolder;
             cmb_header_load_script.Text = cmb_header_load_script.Items[0].ToString();
+            if (Edit == true)
+            {
+                this.Edit = Edit;
+                cmb_presets_load_script.Items.Add(String.Empty);
+                tb_args_load_script.Text = TempPreset.args;
+                tb_exe_load_script.Text = TempPreset.exe;
+                tb_vpy.Text = this.TempVPY = TempVPY;
+                if (String.IsNullOrWhiteSpace(TempPreset.header) == false)
+                    cmb_header_load_script.Text = TempPreset.header.ToUpper().Replace("--", String.Empty).Trim();
+                else
+                    cmb_header_load_script.Text = cmb_header_load_script.Items[0].ToString();
+            }
             if (Directory.Exists(this.PresetFolder))
             {
                 foreach (String s in Directory.GetFiles(PresetFolder))
@@ -40,7 +57,7 @@ namespace vpy2x
                     if (Path.GetExtension(s).ToLower() == ".json")
                         cmb_presets_load_script.Items.Add(Path.GetFileNameWithoutExtension(s));
                 }
-                if (cmb_presets_load_script.Items.Count > 0)
+                if (cmb_presets_load_script.Items.Count > 0 && Edit == false)
                 {
                     cmb_presets_load_script.Sorted = true;
                     cmb_presets_load_script.Text = cmb_presets_load_script.Items[0].ToString();
@@ -51,12 +68,24 @@ namespace vpy2x
 
         void ReadPreset(String File)
         {
-            Preset p = JsonConvert.DeserializeObject<Preset>(System.IO.File.ReadAllText(File));
-            tb_args_load_script.Text = p.args;
-            tb_exe_load_script.Text = p.exe;
-            cmb_header_load_script.Text = p.header;
+            if (System.IO.File.Exists(File))
+            {
+                Preset p = JsonConvert.DeserializeObject<Preset>(System.IO.File.ReadAllText(File));
+                tb_args_load_script.Text = p.args;
+                tb_exe_load_script.Text = p.exe;
+                cmb_header_load_script.Text = p.header;
+            }
+            else
+            {
+                if (String.IsNullOrWhiteSpace(File))
+                {
+                    tb_args_load_script.Text = TempPreset.args;
+                    tb_exe_load_script.Text = TempPreset.exe;
+                    cmb_header_load_script.Text = TempPreset.header;
+                }
+            }
         }
-        struct Preset
+        public struct Preset
         {
             public String exe { get; set; }
             public String args { get; set; }
@@ -103,6 +132,16 @@ namespace vpy2x
             if (File.Exists(Path.Combine(PresetFolder, cmb_presets_load_script.Text + ".json")))
             {
                 ReadPreset(Path.Combine(PresetFolder, cmb_presets_load_script.Text + ".json"));
+            }
+            else
+            {
+                tb_args_load_script.Text = TempPreset.args;
+                tb_exe_load_script.Text = TempPreset.exe;
+                tb_vpy.Text = TempVPY;
+                if (String.IsNullOrWhiteSpace(TempPreset.header) == false)
+                    cmb_header_load_script.Text = TempPreset.header.ToUpper().Replace("--", String.Empty).Trim();
+                else
+                    cmb_header_load_script.Text = cmb_header_load_script.Items[0].ToString();
             }
         }
 
@@ -159,7 +198,6 @@ namespace vpy2x
             OpenFileDialog o = new OpenFileDialog();
             o.Filter = "VPY files|*.vpy;*.VPY";
             o.Title = "Set the VPY file.";
-            o.InitialDirectory = Application.StartupPath;
             o.DefaultExt = "exe";
             o.Multiselect = false;
             o.RestoreDirectory = true;
@@ -248,6 +286,21 @@ namespace vpy2x
             {
                 MessageBox.Show("Script, arguments and encoder's executable must be set.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+        }
+
+        private void ll_help_placeholders_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            String Help = "{fpsn} -> Framerate numerator.\n";
+            Help += "{fpsd} -> Framerate denominator.\n";
+            Help += "{bits} -> Color bitdepth.\n";
+            Help += "{fps} -> Framerate as fraction.\n";
+            Help += "{sd} -> Script directory.\n";
+            Help += "{sn} -> Script filename without extension.\n";
+            Help += "{ss} -> Subsampling string (ex. \"yuv420p\").\n";
+            Help += "{w} -> Width.\n";
+            Help += "{h} -> Height.\n";
+            Help += "{f} -> Total number of frames.";
+            MessageBox.Show(Help, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

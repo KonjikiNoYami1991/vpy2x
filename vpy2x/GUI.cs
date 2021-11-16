@@ -24,6 +24,9 @@ namespace vpy2x
         public static Dictionary<String,String> JobTemp = new Dictionary<String, String>();
         public List<Job> JobList = new List<Job>();
 
+        Thread t;
+        ThreadStart ts;
+
         public vpy2x()
         {
             InitializeComponent();
@@ -84,7 +87,7 @@ namespace vpy2x
 
         private void b_new_Click(object sender, EventArgs e)
         {
-            LoadScript load = new LoadScript(PresetsFolder, false);
+            LoadScript load = new LoadScript(PresetsFolder, false, String.Empty, new LoadScript.Preset());
             load.StartPosition = FormStartPosition.CenterParent;
             if (load.ShowDialog() == DialogResult.OK)
             {
@@ -92,6 +95,12 @@ namespace vpy2x
                 if (job.HasErrors == false)
                 {
                     JobList.Add(job);
+                    DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0");
+                }
+                else
+                {
+                    rtb_log.AppendText(job.ErrorMessage);
+                    MessageBox.Show("There was one or multiple errors while analizing VPY file.\nTake a look to the log section.");
                 }
             }
         }
@@ -111,6 +120,9 @@ namespace vpy2x
             public Job(Dictionary<String,String> JobTemp)
             {
                 VPY = JobTemp["VPY"];
+                Subject = JobTemp["Subject"];
+                Encoder = JobTemp["Encoder"];
+                Header = JobTemp["Header"];
                 VPYAnalize Analize = new VPYAnalize(VPY);
                 if (Analize.HasErrors == false)
                 {
@@ -122,7 +134,7 @@ namespace vpy2x
                     CommandLine += " - | ";
                     CommandLine += " \"" + JobTemp["Encoder"] + "\"";
                     CommandLine += ReplacePlaceholders(JobTemp["Subject"],Analize);
-                    MessageBox.Show(CommandLine);
+                    //MessageBox.Show(CommandLine);
                 }
                 else
                 {
@@ -152,7 +164,6 @@ namespace vpy2x
 
             public class VPYAnalize
             {
-
                 public String Width { get; set; } = String.Empty;
                 public String Height { get; set; } = String.Empty;
                 public String Frames { get; set; } = String.Empty;
@@ -178,7 +189,7 @@ namespace vpy2x
                     psi.CreateNoWindow = true;
                     psi.RedirectStandardOutput = true;
                     psi.RedirectStandardError = true;
-                    psi.Arguments = " --info \"" + VPY + "\" -";
+                    psi.Arguments = " --info \"" + VPY + "\"";
                     psi.ErrorDialog = true;
                     psi.FileName = Path.GetFileNameWithoutExtension(VSpipeEXE);
                     psi.WindowStyle = ProcessWindowStyle.Hidden;
@@ -259,6 +270,106 @@ namespace vpy2x
                     }
                 }
             }
+        }
+
+        private void b_del_Click(object sender, EventArgs e)
+        {
+            for(Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
+            {
+                if (DGV_jobs.Rows[i].Selected == true)
+                {
+                    DGV_jobs.Rows.RemoveAt(i);
+                    JobList.RemoveAt(i);
+                }
+            }
+        }
+
+        private void b_reset_Click(object sender, EventArgs e)
+        {
+            for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
+            {
+                if (DGV_jobs.Rows[i].Selected == true)
+                {
+                    DGV_jobs.Rows[i].SetValues(DGV_jobs.Rows[i].Cells["subject"].Value.ToString(), "Ready", "0");
+                }
+            }
+        }
+
+        private void b_edit_Click(object sender, EventArgs e)
+        {
+            if (DGV_jobs.SelectedRows.Count > 0)
+            {
+                LoadScript.Preset TempPreset = new LoadScript.Preset();
+                TempPreset.exe = JobList[DGV_jobs.SelectedRows[0].Index].Encoder;
+                TempPreset.args = JobList[DGV_jobs.SelectedRows[0].Index].Subject;
+                TempPreset.header = JobList[DGV_jobs.SelectedRows[0].Index].Header;
+                LoadScript load = new LoadScript(PresetsFolder, true, JobList[DGV_jobs.SelectedRows[0].Index].VPY, TempPreset);
+                load.StartPosition = FormStartPosition.CenterParent;
+                if (load.ShowDialog() == DialogResult.OK)
+                {
+                    Job job = new Job(JobTemp);
+                    if (job.HasErrors == false)
+                    {
+                        JobList.RemoveAt(DGV_jobs.SelectedRows[0].Index);
+                        JobList.Insert(DGV_jobs.SelectedRows[0].Index, job);
+                        DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].SetValues(job.VPY, job.Subject, "Ready", "0");
+                    }
+                    else
+                    {
+                        rtb_log.AppendText(job.ErrorMessage);
+                        MessageBox.Show("There was one or multiple errors while analizing VPY file.\nTake a look to the log section.");
+                    }
+                }
+            }
+        }
+
+        private void b_move_up_Click(object sender, EventArgs e)
+        {
+            if (DGV_jobs.SelectedRows.Count > 0)
+            {
+                if (DGV_jobs.SelectedRows[0].Index > 0)
+                {
+                    for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
+                    {
+                        if (DGV_jobs.Rows[i].Selected == true)
+                        {
+                            DataGridViewRow r = DGV_jobs.Rows[i];
+                            Job temp = JobList[i];
+                            JobList.RemoveAt(i);
+                            DGV_jobs.Rows.RemoveAt(i);
+                            JobList.Insert(i - 1, temp);
+                            DGV_jobs.Rows.Insert(i - 1, r);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void b_move_down_Click(object sender, EventArgs e)
+        {
+            if (DGV_jobs.SelectedRows.Count > 0)
+            {
+                if (DGV_jobs.SelectedRows[0].Index < DGV_jobs.Rows.Count - 1)
+                {
+                    for (Int32 i = 0; i < DGV_jobs.Rows.Count; i++)
+                    {
+                        if (DGV_jobs.Rows[i].Selected == true)
+                        {
+                            DataGridViewRow r = DGV_jobs.Rows[i];
+                            Job temp = JobList[i];
+                            JobList.RemoveAt(i);
+                            DGV_jobs.Rows.RemoveAt(i);
+                            JobList.Insert(i + 1, temp);
+                            DGV_jobs.Rows.Insert(i + 1, r);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void b_start_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 

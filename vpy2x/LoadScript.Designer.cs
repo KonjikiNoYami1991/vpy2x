@@ -59,6 +59,7 @@ namespace vpy2x
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.tb_args_load_script = new System.Windows.Forms.TextBox();
+            this.ll_help_placeholders = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.num_start_frame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_end_frame)).BeginInit();
             this.SuspendLayout();
@@ -268,7 +269,7 @@ namespace vpy2x
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(738, 137);
+            this.label4.Location = new System.Drawing.Point(691, 137);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(68, 13);
             this.label4.TabIndex = 22;
@@ -349,11 +350,23 @@ namespace vpy2x
             this.tb_args_load_script.Size = new System.Drawing.Size(614, 299);
             this.tb_args_load_script.TabIndex = 31;
             // 
+            // ll_help_placeholders
+            // 
+            this.ll_help_placeholders.AutoSize = true;
+            this.ll_help_placeholders.Location = new System.Drawing.Point(777, 137);
+            this.ll_help_placeholders.Name = "ll_help_placeholders";
+            this.ll_help_placeholders.Size = new System.Drawing.Size(29, 13);
+            this.ll_help_placeholders.TabIndex = 32;
+            this.ll_help_placeholders.TabStop = true;
+            this.ll_help_placeholders.Text = "Help";
+            this.ll_help_placeholders.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ll_help_placeholders_LinkClicked);
+            // 
             // LoadScript
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 505);
+            this.Controls.Add(this.ll_help_placeholders);
             this.Controls.Add(this.tb_args_load_script);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -428,5 +441,6 @@ namespace vpy2x
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tb_args_load_script;
+        private System.Windows.Forms.LinkLabel ll_help_placeholders;
     }
 }

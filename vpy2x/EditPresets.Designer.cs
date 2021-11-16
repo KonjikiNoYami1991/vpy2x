@@ -48,8 +48,9 @@ namespace vpy2x
             this.b_width_edit_presets = new System.Windows.Forms.Button();
             this.b_height_edit_presets = new System.Windows.Forms.Button();
             this.b_num_frames_edit_presets = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
             this.tb_args_edit_presets = new System.Windows.Forms.TextBox();
+            this.ll_help_placeholders = new System.Windows.Forms.LinkLabel();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cmb_edit_presets
@@ -237,15 +238,6 @@ namespace vpy2x
             this.b_num_frames_edit_presets.UseVisualStyleBackColor = true;
             this.b_num_frames_edit_presets.Click += new System.EventHandler(this.b_num_frames_edit_presets_Click);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(738, 91);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(68, 13);
-            this.label4.TabIndex = 22;
-            this.label4.Text = "Placeholders";
-            // 
             // tb_args_edit_presets
             // 
             this.tb_args_edit_presets.Location = new System.Drawing.Point(12, 92);
@@ -254,13 +246,34 @@ namespace vpy2x
             this.tb_args_edit_presets.Size = new System.Drawing.Size(614, 299);
             this.tb_args_edit_presets.TabIndex = 23;
             // 
+            // ll_help_placeholders
+            // 
+            this.ll_help_placeholders.AutoSize = true;
+            this.ll_help_placeholders.Location = new System.Drawing.Point(777, 92);
+            this.ll_help_placeholders.Name = "ll_help_placeholders";
+            this.ll_help_placeholders.Size = new System.Drawing.Size(29, 13);
+            this.ll_help_placeholders.TabIndex = 34;
+            this.ll_help_placeholders.TabStop = true;
+            this.ll_help_placeholders.Text = "Help";
+            this.ll_help_placeholders.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ll_help_placeholders_LinkClicked);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(691, 92);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(68, 13);
+            this.label5.TabIndex = 33;
+            this.label5.Text = "Placeholders";
+            // 
             // EditPresets
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 399);
+            this.Controls.Add(this.ll_help_placeholders);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.tb_args_edit_presets);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.b_num_frames_edit_presets);
             this.Controls.Add(this.b_height_edit_presets);
             this.Controls.Add(this.b_width_edit_presets);
@@ -310,7 +323,8 @@ namespace vpy2x
         private System.Windows.Forms.Button b_width_edit_presets;
         private System.Windows.Forms.Button b_height_edit_presets;
         private System.Windows.Forms.Button b_num_frames_edit_presets;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tb_args_edit_presets;
+        private System.Windows.Forms.LinkLabel ll_help_placeholders;
+        private System.Windows.Forms.Label label5;
     }
 }

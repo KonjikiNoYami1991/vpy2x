@@ -78,7 +78,6 @@ namespace vpy2x
             OpenFileDialog o = new OpenFileDialog();
             o.Filter = "EXE files|*.exe;*.EXE";
             o.Title = "Set the path for the encoder's executable file";
-            o.InitialDirectory = Application.StartupPath;
             o.DefaultExt = "exe";
             o.Multiselect = false;
             o.RestoreDirectory = true;
@@ -162,6 +161,21 @@ namespace vpy2x
         private void b_num_frames_edit_presets_Click(object sender, EventArgs e)
         {
             tb_args_edit_presets.Paste("{f}");
+        }
+
+        private void ll_help_placeholders_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            String Help = "{fpsn} -> Framerate numerator.\n";
+            Help += "{fpsd} -> Framerate denominator.\n";
+            Help += "{bits} -> Color bitdepth.\n";
+            Help += "{fps} -> Framerate as fraction.\n";
+            Help += "{sd} -> Script directory.\n";
+            Help += "{sn} -> Script filename without extension.\n";
+            Help += "{ss} -> Subsampling string (ex. \"yuv420p\").\n";
+            Help += "{w} -> Width.\n";
+            Help += "{h} -> Height.\n";
+            Help += "{f} -> Total number of frames.";
+            MessageBox.Show(Help, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
