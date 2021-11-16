@@ -1,0 +1,3 @@
+# vpy2x
+Simple alternative to VSEdit Job Server Watcher.
+Still on develompent...
