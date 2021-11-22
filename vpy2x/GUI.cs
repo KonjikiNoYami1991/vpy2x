@@ -450,6 +450,7 @@ namespace vpy2x
 
         private void b_start_Click(object sender, EventArgs e)
         {
+            JobRunningIndex = -1;
             for (Int32 i = 0; i < JobList.Count; i++)
             {
                 task = new JobTask(JobList[i]);
@@ -461,6 +462,9 @@ namespace vpy2x
                     ts = new ThreadStart(Encode);
                     t = new Thread(ts);
                     t.Start();
+                    b_start.Enabled = !b_start.Enabled;
+                    b_stop.Enabled = !b_stop.Enabled;
+                    b_pause_resume.Enabled = !b_pause_resume.Enabled;
                 }
                 else
                 {
@@ -499,6 +503,11 @@ namespace vpy2x
             Input.WriteLine(task.CommandLine);
             Input.WriteLine("exit");
 
+            this.Invoke((MethodInvoker)delegate ()
+            {
+                DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+            });
+
             p.WaitForExit();
 
             switch (p.ExitCode)
@@ -535,14 +544,14 @@ namespace vpy2x
                     this.Invoke((MethodInvoker)delegate ()
                     {
                         String Progress = e.Data.Substring(e.Data.IndexOf(" ")).Trim();
-                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", Progress);
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString(), Progress);
                     });
                 }
                 else
                 {
                     this.Invoke((MethodInvoker)delegate ()
                     {
-                        rtb_log.AppendText(e.Data + "\n");
+                        rtb_log.AppendText(e.Data.TrimEnd() + "\n");
                     });
                 }
                 this.Invoke((MethodInvoker)delegate ()
@@ -562,14 +571,14 @@ namespace vpy2x
                     this.Invoke((MethodInvoker)delegate ()
                     {
                         String Progress = e.Data.Substring(e.Data.IndexOf(" ")).Trim();
-                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", Progress);
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString(), Progress);
                     });
                 }
                 else
                 {
                     this.Invoke((MethodInvoker)delegate ()
                     {
-                        rtb_log.AppendText(e.Data + "\n");
+                        rtb_log.AppendText(e.Data.TrimEnd() + "\n");
                     });
                 }
                 this.Invoke((MethodInvoker)delegate ()
@@ -590,7 +599,37 @@ namespace vpy2x
                 }
                 catch { }
                 t = null;
-                JobRunningIndex = -1;
+                b_start.Enabled = !b_start.Enabled;
+                b_stop.Enabled = !b_stop.Enabled;
+                b_pause_resume.Enabled = !b_pause_resume.Enabled;
+            }
+        }
+
+        public void SuspendOrResume(Boolean Suspend, Int32 PID)
+        {
+            using (var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + PID))
+            {
+                var moc = searcher.Get();
+                foreach (ManagementObject mo in moc)
+                {
+                    SuspendOrResume(Suspend,Convert.ToInt32(mo["ProcessID"]));
+                }
+                try
+                {
+                    switch (Suspend)
+                    {
+                        case true:
+                            SuspendProcess(PID);
+                            break;
+                        case false:
+                            ResumeProcess(PID);
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Process already exited.
+                }
             }
         }
 
@@ -622,6 +661,7 @@ namespace vpy2x
                 if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("running"))
                 {
                     SuspendProcess(ProcessID);
+                    SuspendOrResume(true, ProcessID);
                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Paused", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                 }
                 else
@@ -629,6 +669,7 @@ namespace vpy2x
                     if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("paused"))
                     {
                         ResumeProcess(ProcessID);
+                        SuspendOrResume(false, ProcessID);
                         DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                     }
                 }

@@ -37,12 +37,14 @@ namespace vpy2x
             this.editPresetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.whenFinishedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBoxShutdown = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.DGV_jobs = new System.Windows.Forms.DataGridView();
             this.script = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_stop = new System.Windows.Forms.Button();
@@ -57,8 +59,6 @@ namespace vpy2x
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.rtb_log = new System.Windows.Forms.RichTextBox();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -136,6 +136,21 @@ namespace vpy2x
             this.toolStripComboBoxShutdown.Size = new System.Drawing.Size(121, 23);
             this.toolStripComboBoxShutdown.Tag = "Do nothing";
             // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(24, 20);
+            this.toolStripMenuItem1.Text = "?";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -185,7 +200,7 @@ namespace vpy2x
             this.DGV_jobs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.script,
             this.subject,
-            this.state,
+            this.status,
             this.fps});
             this.DGV_jobs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DGV_jobs.Location = new System.Drawing.Point(0, 0);
@@ -218,13 +233,13 @@ namespace vpy2x
             this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
-            // state
+            // status
             // 
-            this.state.HeaderText = "State";
-            this.state.Name = "state";
-            this.state.ReadOnly = true;
-            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.status.HeaderText = "Status";
+            this.status.Name = "status";
+            this.status.ReadOnly = true;
+            this.status.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // fps
             // 
@@ -256,6 +271,7 @@ namespace vpy2x
             // 
             // b_stop
             // 
+            this.b_stop.Enabled = false;
             this.b_stop.Location = new System.Drawing.Point(6, 336);
             this.b_stop.Name = "b_stop";
             this.b_stop.Size = new System.Drawing.Size(154, 23);
@@ -266,6 +282,7 @@ namespace vpy2x
             // 
             // b_pause_resume
             // 
+            this.b_pause_resume.Enabled = false;
             this.b_pause_resume.Location = new System.Drawing.Point(6, 307);
             this.b_pause_resume.Name = "b_pause_resume";
             this.b_pause_resume.Size = new System.Drawing.Size(154, 23);
@@ -290,7 +307,7 @@ namespace vpy2x
             this.b_reset.Name = "b_reset";
             this.b_reset.Size = new System.Drawing.Size(154, 23);
             this.b_reset.TabIndex = 3;
-            this.b_reset.Text = "Reset state";
+            this.b_reset.Text = "Reset status";
             this.b_reset.UseVisualStyleBackColor = true;
             this.b_reset.Click += new System.EventHandler(this.b_reset_Click);
             // 
@@ -375,21 +392,6 @@ namespace vpy2x
             this.rtb_log.TabIndex = 0;
             this.rtb_log.Text = "";
             // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(24, 20);
-            this.toolStripMenuItem1.Text = "?";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
             // vpy2x
             // 
             this.AllowDrop = true;
@@ -448,12 +450,12 @@ namespace vpy2x
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripMenuItem whenFinishedToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxShutdown;
-        private System.Windows.Forms.DataGridViewTextBoxColumn script;
-        private System.Windows.Forms.DataGridViewTextBoxColumn subject;
-        private System.Windows.Forms.DataGridViewTextBoxColumn state;
-        private System.Windows.Forms.DataGridViewTextBoxColumn fps;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn script;
+        private System.Windows.Forms.DataGridViewTextBoxColumn subject;
+        private System.Windows.Forms.DataGridViewTextBoxColumn status;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fps;
     }
 }
 
