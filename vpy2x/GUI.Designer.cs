@@ -221,6 +221,7 @@ namespace vpy2x
             this.b_stop.TabIndex = 8;
             this.b_stop.Text = "Abort";
             this.b_stop.UseVisualStyleBackColor = true;
+            this.b_stop.Click += new System.EventHandler(this.b_stop_Click);
             // 
             // b_pause_resume
             // 
@@ -368,6 +369,7 @@ namespace vpy2x
             this.fps.ReadOnly = true;
             this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.fps.Width = 135;
             // 
             // vpy2x
             // 

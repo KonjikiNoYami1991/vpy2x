@@ -1,31 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using System.Diagnostics;
+using System.Management;
 
 namespace vpy2x
 {
     public partial class vpy2x : Form
     {
-
         readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
         readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
         public static String VSpipeEXE = String.Empty;
-        public static Dictionary<String,String> JobTemp = new Dictionary<String, String>();
+        public static Dictionary<String, String> JobTemp = new Dictionary<String, String>();
         public List<Job> JobList = new List<Job>();
+        JobTask task;
+        Int32 JobRunningIndex = -1;
 
         Thread t;
         ThreadStart ts;
+
+        Process p;
+        ProcessStartInfo psi;
+
+        Int32 ProcessID = Int32.MinValue;
 
         public vpy2x()
         {
@@ -92,48 +94,61 @@ namespace vpy2x
             if (load.ShowDialog() == DialogResult.OK)
             {
                 Job job = new Job(JobTemp);
-                if (job.HasErrors == false)
-                {
-                    JobList.Add(job);
-                    DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0");
-                }
-                else
-                {
-                    rtb_log.AppendText(job.ErrorMessage);
-                    MessageBox.Show("There was one or multiple errors while analizing VPY file.\nTake a look to the log section.");
-                }
+                JobList.Add(job);
+                DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0");
             }
         }
 
         public class Job
         {
             public String VPY { get; set; } = String.Empty;
-            public String Encoder { get; set; } = String.Empty;
+            public String EncoderEXE { get; set; } = String.Empty;
+            public String EncoderDir { get; set; } = String.Empty;
             public String Subject { get; set; } = String.Empty;
             public String Header { get; set; } = String.Empty;
             public String Start { get; set; } = String.Empty;
             public String End { get; set; } = String.Empty;
-            public String CommandLine { get; set; } = String.Empty;
-            public String ErrorMessage { get; set; } = String.Empty;
-            public Boolean HasErrors { get; set; } = false;
 
-            public Job(Dictionary<String,String> JobTemp)
+            public Job(Dictionary<String, String> JobTemp)
             {
                 VPY = JobTemp["VPY"];
                 Subject = JobTemp["Subject"];
-                Encoder = JobTemp["Encoder"];
+                EncoderEXE = Path.GetFileName(JobTemp["Encoder"]);
+                EncoderDir = Path.GetDirectoryName(JobTemp["Encoder"]);
                 Header = JobTemp["Header"];
-                VPYAnalize Analize = new VPYAnalize(VPY);
+                Start = JobTemp["Start"];
+                End = JobTemp["End"];
+            }
+        }
+
+        public class JobTask
+        {
+            public String CommandLine { get; set; } = String.Empty;
+            public String ErrorMessage { get; set; } = String.Empty;
+            public Boolean HasErrors { get; set; } = false;
+            public Job Job { get; set; }
+
+            public JobTask(Job job)
+            {
+                this.Job = job;
+                GenerateCLI(job);
+            }
+
+            void GenerateCLI(Job job)
+            {
+                VPYAnalize Analize = new VPYAnalize(job);
                 if (Analize.HasErrors == false)
                 {
-                    CommandLine = Path.GetFileName(VSpipeEXE);
-                    CommandLine += " \"" + VPY + "\"";
-                    CommandLine += JobTemp["Start"];
-                    CommandLine += JobTemp["End"];
-                    CommandLine += JobTemp["Header"];
-                    CommandLine += " - | ";
-                    CommandLine += " \"" + JobTemp["Encoder"] + "\"";
-                    CommandLine += ReplacePlaceholders(JobTemp["Subject"],Analize);
+                    CommandLine = "\"" + VSpipeEXE + "\"";
+                    CommandLine += " --progress";
+                    CommandLine += job.Start;
+                    CommandLine += job.End;
+                    CommandLine += " \"" + job.VPY + "\"";
+                    CommandLine += " - ";
+                    CommandLine += job.Header;
+                    CommandLine += " | ";
+                    CommandLine += job.EncoderEXE;
+                    CommandLine += " " + ReplacePlaceholders(job.Subject, Analize, job);
                     //MessageBox.Show(CommandLine);
                 }
                 else
@@ -143,7 +158,7 @@ namespace vpy2x
                 }
             }
 
-            String ReplacePlaceholders(String Subject, VPYAnalize Analize)
+            String ReplacePlaceholders(String Subject, VPYAnalize Analize, Job job)
             {
                 String Temp = Subject;
 
@@ -156,8 +171,8 @@ namespace vpy2x
                 Temp = Temp.Replace("{bits}", Analize.Bits);
                 Temp = Temp.Replace("{w}", Analize.Width);
                 Temp = Temp.Replace("{h}", Analize.Height);
-                Temp = Temp.Replace("{sd}", Path.GetDirectoryName(VPY));
-                Temp = Temp.Replace("{sn}", Path.GetFileNameWithoutExtension(VPY));
+                Temp = Temp.Replace("{sd}", Path.GetDirectoryName(job.VPY));
+                Temp = Temp.Replace("{sn}", Path.GetFileNameWithoutExtension(job.VPY));
 
                 return Temp;
             }
@@ -181,7 +196,7 @@ namespace vpy2x
                 public String ErrorMessage { get; set; } = String.Empty;
                 public Boolean HasErrors { get; set; } = false;
 
-                public VPYAnalize(String VPY)
+                public VPYAnalize(Job job)
                 {
                     var p = new Process();
                     var psi = new ProcessStartInfo();
@@ -189,13 +204,14 @@ namespace vpy2x
                     psi.CreateNoWindow = true;
                     psi.RedirectStandardOutput = true;
                     psi.RedirectStandardError = true;
-                    psi.Arguments = " --info \"" + VPY + "\"";
+                    psi.Arguments = " --info \"" + job.VPY + "\"";
                     psi.ErrorDialog = true;
-                    psi.FileName = Path.GetFileNameWithoutExtension(VSpipeEXE);
+                    psi.FileName = "\"" + VSpipeEXE + "\"";
                     psi.WindowStyle = ProcessWindowStyle.Hidden;
                     p.StartInfo = psi;
-                    p.Start();
+                    p.Start();                    
                     p.WaitForExit();
+                    MessageBox.Show(p.ExitCode.ToString());
                     switch (p.ExitCode)
                     {
                         case 0:
@@ -274,7 +290,7 @@ namespace vpy2x
 
         private void b_del_Click(object sender, EventArgs e)
         {
-            for(Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
+            for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
             {
                 if (DGV_jobs.Rows[i].Selected == true)
                 {
@@ -300,7 +316,7 @@ namespace vpy2x
             if (DGV_jobs.SelectedRows.Count > 0)
             {
                 LoadScript.Preset TempPreset = new LoadScript.Preset();
-                TempPreset.exe = JobList[DGV_jobs.SelectedRows[0].Index].Encoder;
+                TempPreset.exe = Path.Combine(JobList[DGV_jobs.SelectedRows[0].Index].EncoderDir, JobList[DGV_jobs.SelectedRows[0].Index].EncoderEXE);
                 TempPreset.args = JobList[DGV_jobs.SelectedRows[0].Index].Subject;
                 TempPreset.header = JobList[DGV_jobs.SelectedRows[0].Index].Header;
                 LoadScript load = new LoadScript(PresetsFolder, true, JobList[DGV_jobs.SelectedRows[0].Index].VPY, TempPreset);
@@ -308,17 +324,9 @@ namespace vpy2x
                 if (load.ShowDialog() == DialogResult.OK)
                 {
                     Job job = new Job(JobTemp);
-                    if (job.HasErrors == false)
-                    {
-                        JobList.RemoveAt(DGV_jobs.SelectedRows[0].Index);
-                        JobList.Insert(DGV_jobs.SelectedRows[0].Index, job);
-                        DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].SetValues(job.VPY, job.Subject, "Ready", "0");
-                    }
-                    else
-                    {
-                        rtb_log.AppendText(job.ErrorMessage);
-                        MessageBox.Show("There was one or multiple errors while analizing VPY file.\nTake a look to the log section.");
-                    }
+                    JobList.RemoveAt(DGV_jobs.SelectedRows[0].Index);
+                    JobList.Insert(DGV_jobs.SelectedRows[0].Index, job);
+                    DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].SetValues(job.VPY, job.Subject, "Ready", "0");
                 }
             }
         }
@@ -369,7 +377,168 @@ namespace vpy2x
 
         private void b_start_Click(object sender, EventArgs e)
         {
+            for (Int32 i = 0; i < JobList.Count; i++)
+            {
+                task = new JobTask(JobList[i]);
+                JobRunningIndex = i;
+                if (task.HasErrors == false)
+                {
+                    rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
+                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", "0");
+                    ts = new ThreadStart(Encode);
+                    t = new Thread(ts);
+                    t.Start();
+                }
+                else
+                {
+                    rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
+                    rtb_log.AppendText(task.ErrorMessage);
+                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
+                }
+            }
+        }
+
+        void Encode()
+        {
+            Environment.CurrentDirectory = task.Job.EncoderDir;
+            psi = new ProcessStartInfo();
+            psi.FileName = @"cmd.exe";
             
+            psi.UseShellExecute = false;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            psi.RedirectStandardInput = true;
+            psi.CreateNoWindow = true;
+            psi.WindowStyle = ProcessWindowStyle.Hidden;
+
+            p = new Process();
+            p.StartInfo = psi;
+            p.OutputDataReceived += P_OutputDataReceived;
+            p.ErrorDataReceived += P_ErrorDataReceived;
+
+            p.Start();
+
+            ProcessID = p.Id;
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+
+            var Input = p.StandardInput;
+            Input.WriteLine(task.CommandLine);
+            Input.WriteLine("exit");
+
+            p.WaitForExit();
+
+            switch (p.ExitCode)
+            {
+                case 0:
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                    });
+                    break;
+                case -1:
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                    });
+                    break;
+                default:
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                    });
+                    break;
+            }
+            p.CancelErrorRead();
+            p.CancelOutputRead();
+        }
+
+        private void P_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(e.Data) == false)
+            {
+                if (e.Data.Trim().StartsWith("Frame:"))
+                {
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        String Progress = e.Data.Substring(e.Data.IndexOf(" ")).Trim();
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", Progress);
+                    });
+                }
+                else
+                {
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        rtb_log.AppendText(e.Data + "\n");
+                    });
+                }
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    rtb_log.SelectionStart = rtb_log.TextLength;
+                    rtb_log.ScrollToCaret();
+                });
+            }
+        }
+
+        private void P_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(e.Data) == false)
+            {
+                if (e.Data.Trim().StartsWith("Frame:"))
+                {
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        String Progress = e.Data.Substring(e.Data.IndexOf(" ")).Trim();
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", Progress);
+                    });
+                }
+                else
+                {
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        rtb_log.AppendText(e.Data + "\n");
+                    });
+                }
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    rtb_log.SelectionStart = rtb_log.TextLength;
+                    rtb_log.ScrollToCaret();
+                });
+            }
+        }
+
+        private void b_stop_Click(object sender, EventArgs e)
+        {
+            if (t != null)
+            {
+                try
+                {
+                    KillProcessAndChildren(ProcessID);
+                }
+                catch { }
+                t = null;
+            }
+        }
+
+        public void KillProcessAndChildren(Int32 pid)
+        {
+            using (var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid))
+            {
+                var moc = searcher.Get();
+                foreach (ManagementObject mo in moc)
+                {
+                    KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
+                }
+                try
+                {
+                    var proc = Process.GetProcessById(pid);
+                    proc.Kill();
+                }
+                catch (Exception e)
+                {
+                    // Process already exited.
+                }
+            }
         }
     }
 
