@@ -284,7 +284,7 @@ namespace vpy2x
                     p.StartInfo = psi;
                     p.Start();                    
                     p.WaitForExit();
-                    MessageBox.Show(p.ExitCode.ToString());
+                    //MessageBox.Show(p.ExitCode.ToString());
                     switch (p.ExitCode)
                     {
                         case 0:
@@ -365,7 +365,7 @@ namespace vpy2x
         {
             for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
             {
-                if (DGV_jobs.Rows[i].Selected == true)
+                if (DGV_jobs.Rows[i].Selected == true && DGV_jobs.Rows[i].Index != JobRunningIndex)
                 {
                     DGV_jobs.Rows.RemoveAt(i);
                     JobList.RemoveAt(i);
@@ -377,9 +377,9 @@ namespace vpy2x
         {
             for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
             {
-                if (DGV_jobs.Rows[i].Selected == true)
+                if (DGV_jobs.Rows[i].Selected == true && DGV_jobs.Rows[i].Index != JobRunningIndex)
                 {
-                    DGV_jobs.Rows[i].SetValues(DGV_jobs.Rows[i].Cells["subject"].Value.ToString(), "Ready", "0");
+                    DGV_jobs.Rows[i].SetValues(DGV_jobs.Rows[i].Cells["script"].Value.ToString(), DGV_jobs.Rows[i].Cells["subject"].Value.ToString(), "Ready", "0");
                 }
             }
         }
@@ -388,18 +388,21 @@ namespace vpy2x
         {
             if (DGV_jobs.SelectedRows.Count > 0)
             {
-                LoadScript.Preset TempPreset = new LoadScript.Preset();
-                TempPreset.exe = Path.Combine(JobList[DGV_jobs.SelectedRows[0].Index].EncoderDir, JobList[DGV_jobs.SelectedRows[0].Index].EncoderEXE);
-                TempPreset.args = JobList[DGV_jobs.SelectedRows[0].Index].Subject;
-                TempPreset.header = JobList[DGV_jobs.SelectedRows[0].Index].Header;
-                LoadScript load = new LoadScript(PresetsFolder, true, JobList[DGV_jobs.SelectedRows[0].Index].VPY, TempPreset);
-                load.StartPosition = FormStartPosition.CenterParent;
-                if (load.ShowDialog() == DialogResult.OK)
+                if (DGV_jobs.SelectedRows[0].Index != JobRunningIndex)
                 {
-                    Job job = new Job(JobTemp);
-                    JobList.RemoveAt(DGV_jobs.SelectedRows[0].Index);
-                    JobList.Insert(DGV_jobs.SelectedRows[0].Index, job);
-                    DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].SetValues(job.VPY, job.Subject, "Ready", "0");
+                    LoadScript.Preset TempPreset = new LoadScript.Preset();
+                    TempPreset.exe = Path.Combine(JobList[DGV_jobs.SelectedRows[0].Index].EncoderDir, JobList[DGV_jobs.SelectedRows[0].Index].EncoderEXE);
+                    TempPreset.args = JobList[DGV_jobs.SelectedRows[0].Index].Subject;
+                    TempPreset.header = JobList[DGV_jobs.SelectedRows[0].Index].Header;
+                    LoadScript load = new LoadScript(PresetsFolder, true, JobList[DGV_jobs.SelectedRows[0].Index].VPY, TempPreset);
+                    load.StartPosition = FormStartPosition.CenterParent;
+                    if (load.ShowDialog() == DialogResult.OK)
+                    {
+                        Job job = new Job(JobTemp);
+                        JobList.RemoveAt(DGV_jobs.SelectedRows[0].Index);
+                        JobList.Insert(DGV_jobs.SelectedRows[0].Index, job);
+                        DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].SetValues(job.VPY, job.Subject, "Ready", "0");
+                    }
                 }
             }
         }
@@ -408,18 +411,24 @@ namespace vpy2x
         {
             if (DGV_jobs.SelectedRows.Count > 0)
             {
-                if (DGV_jobs.SelectedRows[0].Index > 0)
+                if (DGV_jobs.SelectedRows[0].Index != JobRunningIndex)
                 {
-                    for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
+                    if (DGV_jobs.SelectedRows[0].Index > 0)
                     {
-                        if (DGV_jobs.Rows[i].Selected == true)
+                        if (DGV_jobs.SelectedRows[0].Index - 1 != JobRunningIndex)
                         {
-                            DataGridViewRow r = DGV_jobs.Rows[i];
-                            Job temp = JobList[i];
-                            JobList.RemoveAt(i);
-                            DGV_jobs.Rows.RemoveAt(i);
-                            JobList.Insert(i - 1, temp);
-                            DGV_jobs.Rows.Insert(i - 1, r);
+                            for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
+                            {
+                                if (DGV_jobs.Rows[i].Selected == true)
+                                {
+                                    DataGridViewRow r = DGV_jobs.Rows[i];
+                                    Job temp = JobList[i];
+                                    JobList.RemoveAt(i);
+                                    DGV_jobs.Rows.RemoveAt(i);
+                                    JobList.Insert(i - 1, temp);
+                                    DGV_jobs.Rows.Insert(i - 1, r);
+                                }
+                            }
                         }
                     }
                 }
@@ -430,18 +439,24 @@ namespace vpy2x
         {
             if (DGV_jobs.SelectedRows.Count > 0)
             {
-                if (DGV_jobs.SelectedRows[0].Index < DGV_jobs.Rows.Count - 1)
+                if (DGV_jobs.SelectedRows[0].Index != JobRunningIndex)
                 {
-                    for (Int32 i = 0; i < DGV_jobs.Rows.Count; i++)
+                    if (DGV_jobs.SelectedRows[0].Index < DGV_jobs.Rows.Count - 1)
                     {
-                        if (DGV_jobs.Rows[i].Selected == true)
+                        if (DGV_jobs.SelectedRows[0].Index + 1 != JobRunningIndex)
                         {
-                            DataGridViewRow r = DGV_jobs.Rows[i];
-                            Job temp = JobList[i];
-                            JobList.RemoveAt(i);
-                            DGV_jobs.Rows.RemoveAt(i);
-                            JobList.Insert(i + 1, temp);
-                            DGV_jobs.Rows.Insert(i + 1, r);
+                            for (Int32 i = 0; i < DGV_jobs.Rows.Count; i++)
+                            {
+                                if (DGV_jobs.Rows[i].Selected == true)
+                                {
+                                    DataGridViewRow r = DGV_jobs.Rows[i];
+                                    Job temp = JobList[i];
+                                    JobList.RemoveAt(i);
+                                    DGV_jobs.Rows.RemoveAt(i);
+                                    JobList.Insert(i + 1, temp);
+                                    DGV_jobs.Rows.Insert(i + 1, r);
+                                }
+                            }
                         }
                     }
                 }
@@ -451,88 +466,101 @@ namespace vpy2x
         private void b_start_Click(object sender, EventArgs e)
         {
             JobRunningIndex = -1;
-            for (Int32 i = 0; i < JobList.Count; i++)
-            {
-                task = new JobTask(JobList[i]);
-                JobRunningIndex = i;
-                if (task.HasErrors == false)
-                {
-                    rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
-                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", "0");
-                    ts = new ThreadStart(Encode);
-                    t = new Thread(ts);
-                    t.Start();
-                    b_start.Enabled = !b_start.Enabled;
-                    b_stop.Enabled = !b_stop.Enabled;
-                    b_pause_resume.Enabled = !b_pause_resume.Enabled;
-                }
-                else
-                {
-                    rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
-                    rtb_log.AppendText(task.ErrorMessage);
-                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
-                }
-            }
+            ts = new ThreadStart(Encode);
+            t = new Thread(ts);
+            t.Start();
+            b_start.Enabled = !b_start.Enabled;
+            b_stop.Enabled = !b_stop.Enabled;
+            b_pause_resume.Enabled = !b_pause_resume.Enabled;
         }
 
         void Encode()
         {
-            Environment.CurrentDirectory = task.Job.EncoderDir;
-            psi = new ProcessStartInfo();
-            psi.FileName = @"cmd.exe";
-            
-            psi.UseShellExecute = false;
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
-            psi.RedirectStandardInput = true;
-            psi.CreateNoWindow = true;
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
-
-            p = new Process();
-            p.StartInfo = psi;
-            p.OutputDataReceived += P_OutputDataReceived;
-            p.ErrorDataReceived += P_ErrorDataReceived;
-
-            p.Start();
-
-            ProcessID = p.Id;
-            p.BeginOutputReadLine();
-            p.BeginErrorReadLine();
-
-            var Input = p.StandardInput;
-            Input.WriteLine(task.CommandLine);
-            Input.WriteLine("exit");
-
-            this.Invoke((MethodInvoker)delegate ()
+            for (Int32 i = 0; i < JobList.Count; i++)
             {
-                DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
-            });
+                task = new JobTask(JobList[i]);
+                Environment.CurrentDirectory = task.Job.EncoderDir;
+                JobRunningIndex = i;
+                if (task.HasErrors == false)
+                {
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", "0");
+                        rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
+                    });
 
-            p.WaitForExit();
+                    psi = new ProcessStartInfo();
+                    psi.FileName = @"cmd.exe";
 
-            switch (p.ExitCode)
-            {
-                case 0:
+                    psi.UseShellExecute = false;
+                    psi.RedirectStandardOutput = true;
+                    psi.RedirectStandardError = true;
+                    psi.RedirectStandardInput = true;
+                    psi.CreateNoWindow = true;
+                    psi.WindowStyle = ProcessWindowStyle.Hidden;
+
+                    p = new Process();
+                    p.StartInfo = psi;
+                    p.OutputDataReceived += P_OutputDataReceived;
+                    p.ErrorDataReceived += P_ErrorDataReceived;
+
+                    p.Start();
+
+                    ProcessID = p.Id;
+                    p.BeginOutputReadLine();
+                    p.BeginErrorReadLine();
+
+                    var Input = p.StandardInput;
+                    Input.WriteLine("@echo off");
+                    Input.WriteLine(task.CommandLine);
+                    Input.WriteLine("exit");
+
                     this.Invoke((MethodInvoker)delegate ()
                     {
-                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                     });
-                    break;
-                case -1:
+
+                    p.WaitForExit();
+
+                    switch (p.ExitCode)
+                    {
+                        case 0:
+                            this.Invoke((MethodInvoker)delegate ()
+                            {
+                                DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                            });
+                            break;
+                        case -1:
+                            this.Invoke((MethodInvoker)delegate ()
+                            {
+                                DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                            });
+                            break;
+                        default:
+                            this.Invoke((MethodInvoker)delegate ()
+                            {
+                                DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                            });
+                            break;
+                    }
+                    p.CancelErrorRead();
+                    p.CancelOutputRead();
+                    if (b_start.Enabled == true)
+                    {
+                        JobRunningIndex = -1;
+                        break;
+                    }
+                }
+                else
+                {
                     this.Invoke((MethodInvoker)delegate ()
                     {
-                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                        rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
+                        rtb_log.AppendText(task.ErrorMessage);
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
                     });
-                    break;
-                default:
-                    this.Invoke((MethodInvoker)delegate ()
-                    {
-                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
-                    });
-                    break;
+                }
             }
-            p.CancelErrorRead();
-            p.CancelOutputRead();
         }
 
         private void P_ErrorDataReceived(object sender, DataReceivedEventArgs e)
