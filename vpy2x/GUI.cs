@@ -561,6 +561,29 @@ namespace vpy2x
                     });
                 }
             }
+            switch (toolStripComboBoxShutdown.Text)
+            {
+                case "Shutdown":
+                    Process.Start("shutdown", "/s /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
+                    var Shutdown = MessageBox.Show("Your PC will shutdown in 30 seconds from now.\nPress Cancel button to cancel shutdown.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                    if(Shutdown != DialogResult.Cancel)
+                    {
+                        Process.Start("shutdown", "/a").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
+                    }
+                    break;
+                case "Reboot":
+                    Process.Start("shutdown", "/r /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
+                    var Reboot = MessageBox.Show("Your PC will reboot in 30 seconds from now.\nPress Cancel button to cancel reboot.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                    if(Reboot == DialogResult.Cancel)
+                    {
+                        Process.Start("shutdown", "/a").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
+                    }
+                    break;
+                case "Stand-by":
+                    Application.SetSuspendState(PowerState.Suspend, true, true);
+                    break;
+            }
+            JobRunningIndex = -1;
         }
 
         private void P_ErrorDataReceived(object sender, DataReceivedEventArgs e)
