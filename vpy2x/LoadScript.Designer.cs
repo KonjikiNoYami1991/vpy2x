@@ -60,6 +60,7 @@ namespace vpy2x
             this.label7 = new System.Windows.Forms.Label();
             this.tb_args_load_script = new System.Windows.Forms.TextBox();
             this.ll_help_placeholders = new System.Windows.Forms.LinkLabel();
+            this.b_skip = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_start_frame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_end_frame)).BeginInit();
             this.SuspendLayout();
@@ -76,10 +77,13 @@ namespace vpy2x
             // 
             // tb_vpy
             // 
+            this.tb_vpy.AllowDrop = true;
             this.tb_vpy.Location = new System.Drawing.Point(93, 14);
             this.tb_vpy.Name = "tb_vpy";
             this.tb_vpy.Size = new System.Drawing.Size(713, 20);
             this.tb_vpy.TabIndex = 1;
+            this.tb_vpy.DragDrop += new System.Windows.Forms.DragEventHandler(this.tb_vpy_DragDrop);
+            this.tb_vpy.DragEnter += new System.Windows.Forms.DragEventHandler(this.tb_vpy_DragEnter);
             // 
             // cmb_presets_load_script
             // 
@@ -361,11 +365,24 @@ namespace vpy2x
             this.ll_help_placeholders.Text = "Help";
             this.ll_help_placeholders.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ll_help_placeholders_LinkClicked);
             // 
+            // b_skip
+            // 
+            this.b_skip.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.b_skip.Location = new System.Drawing.Point(569, 470);
+            this.b_skip.Name = "b_skip";
+            this.b_skip.Size = new System.Drawing.Size(75, 23);
+            this.b_skip.TabIndex = 33;
+            this.b_skip.Text = "Skip";
+            this.b_skip.UseVisualStyleBackColor = true;
+            this.b_skip.Visible = false;
+            this.b_skip.Click += new System.EventHandler(this.b_skip_Click);
+            // 
             // LoadScript
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 505);
+            this.Controls.Add(this.b_skip);
             this.Controls.Add(this.ll_help_placeholders);
             this.Controls.Add(this.tb_args_load_script);
             this.Controls.Add(this.label7);
@@ -442,5 +459,6 @@ namespace vpy2x
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox tb_args_load_script;
         private System.Windows.Forms.LinkLabel ll_help_placeholders;
+        private System.Windows.Forms.Button b_skip;
     }
 }

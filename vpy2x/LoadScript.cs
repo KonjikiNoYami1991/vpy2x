@@ -50,6 +50,12 @@ namespace vpy2x
                 else
                     cmb_header_load_script.Text = cmb_header_load_script.Items[0].ToString();
             }
+            if (String.IsNullOrWhiteSpace(TempVPY) == false)
+            {
+                tb_vpy.Text = TempVPY;
+                if (Edit == false)
+                    b_skip.Visible = true;
+            }
             if (Directory.Exists(this.PresetFolder))
             {
                 foreach (String s in Directory.GetFiles(PresetFolder))
@@ -301,6 +307,34 @@ namespace vpy2x
             Help += "{h} -> Height.\n";
             Help += "{f} -> Total number of frames.";
             MessageBox.Show(Help, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void b_skip_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Ignore;
+        }
+
+        private void tb_vpy_DragEnter(object sender, DragEventArgs e)
+        {
+            foreach (String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
+            {
+                if (Path.GetExtension(s).ToLower() == ".vpy")
+                {
+                    e.Effect = DragDropEffects.Copy;
+                    break;
+                }
+            }
+        }
+
+        private void tb_vpy_DragDrop(object sender, DragEventArgs e)
+        {
+            foreach (String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
+            {
+                if (Path.GetExtension(s).ToLower() == ".vpy")
+                {
+                    tb_vpy.Text = s;
+                }
+            }
         }
     }
 }

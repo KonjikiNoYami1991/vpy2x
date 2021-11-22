@@ -40,6 +40,10 @@ namespace vpy2x
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.DGV_jobs = new System.Windows.Forms.DataGridView();
+            this.script = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.b_stop = new System.Windows.Forms.Button();
             this.b_pause_resume = new System.Windows.Forms.Button();
@@ -53,10 +57,6 @@ namespace vpy2x
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.rtb_log = new System.Windows.Forms.RichTextBox();
-            this.script = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.state = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -150,7 +150,7 @@ namespace vpy2x
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
             this.splitContainer1.Size = new System.Drawing.Size(932, 571);
-            this.splitContainer1.SplitterDistance = 425;
+            this.splitContainer1.SplitterDistance = 394;
             this.splitContainer1.TabIndex = 1;
             // 
             // splitContainer2
@@ -168,7 +168,7 @@ namespace vpy2x
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer2.Size = new System.Drawing.Size(932, 425);
+            this.splitContainer2.Size = new System.Drawing.Size(932, 394);
             this.splitContainer2.SplitterDistance = 756;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -191,8 +191,46 @@ namespace vpy2x
             this.DGV_jobs.RowHeadersWidth = 24;
             this.DGV_jobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGV_jobs.Size = new System.Drawing.Size(756, 425);
+            this.DGV_jobs.Size = new System.Drawing.Size(756, 394);
             this.DGV_jobs.TabIndex = 0;
+            // 
+            // script
+            // 
+            this.script.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.script.HeaderText = "VPY";
+            this.script.Name = "script";
+            this.script.ReadOnly = true;
+            this.script.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.script.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.script.Width = 34;
+            // 
+            // subject
+            // 
+            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.subject.DefaultCellStyle = dataGridViewCellStyle1;
+            this.subject.HeaderText = "Subject";
+            this.subject.Name = "subject";
+            this.subject.ReadOnly = true;
+            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // state
+            // 
+            this.state.HeaderText = "State";
+            this.state.Name = "state";
+            this.state.ReadOnly = true;
+            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // fps
+            // 
+            this.fps.HeaderText = "FPS";
+            this.fps.Name = "fps";
+            this.fps.ReadOnly = true;
+            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.fps.Width = 135;
             // 
             // groupBox1
             // 
@@ -208,7 +246,7 @@ namespace vpy2x
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(172, 425);
+            this.groupBox1.Size = new System.Drawing.Size(172, 394);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Actions";
@@ -231,6 +269,7 @@ namespace vpy2x
             this.b_pause_resume.TabIndex = 7;
             this.b_pause_resume.Text = "Pause/Resume";
             this.b_pause_resume.UseVisualStyleBackColor = true;
+            this.b_pause_resume.Click += new System.EventHandler(this.b_pause_resume_Click);
             // 
             // b_start
             // 
@@ -309,7 +348,7 @@ namespace vpy2x
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(932, 142);
+            this.tabControl1.Size = new System.Drawing.Size(932, 173);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -318,7 +357,7 @@ namespace vpy2x
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(924, 116);
+            this.tabPage1.Size = new System.Drawing.Size(924, 147);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "LOG";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -329,50 +368,13 @@ namespace vpy2x
             this.rtb_log.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb_log.Location = new System.Drawing.Point(3, 3);
             this.rtb_log.Name = "rtb_log";
-            this.rtb_log.Size = new System.Drawing.Size(918, 110);
+            this.rtb_log.Size = new System.Drawing.Size(918, 141);
             this.rtb_log.TabIndex = 0;
             this.rtb_log.Text = "";
             // 
-            // script
-            // 
-            this.script.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.script.HeaderText = "VPY";
-            this.script.Name = "script";
-            this.script.ReadOnly = true;
-            this.script.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.script.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.script.Width = 34;
-            // 
-            // subject
-            // 
-            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.subject.DefaultCellStyle = dataGridViewCellStyle1;
-            this.subject.HeaderText = "Subject";
-            this.subject.Name = "subject";
-            this.subject.ReadOnly = true;
-            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // state
-            // 
-            this.state.HeaderText = "State";
-            this.state.Name = "state";
-            this.state.ReadOnly = true;
-            this.state.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.state.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // fps
-            // 
-            this.fps.HeaderText = "FPS";
-            this.fps.Name = "fps";
-            this.fps.ReadOnly = true;
-            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.fps.Width = 135;
-            // 
             // vpy2x
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(932, 595);
@@ -382,6 +384,8 @@ namespace vpy2x
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "vpy2x";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragEnter);
             this.menu.ResumeLayout(false);
             this.menu.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);

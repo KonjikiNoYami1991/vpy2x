@@ -29,9 +29,34 @@ namespace vpy2x
 
         Int32 ProcessID = Int32.MinValue;
 
+        [Flags]
+        public enum ThreadAccess : int
+        {
+            TERMINATE = (0x0001),
+            SUSPEND_RESUME = (0x0002),
+            GET_CONTEXT = (0x0008),
+            SET_CONTEXT = (0x0010),
+            SET_INFORMATION = (0x0020),
+            QUERY_INFORMATION = (0x0040),
+            SET_THREAD_TOKEN = (0x0080),
+            IMPERSONATE = (0x0100),
+            DIRECT_IMPERSONATION = (0x0200)
+        }
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+        [DllImport("kernel32.dll")]
+        static extern uint SuspendThread(IntPtr hThread);
+        [DllImport("kernel32.dll")]
+        static extern int ResumeThread(IntPtr hThread);
+        [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern bool CloseHandle(IntPtr handle);
+
         public vpy2x()
         {
             InitializeComponent();
+
+            toolStripComboBoxShutdown.Text = toolStripComboBoxShutdown.Items[0].ToString();
 
             if (Directory.Exists(PresetsFolder) == false)
             {
@@ -45,6 +70,54 @@ namespace vpy2x
             else
             {
                 MessageBox.Show("Set the path of vspipe.exe file first.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private static void SuspendProcess(int pid)
+        {
+            var process = System.Diagnostics.Process.GetProcessById(pid);
+
+            if (process.ProcessName == string.Empty)
+                return;
+
+            foreach (System.Diagnostics.ProcessThread pT in process.Threads)
+            {
+                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+
+                if (pOpenThread == IntPtr.Zero)
+                {
+                    continue;
+                }
+
+                SuspendThread(pOpenThread);
+
+                CloseHandle(pOpenThread);
+            }
+        }
+
+        public static void ResumeProcess(int pid)
+        {
+            var process = System.Diagnostics.Process.GetProcessById(pid);
+
+            if (process.ProcessName == string.Empty)
+                return;
+
+            foreach (System.Diagnostics.ProcessThread pT in process.Threads)
+            {
+                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+
+                if (pOpenThread == IntPtr.Zero)
+                {
+                    continue;
+                }
+
+                var suspendCount = 0;
+                do
+                {
+                    suspendCount = ResumeThread(pOpenThread);
+                } while (suspendCount > 0);
+
+                CloseHandle(pOpenThread);
             }
         }
 
@@ -517,6 +590,7 @@ namespace vpy2x
                 }
                 catch { }
                 t = null;
+                JobRunningIndex = -1;
             }
         }
 
@@ -537,6 +611,58 @@ namespace vpy2x
                 catch (Exception e)
                 {
                     // Process already exited.
+                }
+            }
+        }
+
+        private void b_pause_resume_Click(object sender, EventArgs e)
+        {
+            if (JobRunningIndex != -1)
+            {
+                if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("running"))
+                {
+                    SuspendProcess(ProcessID);
+                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Paused", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                }
+                else
+                {
+                    if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("paused"))
+                    {
+                        ResumeProcess(ProcessID);
+                        DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                    }
+                }
+            }
+        }
+
+        private void vpy2x_DragEnter(object sender, DragEventArgs e)
+        {
+            foreach(String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
+            {
+                if(Path.GetExtension(s).ToLower() == ".vpy")
+                {
+                    e.Effect = DragDropEffects.Copy;
+                    break;
+                }
+            }
+        }
+
+        private void vpy2x_DragDrop(object sender, DragEventArgs e)
+        {
+            foreach (String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
+            {
+                if (Path.GetExtension(s).ToLower() == ".vpy")
+                {
+                    LoadScript load = new LoadScript(PresetsFolder, false, s, new LoadScript.Preset());
+                    load.ShowDialog();
+                    switch (load.DialogResult)
+                    {
+                        case DialogResult.OK:
+                            Job job = new Job(JobTemp);
+                            JobList.Add(job);
+                            DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0");
+                            break;
+                    }
                 }
             }
         }
