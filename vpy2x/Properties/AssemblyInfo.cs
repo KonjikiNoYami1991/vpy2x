@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set di attributi. Modificare i valori di questi attributi per modificare le informazioni
 // associate a un assembly.
 [assembly: AssemblyTitle("vpy2x")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Simple alternative to VSEdit Job Server Watcher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Tanoshimi no Sekai Fansub")]
 [assembly: AssemblyProduct("vpy2x")]
 [assembly: AssemblyCopyright("Copyright © KNY @ Tanoshimi no Sekai Fansub 2021")]
 [assembly: AssemblyTrademark("")]

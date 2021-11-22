@@ -32,14 +32,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.ll_source = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // rtb_license
             // 
-            this.rtb_license.Location = new System.Drawing.Point(12, 58);
+            this.rtb_license.Location = new System.Drawing.Point(12, 119);
             this.rtb_license.Name = "rtb_license";
             this.rtb_license.ReadOnly = true;
-            this.rtb_license.Size = new System.Drawing.Size(711, 375);
+            this.rtb_license.Size = new System.Drawing.Size(711, 314);
             this.rtb_license.TabIndex = 0;
             this.rtb_license.Text = "";
             this.rtb_license.ZoomFactor = 1.2F;
@@ -65,17 +67,39 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(679, 42);
+            this.label3.Location = new System.Drawing.Point(12, 103);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 13);
             this.label3.TabIndex = 3;
             this.label3.Text = "License";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 57);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(71, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Source code:";
+            // 
+            // ll_source
+            // 
+            this.ll_source.AutoSize = true;
+            this.ll_source.Location = new System.Drawing.Point(80, 57);
+            this.ll_source.Name = "ll_source";
+            this.ll_source.Size = new System.Drawing.Size(40, 13);
+            this.ll_source.TabIndex = 5;
+            this.ll_source.TabStop = true;
+            this.ll_source.Text = "GitHub";
+            this.ll_source.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ll_source_LinkClicked);
             // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(735, 445);
+            this.Controls.Add(this.ll_source);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -97,5 +121,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.LinkLabel ll_source;
     }
 }

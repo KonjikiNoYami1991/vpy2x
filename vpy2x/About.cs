@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace vpy2x
 {
@@ -28,6 +29,11 @@ namespace vpy2x
             {
                 rtb_license.Text = "License file not found.";
             }
+        }
+
+        private void ll_source_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/KonjikiNoYami1991/vpy2x");
         }
     }
 }
