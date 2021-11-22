@@ -655,16 +655,26 @@ namespace vpy2x
                 {
                     LoadScript load = new LoadScript(PresetsFolder, false, s, new LoadScript.Preset());
                     load.ShowDialog();
-                    switch (load.DialogResult)
+                    if (load.DialogResult == DialogResult.OK)
                     {
-                        case DialogResult.OK:
-                            Job job = new Job(JobTemp);
-                            JobList.Add(job);
-                            DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0");
+                        Job job = new Job(JobTemp);
+                        JobList.Add(job);
+                        DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0"); }
+                    else
+                    {
+                        if(load.DialogResult == DialogResult.Cancel)
+                        {
                             break;
+                        }
                     }
                 }
             }
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            About about = new About();
+            about.ShowDialog();
         }
     }
 
