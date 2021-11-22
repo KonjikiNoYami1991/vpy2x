@@ -745,6 +745,12 @@ namespace vpy2x
             About about = new About();
             about.ShowDialog();
         }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            b_stop_Click(sender, e);
+            Application.Exit();
+        }
     }
 
     class IniFile
