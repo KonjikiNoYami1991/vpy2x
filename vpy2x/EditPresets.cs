@@ -24,6 +24,8 @@ namespace vpy2x
         {
             InitializeComponent();
 
+            this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+
             tb_args_edit_presets.MaxLength = Int32.MaxValue;
 
             this.PresetFolder = PresetFolder;

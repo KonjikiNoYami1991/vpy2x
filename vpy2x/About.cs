@@ -17,6 +17,9 @@ namespace vpy2x
         public About()
         {
             InitializeComponent();
+
+            this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+
             rtb_license.SelectionAlignment = HorizontalAlignment.Center;
             foreach (String s in Directory.GetFiles(Application.StartupPath, "*", SearchOption.AllDirectories))
             {

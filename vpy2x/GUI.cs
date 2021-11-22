@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Management;
+using System.Drawing;
 
 namespace vpy2x
 {
@@ -55,6 +56,8 @@ namespace vpy2x
         public vpy2x()
         {
             InitializeComponent();
+
+            this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             toolStripComboBoxShutdown.Text = toolStripComboBoxShutdown.Items[0].ToString();
 
