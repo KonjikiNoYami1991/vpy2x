@@ -1,6 +1,5 @@
 # vpy2x
 Simple alternative to VSEdit Job Server Watcher. 
->Still on development.
 
 ![vpy2x](https://repository-images.githubusercontent.com/426181208/045dbbe5-126b-4ffb-aef4-b5193656a587)
 ## Short description
