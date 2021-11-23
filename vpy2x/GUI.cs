@@ -9,12 +9,14 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Management;
 using System.Drawing;
+using Newtonsoft.Json;
 
 namespace vpy2x
 {
     public partial class vpy2x : Form
     {
         readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
+        readonly String JobsFolder = Path.Combine(Application.StartupPath, "jobs");
         readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
         public static String VSpipeEXE = String.Empty;
         public static Dictionary<String, String> JobTemp = new Dictionary<String, String>();
@@ -57,6 +59,15 @@ namespace vpy2x
         {
             InitializeComponent();
 
+            if (Directory.Exists(JobsFolder) == false)
+            {
+                Directory.CreateDirectory(JobsFolder);
+            }
+            else
+            {
+                ReadSavedJobs();
+            }
+
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             toolStripComboBoxShutdown.Text = toolStripComboBoxShutdown.Items[0].ToString();
@@ -73,6 +84,26 @@ namespace vpy2x
             else
             {
                 MessageBox.Show("Set the path of vspipe.exe file first.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        void ReadSavedJobs()
+        {
+            foreach(String s in Directory.GetFiles(JobsFolder))
+            {
+                if(Path.GetExtension(s).ToLower() == ".json")
+                {
+                    SaveLoadJob SaveLoad = JsonConvert.DeserializeObject<SaveLoadJob>(System.IO.File.ReadAllText(s));
+                    JobTemp = new Dictionary<String, String>();
+                    JobTemp.Add("VPY", SaveLoad.VPY);
+                    JobTemp.Add("Subject", SaveLoad.Subject);
+                    JobTemp.Add("Encoder", Path.Combine(SaveLoad.EncoderDir, SaveLoad.EncoderEXE));
+                    JobTemp.Add("Header", SaveLoad.Header);
+                    JobTemp.Add("End", SaveLoad.End);
+                    JobTemp.Add("Start", SaveLoad.Start);
+                    DGV_jobs.Rows.Add(SaveLoad.VPY, SaveLoad.Subject, SaveLoad.Status, SaveLoad.FPS);
+                    JobList.Add(new Job(JobTemp));
+                }
             }
         }
 
@@ -776,6 +807,56 @@ namespace vpy2x
         {
             b_stop_Click(sender, e);
             Application.Exit();
+        }
+
+        private void vpy2x_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(MessageBox.Show("Close this application?",this.Text,MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                b_stop_Click((object)sender, (EventArgs)e);
+                SaveJobsOnClosing();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+
+        void SaveJobsOnClosing()
+        {
+            foreach(String s in Directory.GetFiles(JobsFolder))
+            {
+                File.Delete(s);
+            }
+
+            for (Int32 i = 0; i < JobList.Count; i++)
+            {
+                Job job = JobList[i];
+                SaveLoadJob SaveLoad = new SaveLoadJob();
+                SaveLoad.Subject = job.Subject;
+                SaveLoad.EncoderEXE = job.EncoderEXE;
+                SaveLoad.EncoderDir = job.EncoderDir;
+                SaveLoad.End = job.End;
+                SaveLoad.Start = job.Start;
+                SaveLoad.VPY = job.VPY;
+                SaveLoad.FPS = DGV_jobs.Rows[i].Cells["fps"].Value.ToString();
+                SaveLoad.Status = DGV_jobs.Rows[i].Cells["status"].Value.ToString();
+                SaveLoad.Header = job.Header;
+                File.WriteAllText(Path.Combine(JobsFolder, "Job " + (i + 1).ToString() + ".json"), JsonConvert.SerializeObject(SaveLoad, Formatting.Indented));
+            }
+        }
+
+        public struct SaveLoadJob
+        {
+            public String Subject { get; set; }
+            public String EncoderEXE { get; set; }
+            public String VPY { get; set; }
+            public String Header { get; set; }
+            public String EncoderDir { get; set; }
+            public String Start { get; set; }
+            public String End { get; set; }
+            public String Status { get; set; }
+            public String FPS { get; set; }
         }
     }
 
