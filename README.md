@@ -11,6 +11,7 @@ Though it's not stable yet, it provides:
  - XML file for saved settings
  - a dedicated form for presets management 
  - saving on closing and reloading on opening of all jobs in queue, automatically
+ - shutdown, stand-by and reboot commands after all jobs are done
 
 ## Usage
 If you have already used VSEdit Job Server Watcher, usage is the same. Exception is made for placeholder {ss}, witch now will be replaced with full subsampling string (ex. yuv420p, instead of 420).
