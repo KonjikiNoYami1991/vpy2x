@@ -291,7 +291,6 @@ namespace vpy2x
             // 
             // b_done
             // 
-            this.b_done.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.b_done.Location = new System.Drawing.Point(650, 470);
             this.b_done.Name = "b_done";
             this.b_done.Size = new System.Drawing.Size(75, 23);

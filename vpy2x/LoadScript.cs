@@ -289,6 +289,7 @@ namespace vpy2x
                 }
                 else
                     vpy2x.JobTemp.Add("Start", String.Empty);
+                this.DialogResult = DialogResult.OK;
             }
             else
             {
