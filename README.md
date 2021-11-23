@@ -22,3 +22,11 @@ In case not, usage is:
  - click on "Done" button to add the job to queue
  - repeat the operation until all jobs are added
  - click on "Start" and wait
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
