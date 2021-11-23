@@ -11,6 +11,7 @@ Though it's not stable yet, it provides:
  - JSON file for every saved preset
  - XML file for saved settings
  - a dedicated form for presets management 
+ - saving and reloading all jobs in queue
 
 ## Usage
 If you have already used VSEdit Job Server Watcher, usage is the same. Exception is made for placeholder {ss}, witch now will be replaced with full subsampling string (ex. yuv420p, instead of 420).
