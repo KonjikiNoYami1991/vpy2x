@@ -29,6 +29,7 @@ namespace vpy2x
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -235,8 +236,8 @@ namespace vpy2x
             // subject
             // 
             this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.subject.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.subject.DefaultCellStyle = dataGridViewCellStyle1;
             this.subject.HeaderText = "Subject";
             this.subject.Name = "subject";
             this.subject.ReadOnly = true;
@@ -253,6 +254,8 @@ namespace vpy2x
             // 
             // fps
             // 
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fps.DefaultCellStyle = dataGridViewCellStyle2;
             this.fps.HeaderText = "FPS";
             this.fps.Name = "fps";
             this.fps.ReadOnly = true;
@@ -414,7 +417,7 @@ namespace vpy2x
             this.MinimumSize = new System.Drawing.Size(980, 640);
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "vpy2x v1.0 BETA";
+            this.Text = "vpy2x v1.0.1 BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.vpy2x_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragEnter);
@@ -464,11 +467,11 @@ namespace vpy2x
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxShutdown;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn script;
         private System.Windows.Forms.DataGridViewTextBoxColumn subject;
         private System.Windows.Forms.DataGridViewTextBoxColumn status;
         private System.Windows.Forms.DataGridViewTextBoxColumn fps;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }
 
