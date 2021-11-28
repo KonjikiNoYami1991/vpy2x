@@ -20,6 +20,7 @@ namespace vpy2x
         readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
         readonly String JobsFolder = Path.Combine(Application.StartupPath, "jobs");
         readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
+        readonly String LOGFile = Path.Combine(Application.StartupPath, "LOG.txt");
         public static String VSpipeEXE = String.Empty;
         public static Dictionary<String, String> JobTemp = new Dictionary<String, String>();
         public List<Job> JobList = new List<Job>();
@@ -70,6 +71,11 @@ namespace vpy2x
             else
             {
                 ReadSavedJobs();
+            }
+
+            if (File.Exists(LOGFile))
+            {
+                rtb_log.Lines = File.ReadAllLines(LOGFile);
             }
 
             CultureInfo.CurrentCulture = new CultureInfo("en-GB", false);
@@ -843,6 +849,7 @@ namespace vpy2x
             {
                 b_stop_Click((object)sender, (EventArgs)e);
                 SaveJobsOnClosing();
+                File.WriteAllLines(LOGFile,rtb_log.Lines);
             }
             else
             {
