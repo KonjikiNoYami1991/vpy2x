@@ -850,7 +850,8 @@ namespace vpy2x
             {
                 b_stop_Click((object)sender, (EventArgs)e);
                 SaveJobsOnClosing();
-                File.WriteAllLines(LOGFile,rtb_log.Lines);
+                if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
+                    File.WriteAllLines(LOGFile, rtb_log.Lines);
             }
             else
             {
