@@ -29,6 +29,7 @@ namespace vpy2x
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menu = new System.Windows.Forms.MenuStrip();
@@ -61,6 +62,10 @@ namespace vpy2x
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.rtb_log = new System.Windows.Forms.RichTextBox();
+            this.cms_log = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.saveLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.clearLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -74,6 +79,7 @@ namespace vpy2x
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.cms_log.SuspendLayout();
             this.SuspendLayout();
             // 
             // menu
@@ -398,12 +404,41 @@ namespace vpy2x
             // rtb_log
             // 
             this.rtb_log.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtb_log.ContextMenuStrip = this.cms_log;
             this.rtb_log.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb_log.Location = new System.Drawing.Point(3, 3);
             this.rtb_log.Name = "rtb_log";
             this.rtb_log.Size = new System.Drawing.Size(950, 141);
             this.rtb_log.TabIndex = 0;
             this.rtb_log.Text = "";
+            // 
+            // cms_log
+            // 
+            this.cms_log.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveLOGToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.clearLOGToolStripMenuItem});
+            this.cms_log.Name = "cms_log";
+            this.cms_log.Size = new System.Drawing.Size(181, 76);
+            // 
+            // saveLOGToolStripMenuItem
+            // 
+            this.saveLOGToolStripMenuItem.Name = "saveLOGToolStripMenuItem";
+            this.saveLOGToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveLOGToolStripMenuItem.Text = "Save LOG";
+            this.saveLOGToolStripMenuItem.Click += new System.EventHandler(this.saveLOGToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // clearLOGToolStripMenuItem
+            // 
+            this.clearLOGToolStripMenuItem.Name = "clearLOGToolStripMenuItem";
+            this.clearLOGToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearLOGToolStripMenuItem.Text = "Clear LOG";
+            this.clearLOGToolStripMenuItem.Click += new System.EventHandler(this.clearLOGToolStripMenuItem_Click);
             // 
             // vpy2x
             // 
@@ -435,6 +470,7 @@ namespace vpy2x
             this.groupBox1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.cms_log.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -472,6 +508,10 @@ namespace vpy2x
         private System.Windows.Forms.DataGridViewTextBoxColumn subject;
         private System.Windows.Forms.DataGridViewTextBoxColumn status;
         private System.Windows.Forms.DataGridViewTextBoxColumn fps;
+        private System.Windows.Forms.ContextMenuStrip cms_log;
+        private System.Windows.Forms.ToolStripMenuItem saveLOGToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem clearLOGToolStripMenuItem;
     }
 }
 

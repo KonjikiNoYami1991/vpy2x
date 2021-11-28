@@ -893,6 +893,44 @@ namespace vpy2x
             public String Status { get; set; }
             public String FPS { get; set; }
         }
+
+        private void saveLOGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
+            {
+                SaveFileDialog s = new SaveFileDialog();
+                s.Filter = "TXT file|*.txt";
+                s.Title = this.Text + " - Save LOG";
+                s.ValidateNames = true;
+                s.OverwritePrompt = true;
+                s.RestoreDirectory = true;
+                s.AddExtension = true;
+                s.DefaultExt = "txt";
+                s.FileOk += S_FileOk;
+                if (s.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllLines(s.FileName, rtb_log.Lines);
+                }
+            }
+            else
+            {
+                MessageBox.Show("LOG is empty.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void S_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MessageBox.Show("LOG saved successfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void clearLOGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(LOGFile))
+            {
+                File.Delete(LOGFile);
+            }
+            rtb_log.Clear();
+        }
     }
 
     class IniFile
