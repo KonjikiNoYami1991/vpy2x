@@ -78,7 +78,7 @@ namespace vpy2x
                 rtb_log.Lines = File.ReadAllLines(LOGFile);
             }
 
-            CultureInfo.CurrentCulture = new CultureInfo("en-GB", false);
+            CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
 
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
@@ -121,12 +121,12 @@ namespace vpy2x
 
         private static void SuspendProcess(int pid)
         {
-            var process = System.Diagnostics.Process.GetProcessById(pid);
+            var process = Process.GetProcessById(pid);
 
             if (process.ProcessName == string.Empty)
                 return;
 
-            foreach (System.Diagnostics.ProcessThread pT in process.Threads)
+            foreach (ProcessThread pT in process.Threads)
             {
                 IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
 

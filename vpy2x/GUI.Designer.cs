@@ -30,8 +30,8 @@ namespace vpy2x
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -242,8 +242,8 @@ namespace vpy2x
             // subject
             // 
             this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.subject.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.subject.DefaultCellStyle = dataGridViewCellStyle5;
             this.subject.HeaderText = "Subject";
             this.subject.Name = "subject";
             this.subject.ReadOnly = true;
@@ -260,8 +260,8 @@ namespace vpy2x
             // 
             // fps
             // 
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fps.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fps.DefaultCellStyle = dataGridViewCellStyle6;
             this.fps.HeaderText = "FPS";
             this.fps.Name = "fps";
             this.fps.ReadOnly = true;
@@ -403,6 +403,7 @@ namespace vpy2x
             // 
             // rtb_log
             // 
+            this.rtb_log.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.rtb_log.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtb_log.ContextMenuStrip = this.cms_log;
             this.rtb_log.Dock = System.Windows.Forms.DockStyle.Fill;
