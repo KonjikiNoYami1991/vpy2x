@@ -408,6 +408,7 @@ namespace vpy2x
             this.rtb_log.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtb_log.Location = new System.Drawing.Point(3, 3);
             this.rtb_log.Name = "rtb_log";
+            this.rtb_log.ReadOnly = true;
             this.rtb_log.Size = new System.Drawing.Size(950, 141);
             this.rtb_log.TabIndex = 0;
             this.rtb_log.Text = "";
@@ -419,24 +420,24 @@ namespace vpy2x
             this.toolStripSeparator1,
             this.clearLOGToolStripMenuItem});
             this.cms_log.Name = "cms_log";
-            this.cms_log.Size = new System.Drawing.Size(181, 76);
+            this.cms_log.Size = new System.Drawing.Size(128, 54);
             // 
             // saveLOGToolStripMenuItem
             // 
             this.saveLOGToolStripMenuItem.Name = "saveLOGToolStripMenuItem";
-            this.saveLOGToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveLOGToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.saveLOGToolStripMenuItem.Text = "Save LOG";
             this.saveLOGToolStripMenuItem.Click += new System.EventHandler(this.saveLOGToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(124, 6);
             // 
             // clearLOGToolStripMenuItem
             // 
             this.clearLOGToolStripMenuItem.Name = "clearLOGToolStripMenuItem";
-            this.clearLOGToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearLOGToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.clearLOGToolStripMenuItem.Text = "Clear LOG";
             this.clearLOGToolStripMenuItem.Click += new System.EventHandler(this.clearLOGToolStripMenuItem_Click);
             // 

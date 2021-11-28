@@ -649,6 +649,7 @@ namespace vpy2x
                     break;
             }
             JobRunningIndex = -1;
+            File.WriteAllLines(LOGFile, rtb_log.Lines);
         }
 
         private void P_ErrorDataReceived(object sender, DataReceivedEventArgs e)
