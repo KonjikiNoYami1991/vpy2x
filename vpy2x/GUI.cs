@@ -525,6 +525,8 @@ namespace vpy2x
             b_start.Enabled = !b_start.Enabled;
             b_stop.Enabled = !b_stop.Enabled;
             b_pause_resume.Enabled = !b_pause_resume.Enabled;
+            saveLOGToolStripMenuItem.Enabled = false;
+            clearLOGToolStripMenuItem.Enabled = false;
         }
 
         void Encode()
@@ -722,6 +724,8 @@ namespace vpy2x
                 b_start.Enabled = !b_start.Enabled;
                 b_stop.Enabled = !b_stop.Enabled;
                 b_pause_resume.Enabled = !b_pause_resume.Enabled;
+                saveLOGToolStripMenuItem.Enabled = true;
+                clearLOGToolStripMenuItem.Enabled = true;
             }
         }
 
