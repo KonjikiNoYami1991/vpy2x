@@ -97,6 +97,9 @@ namespace vpy2x
             {
                 MessageBox.Show("Set the path of vspipe.exe file first.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+
+            rtb_log.SelectionStart = rtb_log.TextLength;
+            rtb_log.ScrollToCaret();
         }
 
         void ReadSavedJobs()
