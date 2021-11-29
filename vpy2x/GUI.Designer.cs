@@ -30,8 +30,8 @@ namespace vpy2x
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -242,8 +242,8 @@ namespace vpy2x
             // subject
             // 
             this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.subject.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.subject.DefaultCellStyle = dataGridViewCellStyle1;
             this.subject.HeaderText = "Subject";
             this.subject.Name = "subject";
             this.subject.ReadOnly = true;
@@ -260,8 +260,8 @@ namespace vpy2x
             // 
             // fps
             // 
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fps.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fps.DefaultCellStyle = dataGridViewCellStyle2;
             this.fps.HeaderText = "FPS";
             this.fps.Name = "fps";
             this.fps.ReadOnly = true;
@@ -454,7 +454,7 @@ namespace vpy2x
             this.MinimumSize = new System.Drawing.Size(980, 640);
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "vpy2x v1.0.2 BETA";
+            this.Text = "vpy2x v1.0.3 BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.vpy2x_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragEnter);
