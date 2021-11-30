@@ -454,7 +454,7 @@ namespace vpy2x
             this.MinimumSize = new System.Drawing.Size(980, 640);
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "vpy2x v1.0.3 BETA";
+            this.Text = "vpy2x v1.0.4 BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.vpy2x_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragEnter);

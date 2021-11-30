@@ -630,6 +630,11 @@ namespace vpy2x
             this.Invoke((MethodInvoker)delegate ()
             {
                 Taskbar.SetProgressValue(0, 100);
+                b_start.Enabled = !b_start.Enabled;
+                b_stop.Enabled = !b_stop.Enabled;
+                b_pause_resume.Enabled = !b_pause_resume.Enabled;
+                saveLOGToolStripMenuItem.Enabled = true;
+                clearLOGToolStripMenuItem.Enabled = true;
             });
             switch (toolStripComboBoxShutdown.Text)
             {
