@@ -525,11 +525,11 @@ namespace vpy2x
             ts = new ThreadStart(Encode);
             t = new Thread(ts);
             t.Start();
-            b_start.Enabled = !b_start.Enabled;
-            b_stop.Enabled = !b_stop.Enabled;
-            b_pause_resume.Enabled = !b_pause_resume.Enabled;
-            saveLOGToolStripMenuItem.Enabled = false;
-            clearLOGToolStripMenuItem.Enabled = false;
+            b_start.Enabled = false;
+            b_stop.Enabled = true;
+            b_pause_resume.Enabled = b_stop.Enabled;
+            saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
+            clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
         }
 
         void Encode()
@@ -581,14 +581,19 @@ namespace vpy2x
                             Taskbar.SetProgressValue(0, 100);
                         });
 
+                        DateTime StartTime = DateTime.Now;
+
                         p.WaitForExit();
+
+                        p.CancelErrorRead();
+                        p.CancelOutputRead();
 
                         switch (p.ExitCode)
                         {
                             case 0:
                                 this.Invoke((MethodInvoker)delegate ()
                                 {
-                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
+                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\nStarted: " + StartTime.ToString() + "\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGreen;
                                     Taskbar.SetProgressValue(100, 100);
                                 });
@@ -596,7 +601,7 @@ namespace vpy2x
                             case -1:
                                 this.Invoke((MethodInvoker)delegate ()
                                 {
-                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\nStarted: " + StartTime.ToString() + "\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
                                 });
                                 break;
@@ -608,13 +613,6 @@ namespace vpy2x
                                 });
                                 break;
                         }
-                        p.CancelErrorRead();
-                        p.CancelOutputRead();
-                        if (b_start.Enabled == true)
-                        {
-                            JobRunningIndex = -1;
-                            break;
-                        }
                     }
                     else
                     {
@@ -625,21 +623,28 @@ namespace vpy2x
                             DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
                         });
                     }
+                    if (b_start.Enabled == true)
+                    {
+                        break;
+                    }
                 }
             }
             this.Invoke((MethodInvoker)delegate ()
             {
                 Taskbar.SetProgressValue(0, 100);
-                b_start.Enabled = !b_start.Enabled;
-                b_stop.Enabled = !b_stop.Enabled;
-                b_pause_resume.Enabled = !b_pause_resume.Enabled;
-                saveLOGToolStripMenuItem.Enabled = true;
-                clearLOGToolStripMenuItem.Enabled = true;
+                b_start.Enabled = true;
+                b_stop.Enabled = false;
+                b_pause_resume.Enabled = b_stop.Enabled;
+                saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
+                clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
             });
+            JobRunningIndex = -1;
+            File.WriteAllLines(LOGFile, rtb_log.Lines);
             switch (toolStripComboBoxShutdown.Text)
             {
                 case "Shutdown":
-                    Process.Start("shutdown", "/s /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
+                    SaveJobsOnClosing();
+                    Process.Start("shutdown", "/f /s /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     var Shutdown = MessageBox.Show("Your PC will shutdown in 30 seconds from now.\nPress Cancel button to cancel shutdown.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
                     if(Shutdown != DialogResult.Cancel)
                     {
@@ -647,7 +652,8 @@ namespace vpy2x
                     }
                     break;
                 case "Reboot":
-                    Process.Start("shutdown", "/r /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
+                    SaveJobsOnClosing();
+                    Process.Start("shutdown", "/f /r /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     var Reboot = MessageBox.Show("Your PC will reboot in 30 seconds from now.\nPress Cancel button to cancel reboot.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
                     if(Reboot == DialogResult.Cancel)
                     {
@@ -655,11 +661,13 @@ namespace vpy2x
                     }
                     break;
                 case "Stand-by":
+                    SaveJobsOnClosing();
                     Application.SetSuspendState(PowerState.Suspend, true, true);
                     break;
+                case "Close application":
+                    CloseApplication();
+                    break;
             }
-            JobRunningIndex = -1;
-            File.WriteAllLines(LOGFile, rtb_log.Lines);
         }
 
         private void P_ErrorDataReceived(object sender, DataReceivedEventArgs e)
@@ -729,11 +737,11 @@ namespace vpy2x
                 }
                 catch { }
                 t = null;
-                b_start.Enabled = !b_start.Enabled;
-                b_stop.Enabled = !b_stop.Enabled;
-                b_pause_resume.Enabled = !b_pause_resume.Enabled;
-                saveLOGToolStripMenuItem.Enabled = true;
-                clearLOGToolStripMenuItem.Enabled = true;
+                b_start.Enabled = true;
+                b_stop.Enabled = false;
+                b_pause_resume.Enabled = b_stop.Enabled;
+                saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
+                clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
             }
         }
 
@@ -861,14 +869,19 @@ namespace vpy2x
             if(MessageBox.Show("Close this application?",this.Text,MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 b_stop_Click((object)sender, (EventArgs)e);
-                SaveJobsOnClosing();
-                if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
-                    File.WriteAllLines(LOGFile, rtb_log.Lines);
+                CloseApplication();
             }
             else
             {
                 e.Cancel = true;
             }
+        }
+
+        void CloseApplication()
+        {
+            SaveJobsOnClosing();
+            if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
+                File.WriteAllLines(LOGFile, rtb_log.Lines);
         }
 
         void SaveJobsOnClosing()

@@ -122,14 +122,14 @@ namespace vpy2x
             // setVSpipeexePathToolStripMenuItem
             // 
             this.setVSpipeexePathToolStripMenuItem.Name = "setVSpipeexePathToolStripMenuItem";
-            this.setVSpipeexePathToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.setVSpipeexePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setVSpipeexePathToolStripMenuItem.Text = "Set VSpipe.exe path";
             this.setVSpipeexePathToolStripMenuItem.Click += new System.EventHandler(this.setVSpipeexePathToolStripMenuItem_Click);
             // 
             // editPresetsToolStripMenuItem
             // 
             this.editPresetsToolStripMenuItem.Name = "editPresetsToolStripMenuItem";
-            this.editPresetsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.editPresetsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.editPresetsToolStripMenuItem.Text = "Edit presets";
             this.editPresetsToolStripMenuItem.Click += new System.EventHandler(this.editPresetsToolStripMenuItem_Click);
             // 
@@ -138,7 +138,7 @@ namespace vpy2x
             this.whenFinishedToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBoxShutdown});
             this.whenFinishedToolStripMenuItem.Name = "whenFinishedToolStripMenuItem";
-            this.whenFinishedToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.whenFinishedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.whenFinishedToolStripMenuItem.Text = "When finished";
             // 
             // toolStripComboBoxShutdown
@@ -146,6 +146,7 @@ namespace vpy2x
             this.toolStripComboBoxShutdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBoxShutdown.Items.AddRange(new object[] {
             "Do nothing",
+            "Close application",
             "Stand-by",
             "Reboot",
             "Shutdown"});
@@ -454,7 +455,7 @@ namespace vpy2x
             this.MinimumSize = new System.Drawing.Size(980, 640);
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "vpy2x v1.0.4 BETA";
+            this.Text = "vpy2x v1.0.5 BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.vpy2x_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragEnter);
