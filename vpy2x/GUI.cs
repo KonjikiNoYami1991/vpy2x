@@ -29,6 +29,8 @@ namespace vpy2x
 
         TaskbarManager Taskbar = TaskbarManager.Instance;
 
+        Boolean ForceClose = false;
+
         Thread t;
         ThreadStart ts;
 
@@ -104,11 +106,12 @@ namespace vpy2x
 
         void ReadSavedJobs()
         {
-            foreach(String s in Directory.GetFiles(JobsFolder))
+            String[] Files = Directory.GetFiles(JobsFolder);
+            for (Int32 i = 0; i < Files.Length; i++)
             {
-                if(Path.GetExtension(s).ToLower() == ".json")
+                if (Path.GetExtension(Files[i]).ToLower() == ".json")
                 {
-                    SaveLoadJob SaveLoad = JsonConvert.DeserializeObject<SaveLoadJob>(System.IO.File.ReadAllText(s));
+                    SaveLoadJob SaveLoad = JsonConvert.DeserializeObject<SaveLoadJob>(File.ReadAllText(Files[i]));
                     JobTemp = new Dictionary<String, String>();
                     JobTemp.Add("VPY", SaveLoad.VPY);
                     JobTemp.Add("Subject", SaveLoad.Subject);
@@ -117,6 +120,18 @@ namespace vpy2x
                     JobTemp.Add("End", SaveLoad.End);
                     JobTemp.Add("Start", SaveLoad.Start);
                     DGV_jobs.Rows.Add(SaveLoad.VPY, SaveLoad.Subject, SaveLoad.Status, SaveLoad.FPS);
+                    switch (SaveLoad.Colour)
+                    {
+                        case "LightGreen":
+                            DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.LightGreen;
+                            break;
+                        case "LightGoldenrodYellow":
+                            DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
+                            break;
+                        default:
+                            DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.White;
+                            break;
+                    }
                     JobList.Add(new Job(JobTemp));
                 }
             }
@@ -427,6 +442,17 @@ namespace vpy2x
                 DGV_jobs.Rows.RemoveAt(i);
                 JobList.RemoveAt(i);
             }
+            if (b_start.Enabled == false)
+            {
+                foreach(DataGridViewRow d in DGV_jobs.Rows)
+                {
+                    if (d.Cells["status"].Value.ToString().ToLower().Contains("running"))
+                    {
+                        JobRunningIndex = d.Index;
+                        break;
+                    }
+                }
+            }
         }
 
         private void b_reset_Click(object sender, EventArgs e)
@@ -521,26 +547,28 @@ namespace vpy2x
 
         private void b_start_Click(object sender, EventArgs e)
         {
-            JobRunningIndex = -1;
-            ts = new ThreadStart(Encode);
-            t = new Thread(ts);
-            t.Start();
-            b_start.Enabled = false;
-            b_stop.Enabled = true;
-            b_pause_resume.Enabled = b_stop.Enabled;
-            saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
-            clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
+            if (DGV_jobs.Rows.Count > 0)
+            {
+                JobRunningIndex = 0;
+                ts = new ThreadStart(Encode);
+                t = new Thread(ts);
+                t.Start();
+                b_start.Enabled = false;
+                b_stop.Enabled = true;
+                b_pause_resume.Enabled = b_stop.Enabled;
+                saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
+                clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
+            }
         }
 
         void Encode()
         {
-            for (Int32 i = 0; i < JobList.Count; i++)
+            while (JobRunningIndex < JobList.Count)
             {
-                if (DGV_jobs.Rows[i].Cells["status"].Value.ToString().ToLower().Contains("ready"))
+                if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("ready"))
                 {
-                    task = new JobTask(JobList[i]);
+                    task = new JobTask(JobList[JobRunningIndex]);
                     Environment.CurrentDirectory = task.Job.EncoderDir;
-                    JobRunningIndex = i;
                     if (task.HasErrors == false)
                     {
                         this.Invoke((MethodInvoker)delegate ()
@@ -593,7 +621,7 @@ namespace vpy2x
                             case 0:
                                 this.Invoke((MethodInvoker)delegate ()
                                 {
-                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\nStarted: " + StartTime.ToString() + "\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
+                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\n Started: " + StartTime.ToString() + "\n Ended: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGreen;
                                     Taskbar.SetProgressValue(100, 100);
                                 });
@@ -601,7 +629,7 @@ namespace vpy2x
                             case -1:
                                 this.Invoke((MethodInvoker)delegate ()
                                 {
-                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\nStarted: " + StartTime.ToString() + "\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\n Started: " + StartTime.ToString() + "\n Ended: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
                                 });
                                 break;
@@ -628,6 +656,7 @@ namespace vpy2x
                         break;
                     }
                 }
+                JobRunningIndex++;
             }
             this.Invoke((MethodInvoker)delegate ()
             {
@@ -643,6 +672,7 @@ namespace vpy2x
             switch (toolStripComboBoxShutdown.Text)
             {
                 case "Shutdown":
+                    ForceClose = true;
                     SaveJobsOnClosing();
                     Process.Start("shutdown", "/f /s /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     var Shutdown = MessageBox.Show("Your PC will shutdown in 30 seconds from now.\nPress Cancel button to cancel shutdown.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
@@ -652,6 +682,7 @@ namespace vpy2x
                     }
                     break;
                 case "Reboot":
+                    ForceClose = true;
                     SaveJobsOnClosing();
                     Process.Start("shutdown", "/f /r /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     var Reboot = MessageBox.Show("Your PC will reboot in 30 seconds from now.\nPress Cancel button to cancel reboot.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
@@ -665,6 +696,7 @@ namespace vpy2x
                     Application.SetSuspendState(PowerState.Suspend, true, true);
                     break;
                 case "Close application":
+                    ForceClose = true;
                     CloseApplication();
                     break;
             }
@@ -742,6 +774,7 @@ namespace vpy2x
                 b_pause_resume.Enabled = b_stop.Enabled;
                 saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
                 clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
+                JobRunningIndex = -1;
             }
         }
 
@@ -866,14 +899,22 @@ namespace vpy2x
 
         private void vpy2x_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(MessageBox.Show("Close this application?",this.Text,MessageBoxButtons.YesNo,MessageBoxIcon.Question) == DialogResult.Yes)
+            if (ForceClose == true)
             {
                 b_stop_Click((object)sender, (EventArgs)e);
                 CloseApplication();
             }
             else
             {
-                e.Cancel = true;
+                if (MessageBox.Show("Close this application?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    b_stop_Click((object)sender, (EventArgs)e);
+                    CloseApplication();
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
         }
 
@@ -904,6 +945,7 @@ namespace vpy2x
                 SaveLoad.FPS = DGV_jobs.Rows[i].Cells["fps"].Value.ToString();
                 SaveLoad.Status = DGV_jobs.Rows[i].Cells["status"].Value.ToString();
                 SaveLoad.Header = job.Header;
+                SaveLoad.Colour = DGV_jobs.Rows[i].Cells["status"].Style.BackColor.Name;
                 File.WriteAllText(Path.Combine(JobsFolder, "Job " + (i + 1).ToString() + ".json"), JsonConvert.SerializeObject(SaveLoad, Formatting.Indented));
             }
         }
@@ -919,6 +961,7 @@ namespace vpy2x
             public String End { get; set; }
             public String Status { get; set; }
             public String FPS { get; set; }
+            public String Colour { get; set; }
         }
 
         private void saveLOGToolStripMenuItem_Click(object sender, EventArgs e)
