@@ -8,7 +8,7 @@ The goal is to replace VSEdit Job Server Watcher, with more functions not availa
 Though it's not stable yet, it provides:
  - drag&drop for one or more VPY files
  - JSON file for every saved preset
- - XML file for saved settings
+ - INI file for saved settings
  - a dedicated form for presets management 
  - saving on closing and reloading on opening of all jobs in queue, automatically
  - shutdown, stand-by and reboot commands after all jobs are done
