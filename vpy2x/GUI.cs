@@ -27,9 +27,13 @@ namespace vpy2x
         JobTask task;
         Int32 JobRunningIndex = -1;
 
+        List<Dictionary<String,ProcessPriorityClass>> classes = new List<Dictionary<String,ProcessPriorityClass>>();
+
         TaskbarManager Taskbar = TaskbarManager.Instance;
 
         Boolean ForceClose = false;
+
+        String Priority = ProcessPriorityClass.Idle.ToString();
 
         Thread t;
         ThreadStart ts;
@@ -42,15 +46,15 @@ namespace vpy2x
         [Flags]
         public enum ThreadAccess : int
         {
-            TERMINATE = (0x0001),
-            SUSPEND_RESUME = (0x0002),
-            GET_CONTEXT = (0x0008),
-            SET_CONTEXT = (0x0010),
-            SET_INFORMATION = (0x0020),
-            QUERY_INFORMATION = (0x0040),
-            SET_THREAD_TOKEN = (0x0080),
-            IMPERSONATE = (0x0100),
-            DIRECT_IMPERSONATION = (0x0200)
+            TERMINATE = 0x0001,
+            SUSPEND_RESUME = 0x0002,
+            GET_CONTEXT = 0x0008,
+            SET_CONTEXT = 0x0010,
+            SET_INFORMATION = 0x0020,
+            QUERY_INFORMATION = 0x0040,
+            SET_THREAD_TOKEN = 0x0080,
+            IMPERSONATE = 0x0100,
+            DIRECT_IMPERSONATION = 0x0200
         }
 
         [DllImport("kernel32.dll")]
@@ -98,6 +102,18 @@ namespace vpy2x
             else
             {
                 MessageBox.Show("Set the path of vspipe.exe file first.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+            foreach (ProcessPriorityClass priority in (ProcessPriorityClass[])Enum.GetValues(typeof(ProcessPriorityClass)))
+            {
+                var Temp = new Dictionary<String, ProcessPriorityClass>();
+                Temp.Add(priority.ToString(), priority);
+                classes.Add(Temp);
+            }
+
+            foreach(Dictionary<String, ProcessPriorityClass> d in classes)
+            {
+
             }
 
             rtb_log.SelectionStart = rtb_log.TextLength;
@@ -161,12 +177,12 @@ namespace vpy2x
 
         public static void ResumeProcess(int pid)
         {
-            var process = System.Diagnostics.Process.GetProcessById(pid);
+            var process = Process.GetProcessById(pid);
 
             if (process.ProcessName == string.Empty)
                 return;
 
-            foreach (System.Diagnostics.ProcessThread pT in process.Threads)
+            foreach (ProcessThread pT in process.Threads)
             {
                 IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
 
@@ -190,9 +206,28 @@ namespace vpy2x
             if (ini.KeyExists("vspipe_exe"))
             {
                 if (String.IsNullOrWhiteSpace(ini.Read("vspipe_exe")) == false)
+                {
                     VSpipeEXE = ini.Read("vspipe_exe");
+                }
                 else
-                    MessageBox.Show("The path of vspipe.exe file isn't set.\nSet it before using this program.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                {
+                    MessageBox.Show("Set the path of vspipe.exe file first.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+            else
+            {
+                MessageBox.Show("The path of vspipe.exe file isn't set.\nSet it before using this program.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            if (ini.KeyExists("priority"))
+            {
+                if (String.IsNullOrWhiteSpace(ini.Read("priority")) == false)
+                {
+                    Priority = ini.Read("priority");
+                }
+                else
+                {
+                    Priority = ProcessPriorityClass.Idle.ToString();
+                }
             }
         }
 
@@ -595,6 +630,7 @@ namespace vpy2x
                         p.Start();
 
                         ProcessID = p.Id;
+                        p.PriorityClass = ProcessPriorityClass.Idle;
                         p.BeginOutputReadLine();
                         p.BeginErrorReadLine();
 
@@ -621,7 +657,7 @@ namespace vpy2x
                             case 0:
                                 this.Invoke((MethodInvoker)delegate ()
                                 {
-                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\n Started: " + StartTime.ToString() + "\n Ended: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
+                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGreen;
                                     Taskbar.SetProgressValue(100, 100);
                                 });
@@ -629,7 +665,7 @@ namespace vpy2x
                             case -1:
                                 this.Invoke((MethodInvoker)delegate ()
                                 {
-                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\n Started: " + StartTime.ToString() + "\n Ended: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
+                                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
                                 });
                                 break;
@@ -668,7 +704,10 @@ namespace vpy2x
                 clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
             });
             JobRunningIndex = -1;
-            File.WriteAllLines(LOGFile, rtb_log.Lines);
+            this.Invoke((MethodInvoker)delegate ()
+            {
+                File.WriteAllLines(LOGFile, rtb_log.Lines);
+            });
             switch (toolStripComboBoxShutdown.Text)
             {
                 case "Shutdown":
@@ -697,7 +736,7 @@ namespace vpy2x
                     break;
                 case "Close application":
                     ForceClose = true;
-                    CloseApplication();
+                    this.Close();
                     break;
             }
         }
@@ -722,26 +761,28 @@ namespace vpy2x
         {
             if (Data.Trim().StartsWith("Frame:"))
             {
+                String Progress = Data.Substring(Data.IndexOf(" ")).Trim();
+                String RemainigTime = String.Empty;
+                if (Progress.Contains(" "))
+                {
+                    String Percentage = Progress.Substring(0, Progress.IndexOf(" ")).Trim();
+                    Int32 NFrames = Convert.ToInt32(Percentage.Split('/')[1]);
+                    Int32 DFrames = Convert.ToInt32(Percentage.Split('/')[0]);
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        Taskbar.SetProgressValue(DFrames, NFrames);
+                    });
+                    if (Progress.Contains("(") && Progress.Contains(")"))
+                    {
+                        RemainigTime = Progress.Substring(Progress.LastIndexOf("(")).Trim();
+                        RemainigTime = RemainigTime.Trim('(').Split(' ')[0].Trim();
+                        RemainigTime = ((Convert.ToDouble(NFrames) - Convert.ToDouble(DFrames)) / Convert.ToDouble(RemainigTime)).ToString();
+                        RemainigTime = TimeSpan.FromSeconds(Convert.ToDouble(RemainigTime)).ToString(@"hh\:mm\:ss");
+                    }
+                    RemainigTime = "\r\nRemaning: " + RemainigTime;
+                }
                 this.Invoke((MethodInvoker)delegate ()
                 {
-                    String Progress = Data.Substring(Data.IndexOf(" ")).Trim();
-                    String RemainigTime = String.Empty;
-                    if (Progress.Contains(" "))
-                    {
-                        String Percentage = Progress.Substring(0, Progress.IndexOf(" ")).Trim();
-                        Int32 NFrames = Convert.ToInt32(Percentage.Split('/')[1]);
-                        Int32 DFrames = Convert.ToInt32(Percentage.Split('/')[0]);
-                        Taskbar.SetProgressValue(DFrames, NFrames);
-                        if (Progress.Contains("(") && Progress.Contains(")"))
-                        {
-                            RemainigTime = Progress.Substring(Progress.LastIndexOf("(")).Trim();
-                            RemainigTime = RemainigTime.Trim('(').Split(' ')[0].Trim();
-                            var Temp = Convert.ToDouble(RemainigTime);
-                            RemainigTime = ((Convert.ToDouble(NFrames) - Convert.ToDouble(DFrames)) / Temp).ToString();
-                            RemainigTime = TimeSpan.FromSeconds(Convert.ToDouble(RemainigTime)).ToString(@"hh\:mm\:ss");
-                        }
-                        RemainigTime = "\r\nRemaning: " + RemainigTime;
-                    }
                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString(), Progress + RemainigTime);
                 });
             }
@@ -774,7 +815,6 @@ namespace vpy2x
                 b_pause_resume.Enabled = b_stop.Enabled;
                 saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
                 clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
-                JobRunningIndex = -1;
             }
         }
 
