@@ -52,6 +52,7 @@ namespace vpy2x
             this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.cmb_priority = new System.Windows.Forms.ComboBox();
             this.b_stop = new System.Windows.Forms.Button();
             this.b_pause_resume = new System.Windows.Forms.Button();
@@ -282,6 +283,7 @@ namespace vpy2x
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.cmb_priority);
             this.groupBox1.Controls.Add(this.b_stop);
             this.groupBox1.Controls.Add(this.b_pause_resume);
@@ -300,6 +302,15 @@ namespace vpy2x
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Actions";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 427);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(78, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Process priority";
+            // 
             // cmb_priority
             // 
             this.cmb_priority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -309,12 +320,12 @@ namespace vpy2x
             "Below Normal",
             "Normal",
             "Above Normal",
-            "High",
-            "Real Time"});
+            "High"});
             this.cmb_priority.Location = new System.Drawing.Point(6, 443);
             this.cmb_priority.Name = "cmb_priority";
             this.cmb_priority.Size = new System.Drawing.Size(154, 21);
             this.cmb_priority.TabIndex = 9;
+            this.cmb_priority.SelectedValueChanged += new System.EventHandler(this.cmb_priority_SelectedValueChanged);
             // 
             // b_stop
             // 
@@ -498,6 +509,7 @@ namespace vpy2x
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).EndInit();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.cms_log.ResumeLayout(false);
@@ -543,6 +555,7 @@ namespace vpy2x
         private System.Windows.Forms.DataGridViewTextBoxColumn status;
         private System.Windows.Forms.DataGridViewTextBoxColumn fps;
         private System.Windows.Forms.ComboBox cmb_priority;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -33,7 +33,7 @@ namespace vpy2x
 
         Boolean ForceClose = false;
 
-        String Priority = ProcessPriorityClass.Idle.ToString();
+        String Priority = String.Empty;
 
         Thread t;
         ThreadStart ts;
@@ -79,6 +79,8 @@ namespace vpy2x
                 ReadSavedJobs();
             }
 
+            cmb_priority.Text = cmb_priority.Items[0].ToString();
+
             if (File.Exists(LOGFile))
             {
                 rtb_log.Lines = File.ReadAllLines(LOGFile);
@@ -89,6 +91,13 @@ namespace vpy2x
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             toolStripComboBoxShutdown.Text = toolStripComboBoxShutdown.Items[0].ToString();
+
+            foreach (ProcessPriorityClass priority in (ProcessPriorityClass[])Enum.GetValues(typeof(ProcessPriorityClass)))
+            {
+                var Temp = new Dictionary<String, ProcessPriorityClass>();
+                Temp.Add(priority.ToString().ToLower(), priority);
+                classes.Add(Temp);
+            }
 
             if (Directory.Exists(PresetsFolder) == false)
             {
@@ -104,18 +113,6 @@ namespace vpy2x
                 MessageBox.Show("Set the path of vspipe.exe file first.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
 
-            foreach (ProcessPriorityClass priority in (ProcessPriorityClass[])Enum.GetValues(typeof(ProcessPriorityClass)))
-            {
-                var Temp = new Dictionary<String, ProcessPriorityClass>();
-                Temp.Add(priority.ToString(), priority);
-                classes.Add(Temp);
-            }
-
-            foreach(Dictionary<String, ProcessPriorityClass> d in classes)
-            {
-
-            }
-
             rtb_log.SelectionStart = rtb_log.TextLength;
             rtb_log.ScrollToCaret();
         }
@@ -127,7 +124,7 @@ namespace vpy2x
             {
                 if (Path.GetExtension(Files[i]).ToLower() == ".json")
                 {
-                    SaveLoadJob SaveLoad = JsonConvert.DeserializeObject<SaveLoadJob>(File.ReadAllText(Files[i]));
+                    var SaveLoad = JsonConvert.DeserializeObject<SaveLoadJob>(File.ReadAllText(Files[i]));
                     JobTemp = new Dictionary<String, String>();
                     JobTemp.Add("VPY", SaveLoad.VPY);
                     JobTemp.Add("Subject", SaveLoad.Subject);
@@ -223,10 +220,13 @@ namespace vpy2x
                 if (String.IsNullOrWhiteSpace(ini.Read("priority")) == false)
                 {
                     Priority = ini.Read("priority");
+                    SetPriority();
+                    cmb_priority.Text = Priority;
                 }
                 else
                 {
-                    Priority = ProcessPriorityClass.Idle.ToString();
+                    Priority = ProcessPriorityClass.Normal.ToString();
+                    cmb_priority.Text = Priority;
                 }
             }
         }
@@ -630,7 +630,7 @@ namespace vpy2x
                         p.Start();
 
                         ProcessID = p.Id;
-                        p.PriorityClass = ProcessPriorityClass.Idle;
+                        p.PriorityClass = SetPriority();
                         p.BeginOutputReadLine();
                         p.BeginErrorReadLine();
 
@@ -867,6 +867,27 @@ namespace vpy2x
             }
         }
 
+        public void SetPriorityProcessAndChildren(Int32 pid)
+        {
+            using (var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid))
+            {
+                var moc = searcher.Get();
+                foreach (ManagementObject mo in moc)
+                {
+                    SetPriorityProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
+                }
+                try
+                {
+                    var proc = Process.GetProcessById(pid);
+                    proc.PriorityClass = SetPriority();
+                }
+                catch
+                {
+                    // Process already exited.
+                }
+            }
+        }
+
         private void b_pause_resume_Click(object sender, EventArgs e)
         {
             if (JobRunningIndex != -1)
@@ -963,6 +984,8 @@ namespace vpy2x
             SaveJobsOnClosing();
             if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
                 File.WriteAllLines(LOGFile, rtb_log.Lines);
+            IniFile ini = new IniFile(SettingsFile);
+            ini.Write("priority", cmb_priority.Text);
         }
 
         void SaveJobsOnClosing()
@@ -1040,6 +1063,33 @@ namespace vpy2x
                 File.Delete(LOGFile);
             }
             rtb_log.Clear();
+        }
+
+        private void cmb_priority_SelectedValueChanged(object sender, EventArgs e)
+        {
+            Priority = cmb_priority.Text;
+            if (p != null && p.HasExited == false)
+            {
+                p.PriorityClass = SetPriority();
+                SetPriorityProcessAndChildren(ProcessID);
+            }
+        }
+
+        ProcessPriorityClass SetPriority()
+        {
+            switch (Priority)
+            {
+                case "Idle":
+                    return ProcessPriorityClass.Idle;
+                case "Below Normal":
+                    return ProcessPriorityClass.BelowNormal;
+                case "Above Normal":
+                    return ProcessPriorityClass.AboveNormal;
+                case "High":
+                    return ProcessPriorityClass.High;
+                default:
+                    return ProcessPriorityClass.Normal;
+            }
         }
     }
 
