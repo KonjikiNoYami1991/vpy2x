@@ -24,7 +24,7 @@ In case not, usage is:
  - repeat the operation until all jobs are added
  - click on "Start" and wait
 
-##Notes
+## Notes
  - This is not another job server watcher, it simply manage encode jobs via GUI the same way of VSEdit Job Server Watcher.
 
 ## Contributing
