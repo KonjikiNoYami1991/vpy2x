@@ -25,8 +25,14 @@ In case not, usage is:
  - repeat the operation until all jobs are added
  - click on "Start" and wait
 
+## Release
+ - [Windows 7 and newer](https://github.com/KonjikiNoYami1991/vpy2x/releases)
+
 ## Notes
  - This is not another job server watcher, it simply manages encode jobs via GUI the same way of VSEdit Job Server Watcher.
+
+## Tips
+ - Because the LOG can freeze the GUI, if the encoder supports the "log level" parameter via CLI, it can be set to a lower value rather than default in order to avoid freezing the GUI. For example, [FFmpeg](https://ffmpeg.org/ffmpeg.html#toc-Generic-options) and [x265.exe](https://x265.readthedocs.io/en/release_3.5/cli.html?highlight=level#cmdoption-log-level) accept lower values, such as "error" or "warning". In that way, only errors or warnings (and errors) are displayed in the LOG once the encoder starts processing frames. Obviously, you can set the encoder totally quiet.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
