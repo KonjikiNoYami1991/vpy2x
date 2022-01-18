@@ -25,7 +25,7 @@ In case not, usage is:
  - repeat the operation until all jobs are added
  - click on "Start" and wait
 
-## Release
+## Releases
  - [Windows 7 and newer](https://github.com/KonjikiNoYami1991/vpy2x/releases)
 
 ## Notes
