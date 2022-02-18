@@ -32,6 +32,9 @@ namespace vpy2x
         {
             InitializeComponent();
 
+            num_end_frame.Maximum = Int32.MaxValue;
+            num_start_frame.Maximum = Int32.MaxValue;
+
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             tb_args_load_script.MaxLength = Int32.MaxValue;

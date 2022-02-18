@@ -40,6 +40,7 @@ namespace vpy2x
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setVSpipeexePathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPresetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.whenFinishedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBoxShutdown = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,6 +71,8 @@ namespace vpy2x
             this.saveLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.clearLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cms_joblist = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.clearSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -84,6 +87,7 @@ namespace vpy2x
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.cms_log.SuspendLayout();
+            this.cms_joblist.SuspendLayout();
             this.SuspendLayout();
             // 
             // menu
@@ -118,6 +122,7 @@ namespace vpy2x
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.setVSpipeexePathToolStripMenuItem,
             this.editPresetsToolStripMenuItem,
+            this.preferencesToolStripMenuItem,
             this.whenFinishedToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
@@ -136,6 +141,13 @@ namespace vpy2x
             this.editPresetsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.editPresetsToolStripMenuItem.Text = "Edit presets";
             this.editPresetsToolStripMenuItem.Click += new System.EventHandler(this.editPresetsToolStripMenuItem_Click);
+            // 
+            // preferencesToolStripMenuItem
+            // 
+            this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.preferencesToolStripMenuItem.Text = "Preferences";
+            this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
             // whenFinishedToolStripMenuItem
             // 
@@ -224,6 +236,7 @@ namespace vpy2x
             this.subject,
             this.status,
             this.fps});
+            this.DGV_jobs.ContextMenuStrip = this.cms_joblist;
             this.DGV_jobs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DGV_jobs.Location = new System.Drawing.Point(0, 0);
             this.DGV_jobs.Name = "DGV_jobs";
@@ -481,6 +494,20 @@ namespace vpy2x
             this.clearLOGToolStripMenuItem.Text = "Clear LOG";
             this.clearLOGToolStripMenuItem.Click += new System.EventHandler(this.clearLOGToolStripMenuItem_Click);
             // 
+            // cms_joblist
+            // 
+            this.cms_joblist.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearSelectionToolStripMenuItem});
+            this.cms_joblist.Name = "cms_joblist";
+            this.cms_joblist.Size = new System.Drawing.Size(152, 26);
+            // 
+            // clearSelectionToolStripMenuItem
+            // 
+            this.clearSelectionToolStripMenuItem.Name = "clearSelectionToolStripMenuItem";
+            this.clearSelectionToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.clearSelectionToolStripMenuItem.Text = "Clear selection";
+            this.clearSelectionToolStripMenuItem.Click += new System.EventHandler(this.clearSelectionToolStripMenuItem_Click);
+            // 
             // vpy2x
             // 
             this.AllowDrop = true;
@@ -493,7 +520,7 @@ namespace vpy2x
             this.MinimumSize = new System.Drawing.Size(980, 640);
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "vpy2x v1.0.7 BETA";
+            this.Text = "vpy2x v1.0.8 BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.vpy2x_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragEnter);
@@ -513,6 +540,7 @@ namespace vpy2x
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.cms_log.ResumeLayout(false);
+            this.cms_joblist.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -556,6 +584,9 @@ namespace vpy2x
         private System.Windows.Forms.DataGridViewTextBoxColumn fps;
         private System.Windows.Forms.ComboBox cmb_priority;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip cms_joblist;
+        private System.Windows.Forms.ToolStripMenuItem clearSelectionToolStripMenuItem;
     }
 }
 

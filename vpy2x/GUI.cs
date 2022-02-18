@@ -24,6 +24,7 @@ namespace vpy2x
         public static String VSpipeEXE = String.Empty;
         public static Dictionary<String, String> JobTemp = new Dictionary<String, String>();
         public List<Job> JobList = new List<Job>();
+        
         JobTask task;
         Int32 JobRunningIndex = -1;
 
@@ -42,6 +43,7 @@ namespace vpy2x
         ProcessStartInfo psi;
 
         Int32 ProcessID = Int32.MinValue;
+        public static Int32 VSpipeID= Int32.MinValue;
 
         [Flags]
         public enum ThreadAccess : int
@@ -115,6 +117,11 @@ namespace vpy2x
 
             rtb_log.SelectionStart = rtb_log.TextLength;
             rtb_log.ScrollToCaret();
+        }
+
+        private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            this.Activate();
         }
 
         void ReadSavedJobs()
@@ -200,11 +207,11 @@ namespace vpy2x
 
         void ReadSettings(IniFile ini)
         {
-            if (ini.KeyExists("vspipe_exe"))
+            if (ini.KeyExists("vspipe_exe", "Main"))
             {
-                if (String.IsNullOrWhiteSpace(ini.Read("vspipe_exe")) == false)
+                if (String.IsNullOrWhiteSpace(ini.Read("vspipe_exe","Main")) == false)
                 {
-                    VSpipeEXE = ini.Read("vspipe_exe");
+                    VSpipeEXE = ini.Read("vspipe_exe", "Main");
                 }
                 else
                 {
@@ -215,11 +222,11 @@ namespace vpy2x
             {
                 MessageBox.Show("The path of vspipe.exe file isn't set.\nSet it before using this program.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            if (ini.KeyExists("priority"))
+            if (ini.KeyExists("priority", "Main"))
             {
-                if (String.IsNullOrWhiteSpace(ini.Read("priority")) == false)
+                if (String.IsNullOrWhiteSpace(ini.Read("priority","Main")) == false)
                 {
-                    Priority = ini.Read("priority");
+                    Priority = ini.Read("priority", "Main");
                     SetPriority();
                     cmb_priority.Text = Priority;
                 }
@@ -244,7 +251,7 @@ namespace vpy2x
             {
                 VSpipeEXE = o.FileName;
                 IniFile ini = new IniFile(SettingsFile);
-                ini.Write("vspipe_exe", o.FileName);
+                ini.Write("vspipe_exe", o.FileName, "Main");
             }
             else
             {
@@ -497,6 +504,7 @@ namespace vpy2x
                 if (DGV_jobs.Rows[i].Selected == true && DGV_jobs.Rows[i].Index != JobRunningIndex)
                 {
                     DGV_jobs.Rows[i].SetValues(DGV_jobs.Rows[i].Cells["script"].Value.ToString(), DGV_jobs.Rows[i].Cells["subject"].Value.ToString(), "Ready", "0");
+                    DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.Empty;
                 }
             }
         }
@@ -593,6 +601,7 @@ namespace vpy2x
                 b_pause_resume.Enabled = b_stop.Enabled;
                 saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
                 clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
+                setVSpipeexePathToolStripMenuItem.Enabled = b_start.Enabled;
             }
         }
 
@@ -660,6 +669,7 @@ namespace vpy2x
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGreen;
                                     Taskbar.SetProgressValue(100, 100);
+                                    
                                 });
                                 break;
                             case -1:
@@ -667,6 +677,7 @@ namespace vpy2x
                                 {
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
+                                    
                                 });
                                 break;
                             default:
@@ -674,6 +685,7 @@ namespace vpy2x
                                 {
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.OrangeRed;
+                                    
                                 });
                                 break;
                         }
@@ -684,6 +696,7 @@ namespace vpy2x
                         {
                             rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
                             rtb_log.AppendText(task.ErrorMessage);
+                            
                             DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
                         });
                     }
@@ -745,7 +758,14 @@ namespace vpy2x
         {
             if (String.IsNullOrWhiteSpace(e.Data) == false)
             {
-                ReportStatus(e.Data);
+                if (e.Data.Trim().StartsWith("Frame:"))
+                {
+                    ReportStatusVSpipe(e.Data);
+                }
+                else
+                {
+                    ReportStatusEncoder(e.Data);
+                }
             }
         }
 
@@ -753,48 +773,50 @@ namespace vpy2x
         {
             if (String.IsNullOrWhiteSpace(e.Data) == false)
             {
-                ReportStatus(e.Data);
+                if (e.Data.Trim().StartsWith("Frame:"))
+                {
+                    ReportStatusVSpipe(e.Data);
+                }
+                else
+                {
+                    ReportStatusEncoder(e.Data);
+                }
             }
         }
 
-        void ReportStatus(String Data)
+        void ReportStatusVSpipe(String Data)
         {
-            if (Data.Trim().StartsWith("Frame:"))
+            String Progress = Data.Substring(Data.IndexOf(" ")).Trim();
+            String RemainigTime = String.Empty;
+            if (Progress.Contains(" "))
             {
-                String Progress = Data.Substring(Data.IndexOf(" ")).Trim();
-                String RemainigTime = String.Empty;
-                if (Progress.Contains(" "))
+                String Percentage = Progress.Substring(0, Progress.IndexOf(" ")).Trim();
+                Int32 NFrames = Convert.ToInt32(Percentage.Split('/')[1]);
+                Int32 DFrames = Convert.ToInt32(Percentage.Split('/')[0]);
+                this.Invoke((MethodInvoker)delegate ()
                 {
-                    String Percentage = Progress.Substring(0, Progress.IndexOf(" ")).Trim();
-                    Int32 NFrames = Convert.ToInt32(Percentage.Split('/')[1]);
-                    Int32 DFrames = Convert.ToInt32(Percentage.Split('/')[0]);
-                    this.Invoke((MethodInvoker)delegate ()
-                    {
-                        Taskbar.SetProgressValue(DFrames, NFrames);
-                    });
-                    if (Progress.Contains("(") && Progress.Contains(")"))
-                    {
-                        RemainigTime = Progress.Substring(Progress.LastIndexOf("(")).Trim();
-                        RemainigTime = RemainigTime.Trim('(').Split(' ')[0].Trim();
-                        RemainigTime = ((Convert.ToDouble(NFrames) - Convert.ToDouble(DFrames)) / Convert.ToDouble(RemainigTime)).ToString();
-                        RemainigTime = TimeSpan.FromSeconds(Convert.ToDouble(RemainigTime)).ToString(@"hh\:mm\:ss");
-                    }
-                    RemainigTime = "\r\nRemaning: " + RemainigTime;
+                    Taskbar.SetProgressValue(DFrames, NFrames);
+                });
+                if (Progress.Contains("(") && Progress.Contains(")"))
+                {
+                    RemainigTime = Progress.Substring(Progress.LastIndexOf("(")).Trim();
+                    RemainigTime = RemainigTime.Trim('(').Split(' ')[0].Trim();
+                    RemainigTime = ((Convert.ToDouble(NFrames) - Convert.ToDouble(DFrames)) / Convert.ToDouble(RemainigTime)).ToString();
+                    RemainigTime = TimeSpan.FromSeconds(Convert.ToDouble(RemainigTime)).ToString(@"hh\:mm\:ss");
                 }
-                this.Invoke((MethodInvoker)delegate ()
-                {
-                    DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString(), Progress + RemainigTime);
-                });
-            }
-            else
-            {
-                this.Invoke((MethodInvoker)delegate ()
-                {
-                    rtb_log.AppendText(Data.TrimEnd() + "\n");
-                });
+                RemainigTime = "\r\nRemaning: " + RemainigTime;
             }
             this.Invoke((MethodInvoker)delegate ()
             {
+                DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString(), Progress + RemainigTime);
+            });
+        }
+
+        void ReportStatusEncoder(String Data)
+        {
+            this.Invoke((MethodInvoker)delegate ()
+            {
+                rtb_log.AppendText(Data.TrimEnd() + "\n");
                 rtb_log.SelectionStart = rtb_log.TextLength;
                 rtb_log.ScrollToCaret();
             });
@@ -807,6 +829,7 @@ namespace vpy2x
                 try
                 {
                     KillProcessAndChildren(ProcessID);
+                    KillProcessAndChildren(VSpipeID);
                 }
                 catch { }
                 t = null;
@@ -815,6 +838,7 @@ namespace vpy2x
                 b_pause_resume.Enabled = b_stop.Enabled;
                 saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
                 clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
+                setVSpipeexePathToolStripMenuItem.Enabled = b_start.Enabled;
             }
         }
 
@@ -894,7 +918,7 @@ namespace vpy2x
             {
                 if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("running"))
                 {
-                    SuspendProcess(ProcessID);
+                    //SuspendProcess(ProcessID);
                     SuspendOrResume(true, ProcessID);
                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Paused", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                 }
@@ -902,7 +926,7 @@ namespace vpy2x
                 {
                     if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("paused"))
                     {
-                        ResumeProcess(ProcessID);
+                        //ResumeProcess(ProcessID);
                         SuspendOrResume(false, ProcessID);
                         DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                     }
@@ -985,7 +1009,7 @@ namespace vpy2x
             if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
                 File.WriteAllLines(LOGFile, rtb_log.Lines);
             IniFile ini = new IniFile(SettingsFile);
-            ini.Write("priority", cmb_priority.Text);
+            ini.Write("priority", cmb_priority.Text, "Main");
         }
 
         void SaveJobsOnClosing()
@@ -1090,6 +1114,20 @@ namespace vpy2x
                 default:
                     return ProcessPriorityClass.Normal;
             }
+        }
+
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Preferences p = new Preferences();
+            if (p.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+        }
+
+        private void clearSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DGV_jobs.ClearSelection();
         }
     }
 
