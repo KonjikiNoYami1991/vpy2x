@@ -1,23 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Reflection;
-using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace vpy2x
 {
     public partial class LoadScript : Form
     {
-
+        IniFile iniFile;
         String PresetFolder = String.Empty;
         List<String> PresetSections = new List<String>();
         Process p;
@@ -42,6 +35,9 @@ namespace vpy2x
             this.TempPreset = TempPreset;
 
             this.PresetFolder = PresetFolder;
+
+            iniFile = new IniFile(vpy2x.SettingsFile);
+
             cmb_header_load_script.Text = cmb_header_load_script.Items[0].ToString();
             if (Edit == true)
             {
@@ -73,6 +69,21 @@ namespace vpy2x
                     cmb_presets_load_script.Sorted = true;
                     cmb_presets_load_script.Text = cmb_presets_load_script.Items[0].ToString();
                     ReadPreset(Path.Combine(PresetFolder, cmb_presets_load_script.Text + ".json"));
+                    if (iniFile.KeyExists("DefaultPreset", "Main"))
+                    {
+                        if(cmb_presets_load_script.Items.Contains(iniFile.Read("DefaultPreset", "Main")))
+                        {
+                            cmb_presets_load_script.Text = iniFile.Read("DefaultPreset", "Main");
+                        }
+                        else
+                        {
+                            cmb_presets_load_script.Text = cmb_presets_load_script.Items[0].ToString();
+                        }
+                    }
+                    else
+                    {
+                        cmb_presets_load_script.Text = cmb_presets_load_script.Items[0].ToString();
+                    }
                 }
             }
         }

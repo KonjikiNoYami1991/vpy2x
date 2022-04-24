@@ -1,36 +1,38 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Taskbar;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using System.Management;
-using System.Drawing;
-using Newtonsoft.Json;
-using Microsoft.WindowsAPICodePack.Taskbar;
-using System.Globalization;
 
 namespace vpy2x
 {
     public partial class vpy2x : Form
     {
-        readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
+        public static readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
         readonly String JobsFolder = Path.Combine(Application.StartupPath, "jobs");
-        readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
+        public static readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
         readonly String LOGFile = Path.Combine(Application.StartupPath, "LOG.txt");
         public static String VSpipeEXE = String.Empty;
         public static Dictionary<String, String> JobTemp = new Dictionary<String, String>();
         public List<Job> JobList = new List<Job>();
-        
+
         JobTask task;
         Int32 JobRunningIndex = -1;
 
-        List<Dictionary<String,ProcessPriorityClass>> classes = new List<Dictionary<String,ProcessPriorityClass>>();
+        List<Dictionary<String, ProcessPriorityClass>> classes = new List<Dictionary<String, ProcessPriorityClass>>();
 
         TaskbarManager Taskbar = TaskbarManager.Instance;
+
+        public static FormWindowState FWS;
 
         Boolean ForceClose = false;
 
@@ -43,7 +45,7 @@ namespace vpy2x
         ProcessStartInfo psi;
 
         Int32 ProcessID = Int32.MinValue;
-        public static Int32 VSpipeID= Int32.MinValue;
+        public static Int32 VSpipeID = Int32.MinValue;
 
         [Flags]
         public enum ThreadAccess : int
@@ -80,6 +82,8 @@ namespace vpy2x
             {
                 ReadSavedJobs();
             }
+
+            FWS = this.WindowState;
 
             cmb_priority.Text = cmb_priority.Items[0].ToString();
 
@@ -209,7 +213,7 @@ namespace vpy2x
         {
             if (ini.KeyExists("vspipe_exe", "Main"))
             {
-                if (String.IsNullOrWhiteSpace(ini.Read("vspipe_exe","Main")) == false)
+                if (String.IsNullOrWhiteSpace(ini.Read("vspipe_exe", "Main")) == false)
                 {
                     VSpipeEXE = ini.Read("vspipe_exe", "Main");
                 }
@@ -224,7 +228,7 @@ namespace vpy2x
             }
             if (ini.KeyExists("priority", "Main"))
             {
-                if (String.IsNullOrWhiteSpace(ini.Read("priority","Main")) == false)
+                if (String.IsNullOrWhiteSpace(ini.Read("priority", "Main")) == false)
                 {
                     Priority = ini.Read("priority", "Main");
                     SetPriority();
@@ -234,6 +238,21 @@ namespace vpy2x
                 {
                     Priority = ProcessPriorityClass.Normal.ToString();
                     cmb_priority.Text = Priority;
+                }
+            }
+            if (ini.KeyExists("FormWindowState", "Main"))
+            {
+                if (String.IsNullOrWhiteSpace(ini.Read("FormWindowState", "Main")) == false)
+                {
+                    switch (ini.Read("FormWindowState", "Main"))
+                    {
+                        case "Maximized":
+                            this.WindowState = FormWindowState.Maximized;
+                            break;
+                        default:
+                            this.WindowState = FormWindowState.Normal;
+                            break;
+                    }
                 }
             }
         }
@@ -275,6 +294,7 @@ namespace vpy2x
                 Job job = new Job(JobTemp);
                 JobList.Add(job);
                 DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0");
+                SaveJobsOnClosing();
             }
         }
 
@@ -389,7 +409,7 @@ namespace vpy2x
                     psi.FileName = "\"" + VSpipeEXE + "\"";
                     psi.WindowStyle = ProcessWindowStyle.Hidden;
                     p.StartInfo = psi;
-                    p.Start();                    
+                    p.Start();
                     p.WaitForExit();
                     //MessageBox.Show(p.ExitCode.ToString());
                     switch (p.ExitCode)
@@ -479,14 +499,14 @@ namespace vpy2x
                 }
             }
             DGV_jobs.ClearSelection();
-            foreach(Int32 i in Selected)
+            foreach (Int32 i in Selected)
             {
                 DGV_jobs.Rows.RemoveAt(i);
                 JobList.RemoveAt(i);
             }
             if (b_start.Enabled == false)
             {
-                foreach(DataGridViewRow d in DGV_jobs.Rows)
+                foreach (DataGridViewRow d in DGV_jobs.Rows)
                 {
                     if (d.Cells["status"].Value.ToString().ToLower().Contains("running"))
                     {
@@ -528,6 +548,7 @@ namespace vpy2x
                         JobList.Insert(DGV_jobs.SelectedRows[0].Index, job);
                         DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].SetValues(job.VPY, job.Subject, "Ready", "0");
                     }
+                    SaveJobsOnClosing();
                 }
             }
         }
@@ -607,10 +628,11 @@ namespace vpy2x
 
         void Encode()
         {
-            while (JobRunningIndex < JobList.Count)
+            for (Int32 i = 0; i < JobList.Count; i++)
             {
-                if (DGV_jobs.Rows[JobRunningIndex].Cells["status"].Value.ToString().ToLower().Contains("ready"))
+                if (DGV_jobs.Rows[i].Cells["status"].Value.ToString().ToLower().Contains("ready"))
                 {
+                    JobRunningIndex = i;
                     task = new JobTask(JobList[JobRunningIndex]);
                     Environment.CurrentDirectory = task.Job.EncoderDir;
                     if (task.HasErrors == false)
@@ -669,7 +691,7 @@ namespace vpy2x
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGreen;
                                     Taskbar.SetProgressValue(100, 100);
-                                    
+
                                 });
                                 break;
                             case -1:
@@ -677,7 +699,7 @@ namespace vpy2x
                                 {
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
-                                    
+
                                 });
                                 break;
                             default:
@@ -685,7 +707,7 @@ namespace vpy2x
                                 {
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.OrangeRed;
-                                    
+
                                 });
                                 break;
                         }
@@ -696,20 +718,21 @@ namespace vpy2x
                         {
                             rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
                             rtb_log.AppendText(task.ErrorMessage);
-                            
+
                             DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
                         });
                     }
+                    i = 0;
                     if (b_start.Enabled == true)
                     {
                         break;
                     }
                 }
-                JobRunningIndex++;
             }
             this.Invoke((MethodInvoker)delegate ()
             {
                 Taskbar.SetProgressValue(0, 100);
+                Taskbar.SetProgressState(TaskbarProgressBarState.NoProgress);
                 b_start.Enabled = true;
                 b_stop.Enabled = false;
                 b_pause_resume.Enabled = b_stop.Enabled;
@@ -728,7 +751,7 @@ namespace vpy2x
                     SaveJobsOnClosing();
                     Process.Start("shutdown", "/f /s /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     var Shutdown = MessageBox.Show("Your PC will shutdown in 30 seconds from now.\nPress Cancel button to cancel shutdown.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
-                    if(Shutdown != DialogResult.Cancel)
+                    if (Shutdown != DialogResult.Cancel)
                     {
                         Process.Start("shutdown", "/a").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     }
@@ -738,7 +761,7 @@ namespace vpy2x
                     SaveJobsOnClosing();
                     Process.Start("shutdown", "/f /r /t 30").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     var Reboot = MessageBox.Show("Your PC will reboot in 30 seconds from now.\nPress Cancel button to cancel reboot.", this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
-                    if(Reboot == DialogResult.Cancel)
+                    if (Reboot == DialogResult.Cancel)
                     {
                         Process.Start("shutdown", "/a").StartInfo = new ProcessStartInfo() { CreateNoWindow = true, UseShellExecute = false };
                     }
@@ -817,7 +840,7 @@ namespace vpy2x
             this.Invoke((MethodInvoker)delegate ()
             {
                 rtb_log.AppendText(Data.TrimEnd() + "\n");
-                rtb_log.SelectionStart = rtb_log.TextLength;
+                rtb_log.SelectionStart = rtb_log.SelectionLength;
                 rtb_log.ScrollToCaret();
             });
         }
@@ -849,7 +872,7 @@ namespace vpy2x
                 var moc = searcher.Get();
                 foreach (ManagementObject mo in moc)
                 {
-                    SuspendOrResume(Suspend,Convert.ToInt32(mo["ProcessID"]));
+                    SuspendOrResume(Suspend, Convert.ToInt32(mo["ProcessID"]));
                 }
                 try
                 {
@@ -920,6 +943,7 @@ namespace vpy2x
                 {
                     //SuspendProcess(ProcessID);
                     SuspendOrResume(true, ProcessID);
+                    Taskbar.SetProgressState(TaskbarProgressBarState.Paused);
                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Paused", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                 }
                 else
@@ -928,6 +952,7 @@ namespace vpy2x
                     {
                         //ResumeProcess(ProcessID);
                         SuspendOrResume(false, ProcessID);
+                        Taskbar.SetProgressState(TaskbarProgressBarState.Normal);
                         DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                     }
                 }
@@ -936,9 +961,9 @@ namespace vpy2x
 
         private void vpy2x_DragEnter(object sender, DragEventArgs e)
         {
-            foreach(String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
+            foreach (String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
             {
-                if(Path.GetExtension(s).ToLower() == ".vpy")
+                if (Path.GetExtension(s).ToLower() == ".vpy")
                 {
                     e.Effect = DragDropEffects.Copy;
                     break;
@@ -958,15 +983,17 @@ namespace vpy2x
                     {
                         Job job = new Job(JobTemp);
                         JobList.Add(job);
-                        DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0"); }
+                        DGV_jobs.Rows.Add(job.VPY, job.Subject, "Ready", "0");
+                    }
                     else
                     {
-                        if(load.DialogResult == DialogResult.Cancel)
+                        if (load.DialogResult == DialogResult.Cancel)
                         {
                             break;
                         }
                     }
                 }
+                SaveJobsOnClosing();
             }
         }
 
@@ -1014,7 +1041,7 @@ namespace vpy2x
 
         void SaveJobsOnClosing()
         {
-            foreach(String s in Directory.GetFiles(JobsFolder))
+            foreach (String s in Directory.GetFiles(JobsFolder))
             {
                 File.Delete(s);
             }
