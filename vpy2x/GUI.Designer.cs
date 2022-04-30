@@ -48,10 +48,6 @@ namespace vpy2x
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.DGV_jobs = new System.Windows.Forms.DataGridView();
-            this.script = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cms_joblist = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.clearSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -73,6 +69,10 @@ namespace vpy2x
             this.saveLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.clearLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.script = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.subject = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -246,53 +246,8 @@ namespace vpy2x
             this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DGV_jobs.Size = new System.Drawing.Size(925, 470);
             this.DGV_jobs.TabIndex = 0;
-            // 
-            // script
-            // 
-            this.script.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.script.DefaultCellStyle = dataGridViewCellStyle1;
-            this.script.HeaderText = "VPY";
-            this.script.Name = "script";
-            this.script.ReadOnly = true;
-            this.script.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.script.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.script.Width = 34;
-            // 
-            // subject
-            // 
-            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.subject.DefaultCellStyle = dataGridViewCellStyle2;
-            this.subject.HeaderText = "Subject";
-            this.subject.Name = "subject";
-            this.subject.ReadOnly = true;
-            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // status
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.status.DefaultCellStyle = dataGridViewCellStyle3;
-            this.status.HeaderText = "Status";
-            this.status.Name = "status";
-            this.status.ReadOnly = true;
-            this.status.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // fps
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fps.DefaultCellStyle = dataGridViewCellStyle4;
-            this.fps.HeaderText = "FPS";
-            this.fps.Name = "fps";
-            this.fps.ReadOnly = true;
-            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.fps.Width = 135;
+            this.DGV_jobs.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.DGV_jobs_CellStateChanged);
+            this.DGV_jobs.RowStateChanged += new System.Windows.Forms.DataGridViewRowStateChangedEventHandler(this.DGV_jobs_RowStateChanged);
             // 
             // cms_joblist
             // 
@@ -508,6 +463,55 @@ namespace vpy2x
             this.clearLOGToolStripMenuItem.Text = "Clear LOG";
             this.clearLOGToolStripMenuItem.Click += new System.EventHandler(this.clearLOGToolStripMenuItem_Click);
             // 
+            // script
+            // 
+            this.script.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.script.DefaultCellStyle = dataGridViewCellStyle1;
+            this.script.HeaderText = "VPY";
+            this.script.Name = "script";
+            this.script.ReadOnly = true;
+            this.script.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.script.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.script.Width = 34;
+            // 
+            // subject
+            // 
+            this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.subject.DefaultCellStyle = dataGridViewCellStyle2;
+            this.subject.HeaderText = "Subject";
+            this.subject.Name = "subject";
+            this.subject.ReadOnly = true;
+            this.subject.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.subject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // status
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.status.DefaultCellStyle = dataGridViewCellStyle3;
+            this.status.HeaderText = "Status";
+            this.status.Name = "status";
+            this.status.ReadOnly = true;
+            this.status.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.status.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // fps
+            // 
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fps.DefaultCellStyle = dataGridViewCellStyle4;
+            this.fps.HeaderText = "FPS";
+            this.fps.Name = "fps";
+            this.fps.ReadOnly = true;
+            this.fps.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.fps.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.fps.Width = 135;
+            // 
             // vpy2x
             // 
             this.AllowDrop = true;
@@ -578,15 +582,15 @@ namespace vpy2x
         private System.Windows.Forms.ToolStripMenuItem saveLOGToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem clearLOGToolStripMenuItem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn script;
-        private System.Windows.Forms.DataGridViewTextBoxColumn subject;
-        private System.Windows.Forms.DataGridViewTextBoxColumn status;
-        private System.Windows.Forms.DataGridViewTextBoxColumn fps;
         private System.Windows.Forms.ComboBox cmb_priority;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip cms_joblist;
         private System.Windows.Forms.ToolStripMenuItem clearSelectionToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn script;
+        private System.Windows.Forms.DataGridViewTextBoxColumn subject;
+        private System.Windows.Forms.DataGridViewTextBoxColumn status;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fps;
     }
 }
 

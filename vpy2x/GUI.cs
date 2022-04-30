@@ -156,6 +156,7 @@ namespace vpy2x
                             DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.White;
                             break;
                     }
+                    DGV_jobs.Rows[i].Cells["status"].Style.SelectionBackColor = DGV_jobs.Rows[i].Cells["status"].Style.BackColor;
                     JobList.Add(new Job(JobTemp));
                 }
             }
@@ -525,6 +526,7 @@ namespace vpy2x
                 {
                     DGV_jobs.Rows[i].SetValues(DGV_jobs.Rows[i].Cells["script"].Value.ToString(), DGV_jobs.Rows[i].Cells["subject"].Value.ToString(), "Ready", "0");
                     DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.Empty;
+                    DGV_jobs.Rows[i].Cells["status"].Style.SelectionBackColor = Color.Empty;
                 }
             }
         }
@@ -690,8 +692,8 @@ namespace vpy2x
                                 {
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Done.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString().Split(':')[0] + " 00:00:00");
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGreen;
+                                    DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.SelectionBackColor = Color.LightGreen;
                                     Taskbar.SetProgressValue(100, 100);
-
                                 });
                                 break;
                             case -1:
@@ -699,7 +701,7 @@ namespace vpy2x
                                 {
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Aborted.\n\nStarted: " + StartTime.ToString() + "\n\nEnded: " + DateTime.Now.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
-
+                                    DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.SelectionBackColor = Color.LightGoldenrodYellow;
                                 });
                                 break;
                             default:
@@ -707,7 +709,7 @@ namespace vpy2x
                                 {
                                     DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value.ToString());
                                     DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.OrangeRed;
-
+                                    DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.SelectionBackColor = Color.OrangeRed;
                                 });
                                 break;
                         }
@@ -720,6 +722,8 @@ namespace vpy2x
                             rtb_log.AppendText(task.ErrorMessage);
 
                             DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
+                            DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.OrangeRed;
+                            DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.SelectionBackColor = Color.OrangeRed;
                         });
                     }
                     i = 0;
@@ -839,8 +843,8 @@ namespace vpy2x
         {
             this.Invoke((MethodInvoker)delegate ()
             {
-                rtb_log.AppendText(Data.TrimEnd() + "\n");
-                rtb_log.SelectionStart = rtb_log.SelectionLength;
+                rtb_log.Text += Data.TrimEnd() + "\n";
+                rtb_log.SelectionStart = rtb_log.TextLength;
                 rtb_log.ScrollToCaret();
             });
         }
@@ -1155,6 +1159,16 @@ namespace vpy2x
         private void clearSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DGV_jobs.ClearSelection();
+        }
+
+        private void DGV_jobs_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
+        {
+            //DGV_jobs.Rows[e.Row.Index].Cells["status"].Selected = false;
+        }
+
+        private void DGV_jobs_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
+        {
+            
         }
     }
 
