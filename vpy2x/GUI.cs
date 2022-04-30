@@ -1150,25 +1150,12 @@ namespace vpy2x
         private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Preferences p = new Preferences();
-            if (p.ShowDialog() == DialogResult.OK)
-            {
-
-            }
+            p.ShowDialog();
         }
 
         private void clearSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DGV_jobs.ClearSelection();
-        }
-
-        private void DGV_jobs_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
-        {
-            //DGV_jobs.Rows[e.Row.Index].Cells["status"].Selected = false;
-        }
-
-        private void DGV_jobs_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
-        {
-            
         }
     }
 
