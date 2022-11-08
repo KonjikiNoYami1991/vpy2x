@@ -30,10 +30,10 @@ namespace vpy2x
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.menu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,6 +54,8 @@ namespace vpy2x
             this.fps = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cms_joblist = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.clearSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.openLOGForSelectedJobToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cmb_priority = new System.Windows.Forms.ComboBox();
@@ -66,17 +68,9 @@ namespace vpy2x
             this.b_move_up = new System.Windows.Forms.Button();
             this.b_edit = new System.Windows.Forms.Button();
             this.b_new = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.rtb_log = new System.Windows.Forms.RichTextBox();
-            this.cms_log = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.saveLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.clearLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -85,9 +79,6 @@ namespace vpy2x
             ((System.ComponentModel.ISupportInitialize)(this.DGV_jobs)).BeginInit();
             this.cms_joblist.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.cms_log.SuspendLayout();
             this.SuspendLayout();
             // 
             // menu
@@ -197,12 +188,9 @@ namespace vpy2x
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(1101, 647);
-            this.splitContainer1.SplitterDistance = 470;
+            this.splitContainer1.Panel2Collapsed = true;
+            this.splitContainer1.Size = new System.Drawing.Size(1101, 477);
+            this.splitContainer1.SplitterDistance = 452;
             this.splitContainer1.TabIndex = 1;
             // 
             // splitContainer2
@@ -220,7 +208,7 @@ namespace vpy2x
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer2.Size = new System.Drawing.Size(1101, 470);
+            this.splitContainer2.Size = new System.Drawing.Size(1101, 477);
             this.splitContainer2.SplitterDistance = 925;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -244,14 +232,14 @@ namespace vpy2x
             this.DGV_jobs.RowHeadersWidth = 24;
             this.DGV_jobs.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.DGV_jobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGV_jobs.Size = new System.Drawing.Size(925, 470);
+            this.DGV_jobs.Size = new System.Drawing.Size(925, 477);
             this.DGV_jobs.TabIndex = 0;
             // 
             // script
             // 
             this.script.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.script.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.script.DefaultCellStyle = dataGridViewCellStyle5;
             this.script.HeaderText = "VPY";
             this.script.Name = "script";
             this.script.ReadOnly = true;
@@ -262,9 +250,9 @@ namespace vpy2x
             // subject
             // 
             this.subject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.subject.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.subject.DefaultCellStyle = dataGridViewCellStyle6;
             this.subject.HeaderText = "Subject";
             this.subject.Name = "subject";
             this.subject.ReadOnly = true;
@@ -273,11 +261,11 @@ namespace vpy2x
             // 
             // status
             // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.status.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.status.DefaultCellStyle = dataGridViewCellStyle7;
             this.status.HeaderText = "Status";
             this.status.Name = "status";
             this.status.ReadOnly = true;
@@ -286,9 +274,9 @@ namespace vpy2x
             // 
             // fps
             // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fps.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fps.DefaultCellStyle = dataGridViewCellStyle8;
             this.fps.HeaderText = "FPS";
             this.fps.Name = "fps";
             this.fps.ReadOnly = true;
@@ -299,16 +287,30 @@ namespace vpy2x
             // cms_joblist
             // 
             this.cms_joblist.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearSelectionToolStripMenuItem});
+            this.clearSelectionToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.openLOGForSelectedJobToolStripMenuItem});
             this.cms_joblist.Name = "cms_joblist";
-            this.cms_joblist.Size = new System.Drawing.Size(152, 26);
+            this.cms_joblist.Size = new System.Drawing.Size(214, 54);
             // 
             // clearSelectionToolStripMenuItem
             // 
             this.clearSelectionToolStripMenuItem.Name = "clearSelectionToolStripMenuItem";
-            this.clearSelectionToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.clearSelectionToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
             this.clearSelectionToolStripMenuItem.Text = "Clear selection";
             this.clearSelectionToolStripMenuItem.Click += new System.EventHandler(this.clearSelectionToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(210, 6);
+            // 
+            // openLOGForSelectedJobToolStripMenuItem
+            // 
+            this.openLOGForSelectedJobToolStripMenuItem.Name = "openLOGForSelectedJobToolStripMenuItem";
+            this.openLOGForSelectedJobToolStripMenuItem.Size = new System.Drawing.Size(213, 22);
+            this.openLOGForSelectedJobToolStripMenuItem.Text = "Open LOG for selected job";
+            this.openLOGForSelectedJobToolStripMenuItem.Click += new System.EventHandler(this.openLOGForSelectedJobToolStripMenuItem_Click);
             // 
             // groupBox1
             // 
@@ -326,15 +328,16 @@ namespace vpy2x
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(172, 470);
+            this.groupBox1.Size = new System.Drawing.Size(172, 477);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Actions";
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 427);
+            this.label1.Location = new System.Drawing.Point(6, 428);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(78, 13);
             this.label1.TabIndex = 10;
@@ -342,6 +345,8 @@ namespace vpy2x
             // 
             // cmb_priority
             // 
+            this.cmb_priority.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cmb_priority.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_priority.FormattingEnabled = true;
             this.cmb_priority.Items.AddRange(new object[] {
@@ -350,7 +355,7 @@ namespace vpy2x
             "Normal",
             "Above Normal",
             "High"});
-            this.cmb_priority.Location = new System.Drawing.Point(6, 443);
+            this.cmb_priority.Location = new System.Drawing.Point(6, 444);
             this.cmb_priority.Name = "cmb_priority";
             this.cmb_priority.Size = new System.Drawing.Size(154, 21);
             this.cmb_priority.TabIndex = 9;
@@ -448,88 +453,25 @@ namespace vpy2x
             this.b_new.UseVisualStyleBackColor = true;
             this.b_new.Click += new System.EventHandler(this.b_new_Click);
             // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1101, 173);
-            this.tabControl1.TabIndex = 0;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.rtb_log);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1093, 147);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "LOG";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // rtb_log
-            // 
-            this.rtb_log.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.rtb_log.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtb_log.ContextMenuStrip = this.cms_log;
-            this.rtb_log.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtb_log.Location = new System.Drawing.Point(3, 3);
-            this.rtb_log.Name = "rtb_log";
-            this.rtb_log.ReadOnly = true;
-            this.rtb_log.Size = new System.Drawing.Size(1087, 141);
-            this.rtb_log.TabIndex = 0;
-            this.rtb_log.Text = "";
-            // 
-            // cms_log
-            // 
-            this.cms_log.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveLOGToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.clearLOGToolStripMenuItem});
-            this.cms_log.Name = "cms_log";
-            this.cms_log.Size = new System.Drawing.Size(128, 54);
-            // 
-            // saveLOGToolStripMenuItem
-            // 
-            this.saveLOGToolStripMenuItem.Name = "saveLOGToolStripMenuItem";
-            this.saveLOGToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
-            this.saveLOGToolStripMenuItem.Text = "Save LOG";
-            this.saveLOGToolStripMenuItem.Click += new System.EventHandler(this.saveLOGToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(124, 6);
-            // 
-            // clearLOGToolStripMenuItem
-            // 
-            this.clearLOGToolStripMenuItem.Name = "clearLOGToolStripMenuItem";
-            this.clearLOGToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
-            this.clearLOGToolStripMenuItem.Text = "Clear LOG";
-            this.clearLOGToolStripMenuItem.Click += new System.EventHandler(this.clearLOGToolStripMenuItem_Click);
-            // 
             // vpy2x
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1101, 671);
+            this.ClientSize = new System.Drawing.Size(1101, 501);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menu);
             this.MainMenuStrip = this.menu;
-            this.MinimumSize = new System.Drawing.Size(980, 640);
+            this.MinimumSize = new System.Drawing.Size(980, 540);
             this.Name = "vpy2x";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "vpy2x v1.0.9 BETA";
+            this.Text = "vpy2x v1.1.1 BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.vpy2x_FormClosing);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.vpy2x_DragEnter);
             this.menu.ResumeLayout(false);
             this.menu.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
@@ -540,9 +482,6 @@ namespace vpy2x
             this.cms_joblist.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.cms_log.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -560,15 +499,12 @@ namespace vpy2x
         private System.Windows.Forms.Button b_edit;
         private System.Windows.Forms.Button b_new;
         private System.Windows.Forms.Button b_reset;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Button b_pause_resume;
         private System.Windows.Forms.Button b_start;
         private System.Windows.Forms.Button b_stop;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setVSpipeexePathToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editPresetsToolStripMenuItem;
-        private System.Windows.Forms.RichTextBox rtb_log;
         private System.Windows.Forms.DataGridView DGV_jobs;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripMenuItem whenFinishedToolStripMenuItem;
@@ -576,10 +512,6 @@ namespace vpy2x
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip cms_log;
-        private System.Windows.Forms.ToolStripMenuItem saveLOGToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem clearLOGToolStripMenuItem;
         private System.Windows.Forms.ComboBox cmb_priority;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
@@ -589,6 +521,8 @@ namespace vpy2x
         private System.Windows.Forms.DataGridViewTextBoxColumn subject;
         private System.Windows.Forms.DataGridViewTextBoxColumn status;
         private System.Windows.Forms.DataGridViewTextBoxColumn fps;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem openLOGForSelectedJobToolStripMenuItem;
     }
 }
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.WindowsAPICodePack.Taskbar;
+﻿using ChunksGenerator;
+using FFmpeg_Output_Wrapper;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -6,9 +8,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -18,12 +22,16 @@ namespace vpy2x
     public partial class vpy2x : Form
     {
         public static readonly String PresetsFolder = Path.Combine(Application.StartupPath, "presets");
+        public static readonly String LogsFolder = Path.Combine(Application.StartupPath, "logs");
         readonly String JobsFolder = Path.Combine(Application.StartupPath, "jobs");
         public static readonly String SettingsFile = Path.Combine(Application.StartupPath, "settings.ini");
         readonly String LOGFile = Path.Combine(Application.StartupPath, "LOG.txt");
         public static String VSpipeEXE = String.Empty;
+        public static String av1anEXE = String.Empty;
         public static Dictionary<String, String> JobTemp = new Dictionary<String, String>();
+        public static List<TreeNode> AudioTracks = new List<TreeNode>();
         public List<Job> JobList = new List<Job>();
+        List<String> LOGLines = new List<String>();
 
         JobTask task;
         Int32 JobRunningIndex = -1;
@@ -44,8 +52,9 @@ namespace vpy2x
         Process p;
         ProcessStartInfo psi;
 
-        Int32 ProcessID = Int32.MinValue;
+        public static Int32 ProcessID = Int32.MinValue;
         public static Int32 VSpipeID = Int32.MinValue;
+        public static Int32 av1anID = Int32.MinValue;
 
         [Flags]
         public enum ThreadAccess : int
@@ -83,16 +92,17 @@ namespace vpy2x
                 ReadSavedJobs();
             }
 
+            if (Directory.Exists(LogsFolder) == false)
+            {
+                Directory.CreateDirectory(LogsFolder);
+            }
+
             FWS = this.WindowState;
 
             cmb_priority.Text = cmb_priority.Items[0].ToString();
 
-            if (File.Exists(LOGFile))
-            {
-                rtb_log.Lines = File.ReadAllLines(LOGFile);
-            }
-
             CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
+
 
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
@@ -118,47 +128,50 @@ namespace vpy2x
             {
                 MessageBox.Show("Set the path of vspipe.exe file first.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-
-            rtb_log.SelectionStart = rtb_log.TextLength;
-            rtb_log.ScrollToCaret();
-        }
-
-        private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
-        {
-            this.Activate();
         }
 
         void ReadSavedJobs()
         {
-            String[] Files = Directory.GetFiles(JobsFolder);
+            String[] Files = Directory.GetFiles(JobsFolder, "*.json", SearchOption.TopDirectoryOnly);
             for (Int32 i = 0; i < Files.Length; i++)
             {
-                if (Path.GetExtension(Files[i]).ToLower() == ".json")
+                var SaveLoad = JsonConvert.DeserializeObject<SaveLoadJob>(File.ReadAllText(Files[i]));
+                JobTemp = new Dictionary<String, String>();
+                JobTemp.Add("VPY", SaveLoad.VPY);
+                JobTemp.Add("Subject", SaveLoad.Subject);
+                JobTemp.Add("Encoder", Path.Combine(SaveLoad.EncoderDir, SaveLoad.EncoderEXE));
+                JobTemp.Add("Header", SaveLoad.Header);
+                JobTemp.Add("End", SaveLoad.End);
+                JobTemp.Add("Start", SaveLoad.Start);
+                JobTemp.Add("Scene detection", SaveLoad.VPY4Scenes);
+                JobTemp.Add("Audio", SaveLoad.Audio);
+                if (String.IsNullOrWhiteSpace(SaveLoad.Audio) == false)
                 {
-                    var SaveLoad = JsonConvert.DeserializeObject<SaveLoadJob>(File.ReadAllText(Files[i]));
-                    JobTemp = new Dictionary<String, String>();
-                    JobTemp.Add("VPY", SaveLoad.VPY);
-                    JobTemp.Add("Subject", SaveLoad.Subject);
-                    JobTemp.Add("Encoder", Path.Combine(SaveLoad.EncoderDir, SaveLoad.EncoderEXE));
-                    JobTemp.Add("Header", SaveLoad.Header);
-                    JobTemp.Add("End", SaveLoad.End);
-                    JobTemp.Add("Start", SaveLoad.Start);
-                    DGV_jobs.Rows.Add(SaveLoad.VPY, SaveLoad.Subject, SaveLoad.Status, SaveLoad.FPS);
-                    switch (SaveLoad.Colour)
+                    using (Stream file = File.Open(SaveLoad.Audio, FileMode.Open))
                     {
-                        case "LightGreen":
-                            DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.LightGreen;
-                            break;
-                        case "LightGoldenrodYellow":
-                            DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
-                            break;
-                        default:
-                            DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.White;
-                            break;
+                        BinaryFormatter bf = new BinaryFormatter();
+                        object obj = bf.Deserialize(file);
+
+                        TreeNode[] nodeList = (obj as IEnumerable<TreeNode>).ToArray();
+                        AudioTracks.AddRange(nodeList);
                     }
-                    DGV_jobs.Rows[i].Cells["status"].Style.SelectionBackColor = DGV_jobs.Rows[i].Cells["status"].Style.BackColor;
-                    JobList.Add(new Job(JobTemp));
                 }
+                DGV_jobs.Rows.Add(SaveLoad.VPY, SaveLoad.Subject, SaveLoad.Status, SaveLoad.FPS);
+                switch (SaveLoad.Colour)
+                {
+                    case "LightGreen":
+                        DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.LightGreen;
+                        break;
+                    case "LightGoldenrodYellow":
+                        DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.LightGoldenrodYellow;
+                        break;
+                    default:
+                        DGV_jobs.Rows[i].Cells["status"].Style.BackColor = Color.White;
+                        break;
+                }
+                DGV_jobs.Rows[i].Cells["status"].Style.SelectionBackColor = DGV_jobs.Rows[i].Cells["status"].Style.BackColor;
+                JobList.Add(new Job(JobTemp));
+                AudioTracks.Clear();
             }
         }
 
@@ -167,7 +180,9 @@ namespace vpy2x
             var process = Process.GetProcessById(pid);
 
             if (process.ProcessName == string.Empty)
+            {
                 return;
+            }
 
             foreach (ProcessThread pT in process.Threads)
             {
@@ -189,7 +204,9 @@ namespace vpy2x
             var process = Process.GetProcessById(pid);
 
             if (process.ProcessName == string.Empty)
+            {
                 return;
+            }
 
             foreach (ProcessThread pT in process.Threads)
             {
@@ -288,7 +305,7 @@ namespace vpy2x
 
         private void b_new_Click(object sender, EventArgs e)
         {
-            LoadScript load = new LoadScript(PresetsFolder, false, String.Empty, new LoadScript.Preset());
+            LoadScript load = new LoadScript(PresetsFolder, false, String.Empty, new LoadScript.Preset(), String.Empty, AudioTracks);
             load.StartPosition = FormStartPosition.CenterParent;
             if (load.ShowDialog() == DialogResult.OK)
             {
@@ -308,6 +325,8 @@ namespace vpy2x
             public String Header { get; set; } = String.Empty;
             public String Start { get; set; } = String.Empty;
             public String End { get; set; } = String.Empty;
+            public String VPY4Scenes { get; set; } = String.Empty;
+            public List<TreeNode> AudioTrackList { get; set; } = new List<TreeNode>();
 
             public Job(Dictionary<String, String> JobTemp)
             {
@@ -318,6 +337,9 @@ namespace vpy2x
                 Header = JobTemp["Header"];
                 Start = JobTemp["Start"];
                 End = JobTemp["End"];
+                VPY4Scenes = JobTemp["Scene detection"];
+                AudioTrackList.AddRange(AudioTracks);
+                AudioTracks.Clear();
             }
         }
 
@@ -329,9 +351,14 @@ namespace vpy2x
             public Job Job { get; set; }
             public VPYAnalize Analize { get; set; }
 
-            public JobTask(Job job)
+            String JsonScenes = String.Empty;
+
+            vpy2x Gui;
+
+            public JobTask(Job job, vpy2x Gui)
             {
                 this.Job = job;
+                this.Gui = Gui;
                 GenerateCLI(job);
             }
 
@@ -340,23 +367,143 @@ namespace vpy2x
                 Analize = new VPYAnalize(job);
                 if (Analize.HasErrors == false)
                 {
-                    CommandLine = "\"" + VSpipeEXE + "\"";
-                    CommandLine += " --progress";
-                    CommandLine += job.Start;
-                    CommandLine += job.End;
-                    CommandLine += " \"" + job.VPY + "\"";
-                    CommandLine += " - ";
-                    CommandLine += job.Header;
-                    CommandLine += " | ";
-                    CommandLine += job.EncoderEXE;
-                    CommandLine += " " + ReplacePlaceholders(job.Subject, Analize, job);
-                    //MessageBox.Show(CommandLine);
+                    if (job.EncoderEXE.ToLower().Contains("av1an"))
+                    {
+                        if (String.IsNullOrWhiteSpace(job.VPY4Scenes) == true)
+                        {
+                            CommandLine = " " + ReplacePlaceholders(job.Subject, Analize, job) + " -i \"" + job.VPY + "\"";
+                        }
+                        else
+                        {
+                            JsonScenes = Path.ChangeExtension(job.VPY4Scenes, ".json");
+                            if (File.Exists(JsonScenes) == false)
+                            {
+                                ErrorMessage = SceneDetection();
+                                if (String.IsNullOrWhiteSpace(ErrorMessage))
+                                {
+                                    HasErrors = false;
+                                }
+                                else
+                                {
+                                    HasErrors = true;
+                                }
+                            }
+                            if (HasErrors == false)
+                            {
+                                ReadJsonScenes(JsonScenes);
+                            }
+                            CommandLine = " -s \"" + JsonScenes + "\" " + ReplacePlaceholders(job.Subject, Analize, job) + " -i \"" + job.VPY + "\"";
+                        }
+                    }
+                    else
+                    {
+                        CommandLine = "\"" + VSpipeEXE + "\"";
+                        CommandLine += " --progress";
+                        CommandLine += job.Start;
+                        CommandLine += job.End;
+                        CommandLine += " \"" + job.VPY + "\"";
+                        CommandLine += " - ";
+                        CommandLine += job.Header;
+                        CommandLine += " | ";
+                        CommandLine += job.EncoderEXE;
+                        CommandLine += " " + ReplacePlaceholders(job.Subject, Analize, job);
+                        //MessageBox.Show(CommandLine);
+                    }
                 }
                 else
                 {
                     ErrorMessage = Analize.ErrorMessage;
                     HasErrors = Analize.HasErrors;
                 }
+            }
+
+            String SceneDetection()
+            {
+                var ps = new Process();
+                var psi = new ProcessStartInfo();
+                psi.UseShellExecute = false;
+                psi.CreateNoWindow = true;
+                psi.RedirectStandardOutput = true;
+                psi.RedirectStandardError = true;
+                psi.Arguments = " " + Path.GetFileName(VSpipeEXE) + " \"" + Job.VPY4Scenes + "\" --y4m - | ffmpeg.exe -i pipe:0 -hide_banner -f yuv4mpegpipe -pix_fmt yuv420p - | av-scenechange.exe -o \"" + JsonScenes + "\" - ";
+                psi.ErrorDialog = true;
+                psi.FileName = @"cmd.exe";
+                psi.WindowStyle = ProcessWindowStyle.Hidden;
+                ps.StartInfo = psi;
+                psi.RedirectStandardInput = true;
+                ps.Start();
+                ProcessID = ps.Id;
+                ps.PriorityClass = ProcessPriorityClass.Idle;
+                ps.BeginOutputReadLine();
+                ps.BeginErrorReadLine();
+                ps.OutputDataReceived += Ps_OutputDataReceived;
+                ps.ErrorDataReceived += Ps_ErrorDataReceived;
+
+                var Input = ps.StandardInput;
+                Input.WriteLine("@echo off");
+                Input.WriteLine(psi.Arguments);
+                Input.WriteLine("exit");
+                ps.WaitForExit();
+                ps.CancelErrorRead();
+                ps.CancelOutputRead();
+                //MessageBox.Show(ps.ExitCode.ToString(), "Scene detection");
+                if (ps.ExitCode == 0)
+                {
+                    ReadJsonScenes(JsonScenes);
+                    return String.Empty;
+                }
+                else
+                {
+                    return ps.StandardError.ReadToEnd();
+                }
+            }
+
+            private void Ps_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+            {
+                ReportSceneDetection(e);
+            }
+
+            void ReadJsonScenes(String JsonScenes)
+            {
+                var Scenes = File.ReadAllText(JsonScenes);
+                Scenes = Scenes.Replace("scene_changes", "scenes");
+                Scenes = Scenes.Replace("frame_count", "frames");
+                Scenes = Scenes.Replace("\n", "");
+                Scenes = Scenes.Replace("\r", "");
+                Scenes = Scenes.Replace(" ", "");
+                Scenes = Scenes.Replace("[0,", "[");
+                File.WriteAllText(JsonScenes, Scenes);
+            }
+
+            void ReportSceneDetection(DataReceivedEventArgs e)
+            {
+                if (e.Data != null)
+                {
+                    if (String.IsNullOrWhiteSpace(e.Data.Trim()) == false)
+                    {
+                        if (e.Data.Trim().ToLower().StartsWith("frame"))
+                        {
+                            FFmpegOutputWrapperNET ff = new FFmpegOutputWrapperNET(e.Data.Trim());
+                            Gui.Invoke((MethodInvoker)delegate ()
+                            {
+                                Gui.DGV_jobs.Rows[Gui.JobRunningIndex].Cells["status"].Value = "Detecting scenes...";
+                                Gui.DGV_jobs.Rows[Gui.JobRunningIndex].Cells["fps"].Value = ff.Frames + "/" + Analize.Frames;
+                            });
+                        }
+                        else
+                        {
+                            Gui.Invoke((MethodInvoker)delegate ()
+                            {
+                                Gui.LOGLines.Add(e.Data);
+                            });
+                        }
+                    }
+                }
+            }
+
+            private void Ps_OutputDataReceived(object sender, DataReceivedEventArgs e)
+            {
+                ReportSceneDetection(e);
             }
 
             String ReplacePlaceholders(String Subject, VPYAnalize Analize, Job job)
@@ -516,6 +663,7 @@ namespace vpy2x
                     }
                 }
             }
+            SaveJobsOnClosing();
         }
 
         private void b_reset_Click(object sender, EventArgs e)
@@ -541,7 +689,7 @@ namespace vpy2x
                     TempPreset.exe = Path.Combine(JobList[DGV_jobs.SelectedRows[0].Index].EncoderDir, JobList[DGV_jobs.SelectedRows[0].Index].EncoderEXE);
                     TempPreset.args = JobList[DGV_jobs.SelectedRows[0].Index].Subject;
                     TempPreset.header = JobList[DGV_jobs.SelectedRows[0].Index].Header;
-                    LoadScript load = new LoadScript(PresetsFolder, true, JobList[DGV_jobs.SelectedRows[0].Index].VPY, TempPreset);
+                    LoadScript load = new LoadScript(PresetsFolder, true, JobList[DGV_jobs.SelectedRows[0].Index].VPY, TempPreset, JobList[DGV_jobs.SelectedRows[0].Index].VPY4Scenes, JobList[DGV_jobs.SelectedRows[0].Index].AudioTrackList);
                     load.StartPosition = FormStartPosition.CenterParent;
                     if (load.ShowDialog() == DialogResult.OK)
                     {
@@ -549,6 +697,8 @@ namespace vpy2x
                         JobList.RemoveAt(DGV_jobs.SelectedRows[0].Index);
                         JobList.Insert(DGV_jobs.SelectedRows[0].Index, job);
                         DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].SetValues(job.VPY, job.Subject, "Ready", "0");
+                        DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].Cells["status"].Style.BackColor = Color.Empty;
+                        DGV_jobs.Rows[DGV_jobs.SelectedRows[0].Index].Cells["status"].Style.SelectionBackColor = Color.Empty;
                     }
                     SaveJobsOnClosing();
                 }
@@ -557,58 +707,48 @@ namespace vpy2x
 
         private void b_move_up_Click(object sender, EventArgs e)
         {
-            if (DGV_jobs.SelectedRows.Count > 0)
+            DataGridView dgv = DGV_jobs;
+            try
             {
-                if (DGV_jobs.SelectedRows[0].Index != JobRunningIndex)
+                int totalRows = dgv.Rows.Count;
+                // get index of the row for the selected cell
+                int rowIndex = dgv.SelectedCells[0].OwningRow.Index;
+                if (rowIndex == 0)
                 {
-                    if (DGV_jobs.SelectedRows[0].Index > 0)
-                    {
-                        if (DGV_jobs.SelectedRows[0].Index - 1 != JobRunningIndex)
-                        {
-                            for (Int32 i = DGV_jobs.Rows.Count - 1; i >= 0; i--)
-                            {
-                                if (DGV_jobs.Rows[i].Selected == true)
-                                {
-                                    DataGridViewRow r = DGV_jobs.Rows[i];
-                                    Job temp = JobList[i];
-                                    JobList.RemoveAt(i);
-                                    DGV_jobs.Rows.RemoveAt(i);
-                                    JobList.Insert(i - 1, temp);
-                                    DGV_jobs.Rows.Insert(i - 1, r);
-                                }
-                            }
-                        }
-                    }
+                    return;
                 }
+                // get index of the column for the selected cell
+                int colIndex = dgv.SelectedCells[0].OwningColumn.Index;
+                DataGridViewRow selectedRow = dgv.Rows[rowIndex];
+                dgv.Rows.Remove(selectedRow);
+                dgv.Rows.Insert(rowIndex - 1, selectedRow);
+                dgv.ClearSelection();
+                dgv.Rows[rowIndex - 1].Cells[colIndex].Selected = true;
             }
+            catch { }
         }
 
         private void b_move_down_Click(object sender, EventArgs e)
         {
-            if (DGV_jobs.SelectedRows.Count > 0)
+            DataGridView dgv = DGV_jobs;
+            try
             {
-                if (DGV_jobs.SelectedRows[0].Index != JobRunningIndex)
+                Int32 totalRows = dgv.Rows.Count;
+                // get index of the row for the selected cell
+                int rowIndex = dgv.SelectedCells[0].OwningRow.Index;
+                if (rowIndex == totalRows - 1)
                 {
-                    if (DGV_jobs.SelectedRows[0].Index < DGV_jobs.Rows.Count - 1)
-                    {
-                        if (DGV_jobs.SelectedRows[0].Index + 1 != JobRunningIndex)
-                        {
-                            for (Int32 i = 0; i < DGV_jobs.Rows.Count; i++)
-                            {
-                                if (DGV_jobs.Rows[i].Selected == true)
-                                {
-                                    DataGridViewRow r = DGV_jobs.Rows[i];
-                                    Job temp = JobList[i];
-                                    JobList.RemoveAt(i);
-                                    DGV_jobs.Rows.RemoveAt(i);
-                                    JobList.Insert(i + 1, temp);
-                                    DGV_jobs.Rows.Insert(i + 1, r);
-                                }
-                            }
-                        }
-                    }
+                    return;
                 }
+                // get index of the column for the selected cell
+                int colIndex = dgv.SelectedCells[0].OwningColumn.Index;
+                DataGridViewRow selectedRow = dgv.Rows[rowIndex];
+                dgv.Rows.Remove(selectedRow);
+                dgv.Rows.Insert(rowIndex + 1, selectedRow);
+                dgv.ClearSelection();
+                dgv.Rows[rowIndex + 1].Cells[colIndex].Selected = true;
             }
+            catch { }
         }
 
         private void b_start_Click(object sender, EventArgs e)
@@ -622,31 +762,32 @@ namespace vpy2x
                 b_start.Enabled = false;
                 b_stop.Enabled = true;
                 b_pause_resume.Enabled = b_stop.Enabled;
-                saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
-                clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
                 setVSpipeexePathToolStripMenuItem.Enabled = b_start.Enabled;
             }
         }
 
         void Encode()
         {
+            LOGLines.Clear();
             for (Int32 i = 0; i < JobList.Count; i++)
             {
                 if (DGV_jobs.Rows[i].Cells["status"].Value.ToString().ToLower().Contains("ready"))
                 {
                     JobRunningIndex = i;
-                    task = new JobTask(JobList[JobRunningIndex]);
+                    task = new JobTask(JobList[JobRunningIndex], this);
                     Environment.CurrentDirectory = task.Job.EncoderDir;
                     if (task.HasErrors == false)
                     {
                         this.Invoke((MethodInvoker)delegate ()
                         {
                             DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Running", "0");
-                            rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
                         });
 
                         psi = new ProcessStartInfo();
-                        psi.FileName = @"cmd.exe";
+                        p = new Process();
+
+                        psi.FileName = task.Job.EncoderEXE;
+                        psi.Arguments = task.CommandLine;
 
                         psi.UseShellExecute = false;
                         psi.RedirectStandardOutput = true;
@@ -656,6 +797,7 @@ namespace vpy2x
                         psi.WindowStyle = ProcessWindowStyle.Hidden;
 
                         p = new Process();
+                        p.EnableRaisingEvents = true;
                         p.StartInfo = psi;
                         p.OutputDataReceived += P_OutputDataReceived;
                         p.ErrorDataReceived += P_ErrorDataReceived;
@@ -667,10 +809,14 @@ namespace vpy2x
                         p.BeginOutputReadLine();
                         p.BeginErrorReadLine();
 
-                        var Input = p.StandardInput;
-                        Input.WriteLine("@echo off");
-                        Input.WriteLine(task.CommandLine);
-                        Input.WriteLine("exit");
+                        if (task.Job.EncoderEXE.ToLower().Contains("av1an") == false)
+                        {
+                            var Input = p.StandardInput;
+                            Input.WriteLine("@echo off");
+                            Input.WriteLine(task.CommandLine);
+                            Input.WriteLine("exit");
+                            Input.Close();
+                        }
 
                         this.Invoke((MethodInvoker)delegate ()
                         {
@@ -718,9 +864,6 @@ namespace vpy2x
                     {
                         this.Invoke((MethodInvoker)delegate ()
                         {
-                            rtb_log.AppendText("---------------------------------------------------------------------------------------\n");
-                            rtb_log.AppendText(task.ErrorMessage);
-
                             DGV_jobs.Rows[JobRunningIndex].SetValues(DGV_jobs.Rows[JobRunningIndex].Cells["script"].Value.ToString(), DGV_jobs.Rows[JobRunningIndex].Cells["subject"].Value.ToString(), "Error(s)", "0");
                             DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.BackColor = Color.OrangeRed;
                             DGV_jobs.Rows[JobRunningIndex].Cells["status"].Style.SelectionBackColor = Color.OrangeRed;
@@ -740,14 +883,9 @@ namespace vpy2x
                 b_start.Enabled = true;
                 b_stop.Enabled = false;
                 b_pause_resume.Enabled = b_stop.Enabled;
-                saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
-                clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
             });
+            File.WriteAllLines(Path.Combine(LogsFolder, "JOB " + (JobRunningIndex + 1).ToString() + ".txt"), LOGLines.ToArray());
             JobRunningIndex = -1;
-            this.Invoke((MethodInvoker)delegate ()
-            {
-                File.WriteAllLines(LOGFile, rtb_log.Lines);
-            });
             switch (toolStripComboBoxShutdown.Text)
             {
                 case "Shutdown":
@@ -785,13 +923,22 @@ namespace vpy2x
         {
             if (String.IsNullOrWhiteSpace(e.Data) == false)
             {
-                if (e.Data.Trim().StartsWith("Frame:"))
+                if (JobList[JobRunningIndex].EncoderEXE.ToLower().Trim().Contains("av1an") == false)
                 {
-                    ReportStatusVSpipe(e.Data);
+
+                    if (e.Data.Trim().StartsWith("Frame:"))
+                    {
+                        ReportStatusVSpipe(e.Data);
+                    }
+                    else
+                    {
+                        LOGLines.Add(e.Data);
+                    }
                 }
                 else
                 {
-                    ReportStatusEncoder(e.Data);
+                    LOGLines.Add(e.Data);
+                    //ReportStatusAV1AN(e.Data.Trim());
                 }
             }
         }
@@ -800,15 +947,59 @@ namespace vpy2x
         {
             if (String.IsNullOrWhiteSpace(e.Data) == false)
             {
-                if (e.Data.Trim().StartsWith("Frame:"))
+                if (JobList[JobRunningIndex].EncoderEXE.ToLower().Trim().Contains("av1an") == false)
                 {
-                    ReportStatusVSpipe(e.Data);
+                    if (e.Data.Trim().StartsWith("Frame:"))
+                    {
+                        ReportStatusVSpipe(e.Data);
+                    }
+                    else
+                    {
+                        LOGLines.Add(e.Data);
+                    }
                 }
                 else
                 {
-                    ReportStatusEncoder(e.Data);
+
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        LOGLines.Add(e.Data);
+                    });
+
+                    ReportStatusAV1AN(e.Data.Trim());
                 }
             }
+        }
+
+        void ReportStatusAV1AN(String Data)
+        {
+            //if (Data.Contains("(") && Data.Contains(")") && Data.Contains("[") && Data.Contains("]") && Data.Contains("%") && Data.Contains("-") && Data.Contains(new JobTask(JobList[JobRunningIndex], this).Analize.Frames))
+            //{
+            //    String Info = Data.Substring(Data.IndexOf("%") + 1).Trim();
+            //    Info = Info.Replace(" ", String.Empty);
+            //    String Progress = Info.Split('(')[0];
+            //    String ETA = Info.Split('(')[1];
+            //    ETA = ETA.Split(',')[1].Replace("eta", "Remaining time:").Trim();
+            //    this.Invoke((MethodInvoker)delegate ()
+            //    {
+            //        DGV_jobs.Rows[JobRunningIndex].Cells["fps"].Value = Progress + "\n" + ETA;
+            //    });
+            //}
+            //else
+            //{
+            //    this.Invoke((MethodInvoker)delegate ()
+            //    {
+            //        rtb_log.Text += Data.TrimEnd() + "\n";
+            //        rtb_log.SelectionStart = rtb_log.TextLength;
+            //        rtb_log.ScrollToCaret();
+            //    });
+            //}
+            //this.Invoke((MethodInvoker)delegate ()
+            //{
+            //    rtb_log.Text += Data.TrimEnd() + "\n";
+            //    rtb_log.SelectionStart = rtb_log.TextLength;
+            //    rtb_log.ScrollToCaret();
+            //});
         }
 
         void ReportStatusVSpipe(String Data)
@@ -839,16 +1030,6 @@ namespace vpy2x
             });
         }
 
-        void ReportStatusEncoder(String Data)
-        {
-            this.Invoke((MethodInvoker)delegate ()
-            {
-                rtb_log.Text += Data.TrimEnd() + "\n";
-                rtb_log.SelectionStart = rtb_log.TextLength;
-                rtb_log.ScrollToCaret();
-            });
-        }
-
         private void b_stop_Click(object sender, EventArgs e)
         {
             if (t != null)
@@ -863,8 +1044,6 @@ namespace vpy2x
                 b_start.Enabled = true;
                 b_stop.Enabled = false;
                 b_pause_resume.Enabled = b_stop.Enabled;
-                saveLOGToolStripMenuItem.Enabled = b_start.Enabled;
-                clearLOGToolStripMenuItem.Enabled = b_start.Enabled;
                 setVSpipeexePathToolStripMenuItem.Enabled = b_start.Enabled;
             }
         }
@@ -965,7 +1144,7 @@ namespace vpy2x
 
         private void vpy2x_DragEnter(object sender, DragEventArgs e)
         {
-            foreach (String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
+            foreach (String s in (String[])e.Data.GetData(DataFormats.FileDrop))
             {
                 if (Path.GetExtension(s).ToLower() == ".vpy")
                 {
@@ -977,11 +1156,11 @@ namespace vpy2x
 
         private void vpy2x_DragDrop(object sender, DragEventArgs e)
         {
-            foreach (String s in (String[])(e.Data.GetData(DataFormats.FileDrop)))
+            foreach (String s in (String[])e.Data.GetData(DataFormats.FileDrop))
             {
                 if (Path.GetExtension(s).ToLower() == ".vpy")
                 {
-                    LoadScript load = new LoadScript(PresetsFolder, false, s, new LoadScript.Preset());
+                    LoadScript load = new LoadScript(PresetsFolder, false, s, new LoadScript.Preset(), String.Empty, AudioTracks);
                     load.ShowDialog();
                     if (load.DialogResult == DialogResult.OK)
                     {
@@ -1017,14 +1196,14 @@ namespace vpy2x
         {
             if (ForceClose == true)
             {
-                b_stop_Click((object)sender, (EventArgs)e);
+                b_stop_Click(sender, e);
                 CloseApplication();
             }
             else
             {
                 if (MessageBox.Show("Close this application?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    b_stop_Click((object)sender, (EventArgs)e);
+                    b_stop_Click(sender, e);
                     CloseApplication();
                 }
                 else
@@ -1037,8 +1216,6 @@ namespace vpy2x
         void CloseApplication()
         {
             SaveJobsOnClosing();
-            if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
-                File.WriteAllLines(LOGFile, rtb_log.Lines);
             IniFile ini = new IniFile(SettingsFile);
             ini.Write("priority", cmb_priority.Text, "Main");
         }
@@ -1064,7 +1241,23 @@ namespace vpy2x
                 SaveLoad.Status = DGV_jobs.Rows[i].Cells["status"].Value.ToString();
                 SaveLoad.Header = job.Header;
                 SaveLoad.Colour = DGV_jobs.Rows[i].Cells["status"].Style.BackColor.Name;
+                SaveLoad.VPY4Scenes = job.VPY4Scenes;
+                SaveLoad.Audio = String.Empty;
+                if (job.AudioTrackList.Count > 0)
+                {
+                    SaveLoad.Audio = Path.Combine(JobsFolder, "Job " + (i + 1).ToString() + " Audio.vpy2x");
+                    WriteAudioParameters(job.AudioTrackList, SaveLoad.Audio);
+                }
                 File.WriteAllText(Path.Combine(JobsFolder, "Job " + (i + 1).ToString() + ".json"), JsonConvert.SerializeObject(SaveLoad, Formatting.Indented));
+            }
+        }
+
+        void WriteAudioParameters(List<TreeNode> Nodes, String FileName)
+        {
+            using (Stream file = File.Open(FileName, FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(file, Nodes);
             }
         }
 
@@ -1080,44 +1273,8 @@ namespace vpy2x
             public String Status { get; set; }
             public String FPS { get; set; }
             public String Colour { get; set; }
-        }
-
-        private void saveLOGToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (String.IsNullOrWhiteSpace(rtb_log.Text) == false)
-            {
-                SaveFileDialog s = new SaveFileDialog();
-                s.Filter = "TXT file|*.txt";
-                s.Title = this.Text + " - Save LOG";
-                s.ValidateNames = true;
-                s.OverwritePrompt = true;
-                s.RestoreDirectory = true;
-                s.AddExtension = true;
-                s.DefaultExt = "txt";
-                s.FileOk += S_FileOk;
-                if (s.ShowDialog() == DialogResult.OK)
-                {
-                    File.WriteAllLines(s.FileName, rtb_log.Lines);
-                }
-            }
-            else
-            {
-                MessageBox.Show("LOG is empty.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        private void S_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            MessageBox.Show("LOG saved successfully.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void clearLOGToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (File.Exists(LOGFile))
-            {
-                File.Delete(LOGFile);
-            }
-            rtb_log.Clear();
+            public String VPY4Scenes { get; set; }
+            public String Audio { get; set; }
         }
 
         private void cmb_priority_SelectedValueChanged(object sender, EventArgs e)
@@ -1130,7 +1287,7 @@ namespace vpy2x
             }
         }
 
-        ProcessPriorityClass SetPriority()
+        public ProcessPriorityClass SetPriority()
         {
             switch (Priority)
             {
@@ -1157,9 +1314,24 @@ namespace vpy2x
         {
             DGV_jobs.ClearSelection();
         }
+
+        private void openLOGForSelectedJobToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DGV_jobs.SelectedRows.Count > 0)
+            {
+                if (File.Exists(Path.Combine(LogsFolder, "JOB " + (DGV_jobs.SelectedRows[0].Index + 1).ToString() + ".txt")))
+                {
+                    Process.Start(Path.Combine(LogsFolder, "JOB " + (DGV_jobs.SelectedRows[0].Index + 1).ToString() + ".txt"));
+                }
+                else
+                {
+                    MessageBox.Show("No log exists for this job.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+        }
     }
 
-    class IniFile
+    public class IniFile
     {
         string Path;
         string EXE = Assembly.GetExecutingAssembly().GetName().Name;
